@@ -4,10 +4,16 @@
 // N: step
 // 1.8 deg/N
 
+int lap_delay = 5000; //ms
+float angle = 362; // 
+int step = floor(angle / 1.8);
+
+// Definicion de pines:
 #define SETPPIN GPIO_1 //12 (en esquemático)
 #define DIRPIN GPIO_2 //11
 #define ENAPIN GPIO_3 //10
 
+// Variables rectas:s
 int Pa = 100;
 int Tas = 1000;
 int Tai = 600;
@@ -21,14 +27,14 @@ float getIntercept(float x1,float y1,float m){
   return y1-m*x1;
 }
 
-void forward(int N,bool reverse=false){
+void forward(int N, bool reverse=false){
     //N numero de pasos
     //reverse direccion hacia donde gira, reloj o contrareloj
     unsigned long previousMicros = 0;
     float interval;
     int n_step = 0;
     int x = 0;
-    float m1,b1,m2,b2;
+    float m1,b1,m2,b2;  
     int sensorValue = 0;
     float sensorVoltage = 0;
     digitalWrite(ENAPIN,LOW);
@@ -87,9 +93,9 @@ void setup() {
 
 void loop() {
     
-    forward(600);
-    delay(1000);
-    forward(600,true);
-    delay(1000);
+    forward(step);
+    delay(5000);
+    forward(step,true);
+    delay(5000);
 
 }
