@@ -66,7 +66,9 @@ void forward(int N, bool reverse=false){
         }
         if (currentMicros - previousMicros >= interval) {
             previousMicros = currentMicros;
+            
             digitalWrite(SETPPIN,!digitalRead(SETPPIN));
+            
             sensorValue = analogRead(A0);
             sensorVoltage = sensorValue * (5.0/1023.0);
             n_step++;
@@ -87,8 +89,7 @@ void setup() {
     pinMode(LEDG,OUTPUT);
     pinMode(LEDB,OUTPUT);
     pinMode(SETPPIN,OUTPUT);
-    pinMode(DIRPIN,OUTPUT);
-    pinMode(DIRPIN,OUTPUT);       
+    pinMode(DIRPIN,OUTPUT);   
 }
 
 void loop() {
