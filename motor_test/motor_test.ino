@@ -4,7 +4,7 @@
 // N: step
 // 1.8 deg/N
 
-#define SETPPIN GPIO_1 //12
+#define SETPPIN GPIO_1 //12 (en esquemático)
 #define DIRPIN GPIO_2 //11
 #define ENAPIN GPIO_3 //10
 
@@ -34,7 +34,7 @@ void forward(int N,bool reverse=false){
     digitalWrite(ENAPIN,LOW);
     digitalWrite(DIRPIN,reverse?LOW:HIGH); 
    
-    char myFileName[] = "fs/test2.txt";
+    //char myFileName[] = "fs/test2.txt";
 
     if (N<2*Pa){
         m1 = getSlope(0,Tas,Pa,Tai);
@@ -64,7 +64,7 @@ void forward(int N,bool reverse=false){
             sensorValue = analogRead(A0);
             sensorVoltage = sensorValue * (5.0/1023.0);
             n_step++;
-            //fprintf(myFile,"%d,%.2f\n",n_step,sensorVoltage);            
+                //fprintf(myFile,"%d,%.2f\n",n_step,sensorVoltage);            
             //Serial.printf("%d,%.2f\n",n_step,sensorVoltage);
         }
     }
