@@ -1,6 +1,8 @@
 #include <Arduino_PortentaBreakout.h>
 #include "mbed.h"
 
+// N: step
+// 1.8 deg/N
 
 #define SETPPIN GPIO_1 //12
 #define DIRPIN GPIO_2 //11
@@ -63,7 +65,7 @@ void forward(int N,bool reverse=false){
             sensorVoltage = sensorValue * (5.0/1023.0);
             n_step++;
             //fprintf(myFile,"%d,%.2f\n",n_step,sensorVoltage);            
-            //Serial.println("%d,%.2f\n",n_step,sensorVoltage);
+            //Serial.printf("%d,%.2f\n",n_step,sensorVoltage);
         }
     }
     //fclose(myFile);
@@ -85,8 +87,9 @@ void setup() {
 
 void loop() {
     
-    forward(200);
+    forward(600);
     delay(1000);
-    forward(200,true);
+    forward(600,true);
+    delay(1000);
 
 }
