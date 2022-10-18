@@ -5,7 +5,7 @@
 // 1.8 deg/N
 
 int lap_delay = 5000; //ms
-float angle = 362; //deg
+float angle = 362; // 
 int step = floor(angle / 1.8);
 
 // Definicion de pines:
@@ -13,7 +13,7 @@ int step = floor(angle / 1.8);
 #define DIRPIN GPIO_2 //11
 #define ENAPIN GPIO_3 //10
 
-// Variables rectas:
+// Variables rectas:s
 int Pa = 100;
 int Tas = 1000;
 int Tai = 600;
@@ -94,8 +94,8 @@ void setup() {
 void loop() {
     
     forward(step);
-    delay(lap_delay);
+    delay(5000);
     forward(step,true);
-    delay(lap_delay);
+    delay(5000);
 
 }
