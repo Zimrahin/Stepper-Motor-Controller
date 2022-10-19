@@ -4,20 +4,20 @@
 // N: step
 // 1.8 deg/N
 
-int lap_delay = 5000; //ms
-float angle = 362; //deg
+int lap_delay = 1000; //ms
+float angle = 720; //deg
 int step = floor(angle / 1.8);
 
 // Definicion de pines:
-#define SETPPIN GPIO_1 //12 (en esquemático)
-#define DIRPIN GPIO_2 //11
-#define ENAPIN GPIO_3 //10
+#define SETPPIN GPIO_1  //12 (en esquemático)
+#define DIRPIN GPIO_2   //11
+#define ENAPIN GPIO_3   //10
 
 // Variables rectas:
-int Pa = 100;
-int Tas = 1000;
-int Tai = 600;
-const int Tmin = 600;
+int Pa = 1000;           // Cantidad de pasos para acelerar
+int Tas = 8000;         // Tiempo inicial entre pasos
+int Tai = 5000;			// Tiempo final entre pasos
+//const int Tmin = 600; // minimo empírico para que funcione (maxima velocidad), tiempo entre steps
 
 float getSlope(float x1,float y1,float x2,float y2){
   return (y2-y1)/(x2-x1);
@@ -28,8 +28,8 @@ float getIntercept(float x1,float y1,float m){
 }
 
 void forward(int N, bool reverse=false){
-    //N numero de pasos
-    //reverse direccion hacia donde gira, reloj o contrareloj
+    // N numero de pasos
+    // reverse direccion hacia donde gira, reloj o contrareloj
     unsigned long previousMicros = 0;
     float interval;
     int n_step = 0;
@@ -72,8 +72,10 @@ void forward(int N, bool reverse=false){
             sensorValue = analogRead(A0);
             sensorVoltage = sensorValue * (5.0/1023.0);
             n_step++;
-                //fprintf(myFile,"%d,%.2f\n",n_step,sensorVoltage);            
-            //Serial.printf("%d,%.2f\n",n_step,sensorVoltage);
+
+            Serial.print(n_step);
+            Serial.print(' ');
+            Serial.println(sensorVoltage);
         }
     }
     //fclose(myFile);
@@ -93,10 +95,8 @@ void setup() {
 }
 
 void loop() {
-    
     forward(step);
     delay(lap_delay);
     forward(step,true);
     delay(lap_delay);
-
 }
