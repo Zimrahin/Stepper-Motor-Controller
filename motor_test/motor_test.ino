@@ -1,8 +1,14 @@
 #include <Arduino_PortentaBreakout.h>
 #include "mbed.h"
+#include "FATFileSystem.h"
+#include "SDMMCBlockDevice.h"
 
 // N: step
 // 1.8 deg/N
+
+// Definiciones SD:
+SDMMCBlockDevice block_device;
+mbed::FATFileSystem fs("fs");
 
 int lap_delay = 1000; //ms
 float angle = 720; //deg
@@ -40,7 +46,7 @@ void forward(int N, bool reverse=false){
     digitalWrite(ENAPIN,LOW);
     digitalWrite(DIRPIN,reverse?LOW:HIGH); 
    
-    //char myFileName[] = "fs/test2.txt";
+    char myFileName[] = "fs/test2.txt";
 
     if (N<2*Pa){
         m1 = getSlope(0,Tas,Pa,Tai);
@@ -54,7 +60,7 @@ void forward(int N, bool reverse=false){
         m2 = getSlope(N-Pa,Tai,N,Tas);
         b2 = getIntercept(N-Pa,Tai,m2);
     }
-    //myFile = fopen(myFileName, "a");
+    myFile = fopen(myFileName, "a");
     while(n_step<2*N){
         unsigned long currentMicros = micros();
         x = (int)(n_step/2);
@@ -76,9 +82,10 @@ void forward(int N, bool reverse=false){
             Serial.print(n_step);
             Serial.print(' ');
             Serial.println(sensorVoltage);
+            fprintf(myFile,"%d,%.2f\n",n_step,sensorVoltage);
         }
     }
-    //fclose(myFile);
+    fclose(myFile);
     digitalWrite(ENAPIN,HIGH);
 }
 
@@ -87,11 +94,18 @@ void setup() {
     Serial.begin(9600);
     //while (!Serial);
 
-    pinMode(LEDR,OUTPUT);
-    pinMode(LEDG,OUTPUT);
-    pinMode(LEDB,OUTPUT);
+    // pinMode(LEDR,OUTPUT);
+    // pinMode(LEDG,OUTPUT);
+    // pinMode(LEDB,OUTPUT);
     pinMode(SETPPIN,OUTPUT);
-    pinMode(DIRPIN,OUTPUT);   
+    pinMode(DIRPIN,OUTPUT);
+
+    
+    Serial.println("Mounting SDCARD...");
+    int err =  fs.mount(&block_device);
+    if (err) {
+        Serial.println("No SD Card filesystem found, please check SD Card on computer and manually format if needed.");
+    }
 }
 
 void loop() {
