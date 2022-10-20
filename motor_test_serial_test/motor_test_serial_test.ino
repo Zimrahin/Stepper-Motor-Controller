@@ -78,9 +78,10 @@ void forward(int N, bool reverse=false){
             sensorVoltage = sensorValue * (5.0/1023.0);
             n_step++;
 
-            Serial.print(n_step);
-            Serial.print(' ');
+            //Serial.print(n_step);
+            //Serial.print(' ');
             Serial.print(sensorVoltage);
+            Serial.print('-');
             // fprintf(myFile,"%d,%.2f\n",n_step,sensorVoltage);
         }
     }
@@ -93,7 +94,6 @@ void setup() {
 
     Serial.begin(9600);
     //while (!Serial);
-
     // pinMode(LEDR,OUTPUT);
     // pinMode(LEDG,OUTPUT);
     // pinMode(LEDB,OUTPUT);
@@ -113,7 +113,6 @@ void loop() {
     if (Serial.available() > 0)
     {
         ReceivedByte = Serial.read();
-        Serial.println("recibi algo");
         if (ReceivedByte == '$')
         {
             forward(step);
