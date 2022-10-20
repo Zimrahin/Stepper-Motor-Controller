@@ -1,2 +1,0 @@
-#define SECRET_SSID "CCTValIOT-2.4G"
-#define SECRET_PASS "CCTValIOT2.4"

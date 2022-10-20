@@ -18,7 +18,7 @@ import signal   # Import signal module using the import keyword
 import platform
 
 log_count = 1
-logging_interval_seconds = 1
+logging_interval_seconds = 30
 Baudrate  = 9600
 COMport   = 'COM5'
 
@@ -89,13 +89,14 @@ signal.signal(signal.SIGINT,SignalHandler_SIGINT) #register the Signal Handler
 # infinite loop that querie the arduino for data by sending $ character                
 while sentry:
 	#print(sentry) #debugging only
-	#BytesWritten = SerialObj.write(b'$') #transmit $,to get temperture values from Arduino,
-	#print('$ transmitted to Arduino')
-	#time.sleep(0.10)
+	BytesWritten = SerialObj.write(b'$') #transmit $,to get temperture values from Arduino,
+	print('$ transmitted to Arduino')
+	time.sleep(0.10)
 	ReceivedString = SerialObj.readline()       # Change to receive  mode to get the data from arduino,Arduino sends \n to terminate
 	ReceivedString = str(ReceivedString,'utf-8')# Convert bytes to string of encoding utf8
 	tempvalueslist = ReceivedString.split('-')  # Split the string into 4 values at '-'  
 	#print(f'AN1={tempvalueslist[0]} AN2={tempvalueslist[1]} AN3={tempvalueslist[2]} AN4={tempvalueslist[3]}')
+	print(tempvalueslist)
 	
 	log_time_date = time.localtime() #Get log date time from PC
 	log_time = time.strftime("%H:%M:%S",log_time_date) #hh:mm:ss
@@ -120,7 +121,7 @@ while sentry:
 	print(log_file_text3)
 	log_count = log_count + 1 #increment no of logs taken
 	
-	#time.sleep(logging_interval_seconds) #change logging_interval_seconds to change sensing interval 
+	time.sleep(logging_interval_seconds) #change logging_interval_seconds to change sensing interval 
 
 #exit from the loop and close the Serial port when sentry = False
 SerialObj.close()          # Close the port
