@@ -61,7 +61,7 @@ void forward(int N=400, bool reverse=false, int Pa=200, int Tas=1600, int Tai=10
 
 	while(n_step<2*N){
 		unsigned long currentMicros = micros();
-		x = (int)(n_step/2);
+		x = (int)(n_step/2);		
 		if (N<2*Pa){
 			interval = x<(N/2) ? m1*x + b1 : m2*x + b2;
 		}
@@ -72,16 +72,15 @@ void forward(int N=400, bool reverse=false, int Pa=200, int Tas=1600, int Tai=10
 			previousMicros = currentMicros;
 
 			digitalWrite(SETPPIN,!digitalRead(SETPPIN));
-
-			sensorValue = analogRead(A0);
-			sensorVoltage = sensorValue * (5.0/1023.0);
+			
+			if (n_step%2 == 0){
+				sensorValue = analogRead(A0);
+				sensorVoltage = sensorValue * (5.0/1023.0);
+				// fprintf(myFile,"%d,%.2f\n",n_step,sensorVoltage);
+				Serial.print(sensorVoltage);
+				Serial.print('-');
+			}
 			n_step++;
-
-			//Serial.print(n_step);
-			//Serial.print(' ');
-			Serial.print(sensorVoltage);
-			Serial.print('-');
-			// fprintf(myFile,"%d,%.2f\n",n_step,sensorVoltage);
 		}
 	}
 	Serial.println();
@@ -95,21 +94,31 @@ void setup() {
 	pinMode(DIRPIN,OUTPUT);
 }
 
-void loop() {
-	char receivedByte = '0';
+void loop() 
+{
+	bool dir_flag = false;
+	String receivedString = "0";
 	if (Serial.available() > 0)
 	{
-		receivedByte = Serial.read();
-		switch(receivedByte)
+		receivedString = Serial.readString();
+		receivedString.trim(); // remove \n,\r,\0
+		char direction = receivedString[0];
+		switch (direction)
 		{
-			case 'q':
-				forward();
+			case 'l':
+				dir_flag = true;
 				break;
-			case 'w':
-				forward(400, true);
+			case 'r':
+				dir_flag = false;
 				break;
 			default:
 				Serial.println("INVALID");
+				return;
 		}
+		String N_rx_string = receivedString.substring(1);
+		int N_rx = N_rx_string.toInt();
+		forward(N_rx,dir_flag);
 	}
 }
+
+	
