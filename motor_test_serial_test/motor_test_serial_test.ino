@@ -75,7 +75,7 @@ void forward(int N=400, bool reverse=false, int Pa=200, int Tas=1600, int Tai=10
 			
 			if (n_step%2 == 0){
 				sensorValue = analogRead(A0);
-				sensorVoltage = sensorValue * (5.0/1023.0);
+				sensorVoltage = sensorValue * (3.3/1023.0);
 				// fprintf(myFile,"%d,%.2f\n",n_step,sensorVoltage);
 				Serial.print(sensorVoltage);
 				Serial.print('-');

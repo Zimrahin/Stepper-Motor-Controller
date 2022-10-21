@@ -63,6 +63,7 @@ def csvLogger(opt):
 	serialPort.close()          # Close serial port
 
 def plotFunction(list_in):
+	plt.style.use('dark_background')
 	plt.figure(0)
 	plt.cla()
 	plt.figure(0).patch.set_facecolor('#000000')
@@ -71,14 +72,15 @@ def plotFunction(list_in):
 	plt.gca().yaxis.label.set_color('#ffffff')
 	plt.gca().xaxis.label.set_color('#ffffff')
 	#plt.gca().set_aspect('equal')
-	#plt.gca().set_ylim(0, height * agentLength / length)
+	plt.gca().set_ylim(0, 3.35)
 	#plt.gca().set_xlim(0, width * agentLength / length)
 	#plt.gca().imshow(cv.cvtColor(frame, cv.COLOR_BGR2RGB), extent=[0, width * agentLength / length, 0, height * agentLength / length])
 	plt.plot((range(1,len(list_in)+1)), list_in, color='lime')
 	plt.xlabel('N steps')
 	plt.ylabel('Voltage')
 	plt.figure(0).tight_layout()
-	plt.show()
+	#plt.draw()
+	plt.show(block=False)
 
 def parse_opt(known=False):
 	parser = argparse.ArgumentParser()
