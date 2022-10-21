@@ -1,7 +1,5 @@
 import serial   # PySerial
 import time     
-import signal   # Import signal module using the import keyword
-import platform
 
 log_count = 0
 baudrate  = 9600
@@ -30,13 +28,13 @@ while loop_flag:
 	if message == 'end':
 		break
 	print('\n')
-	serialPort.write(b'$') # send $ to start a routine
-	print(message + 'sent to Arduino board')
+	serialPort.write(message.encode()) # send '1' to start a routine
+	print('\''+message+'\'' + ' sent to Arduino board')
 	time.sleep(0.10) # seconds
 	receivedString = serialPort.readline()       	# Change to receive mode, Arduino sends \n to terminate
 	receivedString = str(receivedString,'utf-8')	# utf8 encoding
 	tempvalueslist = receivedString.split('-')  	 
-	print(tempvalueslist)
+	#print(tempvalueslist)
 	
 	log_time = time.strftime("%H:%M:%S", time.localtime() ) #hh:mm:ss
 	log_date = time.strftime("%d %B %Y", time.localtime() ) #dd monthName year
@@ -48,12 +46,13 @@ while loop_flag:
 			log_text += tempvalueslist[n] + ','
 		else:
 			log_text += tempvalueslist[n]
+	print(log_text)
 	log_text =  str(log_count) + ',' + log_date + ',' + log_time + ',' +  log_text + '\n'
 
 	with open(filename,'a') as csvFile:
 		csvFile.write(log_text)
 		
 	log_count = log_count + 1 
-	# Ctrl+C to exit loop
+	# write 'end' to end loop
 
 serialPort.close()          # Close serial port
