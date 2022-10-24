@@ -1,3 +1,4 @@
+from numpy import unsignedinteger
 import serial   # PySerial
 import time    
 from matplotlib import pyplot as plt 
@@ -18,10 +19,7 @@ def csvLogger(opt):
 	# 	csvFile.write('No,Date,Time,Step,Voltage\n')
 		
 	#Open serial port
-	serialPort = serial.Serial(COMport,baudrate) 
-
-	time.sleep(3) 	# opening the serial port from Python will reset the Arduino
-					
+	serialPort = serial.Serial(COMport,baudrate) 					
 	while True:
 		message = input('Write something: ') #r400
 		if message == 'end':
@@ -36,8 +34,11 @@ def csvLogger(opt):
 		time.sleep(0.10) # seconds
 		receivedString = serialPort.readline()       	# Change to receive mode, Arduino sends \n to terminate
 		receivedString = str(receivedString,'utf-8').rstrip() 	# utf8 encoding
-		valuesList = receivedString.split('-')[0:-1]	 
-		print(valuesList)
+		valuesList = receivedString.split('-')[0:-1] # there is an empty char at the end 
+		print(valuesList[-1]) #debug only
+		mean_time = valuesList[-2] #microseconds
+		angle = valuesList[-1]
+		valuesList = valuesList[0:-2]#delete last element
 		floatList = list(map(float,valuesList))
 		plotFunction(floatList)
 		
@@ -51,8 +52,10 @@ def csvLogger(opt):
 				log_text += valuesList[n] + ','
 			else:
 				log_text += valuesList[n]
-		print(log_text)
-		log_text =  str(log_count) + ',' + log_date + ',' + log_time + ',' +  log_text
+		#print(log_text) #debug only
+		log_text =  str(log_count) + ',' + log_date + ',' + log_time + ',' + \
+					mean_time + ' us,' +  'angle ' + angle + ',' + log_text + '\n'
+		#print(log_text)
 
 		with open(filename,'a') as csvFile:
 			csvFile.write(log_text)
@@ -66,6 +69,7 @@ def plotFunction(list_in):
 	plt.style.use('dark_background')
 	plt.figure(0)
 	plt.cla()
+	plt.gcf().set_size_inches(11, 3)
 	plt.figure(0).patch.set_facecolor('#000000')
 	plt.gca().tick_params(axis='x', colors='#ffffff')
 	plt.gca().tick_params(axis='y', colors='#ffffff')
