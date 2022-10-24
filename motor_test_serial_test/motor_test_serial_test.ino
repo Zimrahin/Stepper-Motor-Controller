@@ -36,6 +36,9 @@ void forward(int N=400, bool reverse=false, int Pa=200, int Tas=1600, int Tai=10
 	// N numero de pasos
 	// reverse direccion hacia donde gira, reloj o contrareloj
 	unsigned long previousMicros = 0;
+  unsigned long init_time = 0;
+  unsigned long stop_time = 0;
+  unsigned long total_time = 0;
 	float interval;
 	int n_step = 0;
 	int x = 0;
@@ -71,6 +74,7 @@ void forward(int N=400, bool reverse=false, int Pa=200, int Tas=1600, int Tai=10
 		if (currentMicros - previousMicros >= interval) {
 			previousMicros = currentMicros;
 
+      init_time = micros();
 			digitalWrite(SETPPIN,!digitalRead(SETPPIN));
 			
 			if (n_step%2 == 0){
@@ -79,12 +83,16 @@ void forward(int N=400, bool reverse=false, int Pa=200, int Tas=1600, int Tai=10
 				// fprintf(myFile,"%d,%.2f\n",n_step,sensorVoltage);
 				Serial.print(sensorVoltage);
 				Serial.print('-');
+        stop_time = micros();
+        total_time = total_time + (stop_time - init_time);       
 			}
 			n_step++;
 		}
-	}
+	}  
 	Serial.println();
 	digitalWrite(ENAPIN,HIGH);
+  total_time = total_time/N;
+  Serial.print(total_time);  
 }
 
 void setup() {
