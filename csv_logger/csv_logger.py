@@ -87,6 +87,7 @@ def plotFunction(list_in, angle, directionChar):
 	plt.xlabel('N steps')
 	plt.ylabel('Voltage')
 	plt.figure(0).tight_layout()
+	plt.grid()
 	plt.show(block=False) # keey running code
 
 def parse_opt(known=False):
