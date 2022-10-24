@@ -4,7 +4,6 @@ import time
 from matplotlib import pyplot as plt 
 import argparse
 
-
 def csvLogger(opt):
 	log_count = 0
 	baudrate  = 9600
@@ -13,11 +12,7 @@ def csvLogger(opt):
 	COMport = 'COM' + input('Enter serial port number: ')
 	print('\nPort selected: ', COMport.upper() )
 	print('Baud rate: ', baudrate )
-
-	# # Header
-	# with open(filename,'w+') as csvFile:
-	# 	csvFile.write('No,Date,Time,Step,Voltage\n')
-		
+	
 	#Open serial port
 	serialPort = serial.Serial(COMport,baudrate) 					
 	while True:
