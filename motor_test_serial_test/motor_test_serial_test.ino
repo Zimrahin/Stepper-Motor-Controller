@@ -131,10 +131,11 @@ int calculateStep(String input, int currentPos)
 	Serial.print(currentPos);
 	Serial.print('-');
 	//debug: motor presents non-consistent behaviour
-	// char debug_char = dir_flag ? 'l' : 'r';
-	// Serial.print(debug_char);
-	// Serial.print(steps_to_move);
-	// Serial.print('-');
+	char debug_char = dir_flag ? 'l' : 'r';
+	Serial.print(debug_char);
+	Serial.print('-');
+	Serial.print(steps_to_move);
+	Serial.print('-');
 	return currentPos;
 }
 void setup() {
