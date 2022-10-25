@@ -101,17 +101,17 @@ int calculateStep(String input, int currentPos)
 	int N_rx = N_rx_string.toInt();
 	switch (direction)
 	{
-		case 'l':
+		case 'l': // move to the left, positive, counterclockwise
 			steps_to_move = N_rx;
 			currentPos = (N_lap + currentPos - N_rx)%N_lap;
 			dir_flag = true;
 			break;
-		case 'r':
+		case 'r': // move to the right, negative, clockwise
 			steps_to_move = N_rx;
 			currentPos = (currentPos + N_rx)%N_lap;
 			dir_flag = false;
 			break;
-		case 'a':
+		case 'a': // move to an absolute position (shortest path)
 			steps_to_move = N_rx%N_lap - currentPos;
 			if (abs(steps_to_move) <= N_lap/2) {
 				dir_flag = steps_to_move > 0 ? true : false; //left or right?
