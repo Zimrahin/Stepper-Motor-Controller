@@ -30,7 +30,7 @@ def csvLogger(opt):
 		receivedString = serialPort.readline()       	# Change to receive mode, Arduino sends \n to terminate
 		receivedString = str(receivedString,'utf-8').rstrip() 	# utf8 encoding
 		valuesList = receivedString.split('-')[0:-1] # there is an empty char at the end 
-		print(valuesList[-1-2]) #debug only
+		#print(valuesList[-1-2]) #debug only
 		mean_time = valuesList[-2-2] #microseconds
 		angle = valuesList[-1-2]
 		directionChar = valuesList[-2]
@@ -52,6 +52,8 @@ def csvLogger(opt):
 		log_text =  str(log_count) + ',' + log_date + ',' + log_time + ',' + \
 					mean_time + 'us,' +  'angle ' + angle + ',' + log_text + '\n'
 		#print(log_text)
+		print(str(log_count) + ',' + log_date + ',' + log_time + ',' + \
+					mean_time + 'us,' +  'angle ' + angle + '\n')
 
 		with open(filename,'a') as csvFile:
 			csvFile.write(log_text)
