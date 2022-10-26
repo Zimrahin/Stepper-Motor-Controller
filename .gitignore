@@ -1,3 +1,4 @@
 .vscode
 .proj_CCTVal
 *.csv
+_pycache_
