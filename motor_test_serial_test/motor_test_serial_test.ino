@@ -30,6 +30,9 @@ void forward(int N=400, bool reverse=false, int Pa=200, int Tas=1600, int Tai=10
 	// N numero de pasos
 	// reverse direccion hacia donde gira, reloj o contrareloj
 	unsigned long previousMicros = 0;
+  	unsigned long init_meas_time = 0;
+  	unsigned long stop_meas_time = 0;
+  	unsigned long total_meas_time = 0;
   	unsigned long init_time = 0;
   	unsigned long stop_time = 0;
   	unsigned long total_time = 0;
@@ -56,8 +59,10 @@ void forward(int N=400, bool reverse=false, int Pa=200, int Tas=1600, int Tai=10
 		b2 = getIntercept(N-Pa,Tai,m2);
 	}
 
+	init_time = micros();
 	while(n_step<2*N){
 		unsigned long currentMicros = micros();
+		
 		x = (int)(n_step/2);		
 		if (N<2*Pa){
 			interval = x<(N/2) ? m1*x + b1 : m2*x + b2;
@@ -68,7 +73,7 @@ void forward(int N=400, bool reverse=false, int Pa=200, int Tas=1600, int Tai=10
 		if (currentMicros - previousMicros >= interval) {
 			previousMicros = currentMicros;
 
-      		init_time = micros();
+      		init_meas_time = micros();
 			digitalWrite(SETPPIN,!digitalRead(SETPPIN));
 			
 			if (n_step%2 == 0){
@@ -77,14 +82,20 @@ void forward(int N=400, bool reverse=false, int Pa=200, int Tas=1600, int Tai=10
 				// fprintf(myFile,"%d,%.2f\n",n_step,sensorVoltage);
 				Serial.print(sensorVoltage);
 				Serial.print('-');
-        		stop_time = micros();
-        		total_time = total_time + (stop_time - init_time);       
-			}
+        		stop_meas_time = micros();
+				stop_time = micros();
+				total_time = total_time + (stop_time - init_time);   
+        		total_meas_time = total_meas_time + (stop_meas_time - init_meas_time);       
+				init_time = micros();
+			}			
 			n_step++;
 		}
 	}  
 	digitalWrite(ENAPIN,HIGH);
-  	total_time = total_time/N;
+  	total_meas_time = total_meas_time/N;
+	total_time = total_time/N;
+	Serial.print(total_meas_time);  
+	Serial.print('-');
   	Serial.print(total_time);  
 	Serial.print('-');
 	// Serial.println(); // \n at the end to let know PC all info has been sent
@@ -131,11 +142,11 @@ int calculateStep(String input, int currentPos)
 	Serial.print(currentPos);
 	Serial.print('-');
 	//debug: motor presents non-consistent behaviour
-	char debug_char = dir_flag ? 'l' : 'r';
-	Serial.print(debug_char);
-	Serial.print('-');
-	Serial.print(steps_to_move);
-	Serial.print('-');
+	//char debug_char = dir_flag ? 'l' : 'r';
+	//Serial.print(debug_char);
+	//Serial.print('-');
+	//Serial.print(steps_to_move);
+	//Serial.print('-');
 	return currentPos;
 }
 void setup() {
