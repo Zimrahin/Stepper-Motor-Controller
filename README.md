@@ -2,8 +2,7 @@ TODO:
 
 - cambiar polling por interrupción para leer datos (desde el arduino) por el puerto serial
 - hacer interfaz gráfica dummy con pyqt (bajar código de internet y entenderlo)
-
-
+- experimentar con baudrates más altos
 
 
 
