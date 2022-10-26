@@ -5,7 +5,7 @@ from matplotlib import pyplot as plt
 import argparse
 
 def csvLogger(opt):
-	log_count = 0
+	log_count = 1
 	baudrate  = 9600
 
 	# Serial port number and Baud rate
@@ -14,27 +14,39 @@ def csvLogger(opt):
 	print('Baud rate: ', baudrate )
 	
 	#Open serial port
-	serialPort = serial.Serial(COMport,baudrate) 					
+	serialPort = serial.Serial(COMport,baudrate) 
+
+	#Send setup parameters
+	N_lap_tx = input('\nEnter number of steps per revolution: ')
+	Pa_tx = input('Enter Pa: ')
+	Tas_tx = input('Enter Tas: ')
+	Tai_tx = input('Enter Tai: ')	
+	print('\n')
+	message = N_lap_tx + '-' + Pa_tx + '-' + Tas_tx + '-' + Tai_tx + '\n'
+	serialPort.write(message.encode())
+	time.sleep(0.10) # seconds
+
 	while True:
 		message = input('Write something: ') #r400
 		if message == 'end':
 			break
-		if log_count == 0:
+		if log_count == 1:
 			# File name with current date and time
 			filename = time.strftime("%d_%B_%Y_%Hh_%Mm_%Ss.csv", time.localtime())# 20_October_2022_12h_36m_49s
 			print(f'\nFile succesfully created: {filename}')
 		print('\n')
-		serialPort.write(message.encode()) # send '1' to start a routine
+		serialPort.write(message.encode()) #encode message
 		print('\''+message+'\'' + ' sent to Arduino board')
 		time.sleep(0.10) # seconds
 		receivedString = serialPort.readline()       	# Change to receive mode, Arduino sends \n to terminate
 		receivedString = str(receivedString,'utf-8').rstrip() 	# utf8 encoding
 		valuesList = receivedString.split('-')[0:-1] # there is an empty char at the end 
-		#print(valuesList[-1-2]) #debug only
-		mean_time = valuesList[-2-2] #microseconds
-		angle = valuesList[-1-2]
+		print(valuesList) #debug only
+		mean_time = valuesList[-5] #microseconds
+		mean_time_total = valuesList[-4] #microseconds
+		angle = valuesList[-3]
 		directionChar = valuesList[-2]
-		valuesList = valuesList[0:-2-2]#delete last element
+		valuesList = valuesList[0:-5]  #delete last elements
 		floatList = list(map(float,valuesList))
 		plotFunction(floatList, angle, directionChar)
 		
@@ -49,11 +61,11 @@ def csvLogger(opt):
 			else:
 				log_text += valuesList[n]
 		#print(log_text) #debug only
-		log_text =  str(log_count) + ',' + log_date + ',' + log_time + ',' + \
-					mean_time + 'us,' +  'angle ' + angle + ',' + log_text + '\n'
+		header = str(log_count) + ',' + log_date + ',' + log_time + ',' + \
+					mean_time + 'us,' +  mean_time_total + 'us,' + 'angle ' + angle
+		log_text =  header + ',' + log_text + '\n'
 		#print(log_text)
-		print(str(log_count) + ',' + log_date + ',' + log_time + ',' + \
-					mean_time + 'us,' +  'angle ' + angle + '\n')
+		print(header + '\n')
 
 		with open(filename,'a') as csvFile:
 			csvFile.write(log_text)
@@ -85,7 +97,7 @@ def plotFunction(list_in, angle, directionChar):
 	plt.ylabel('Voltage')
 	plt.figure(0).tight_layout()
 	plt.grid()
-	plt.show(block=False) # keey running code
+	plt.show(block=False) # keep running code
 
 def parse_opt(known=False):
 	parser = argparse.ArgumentParser()

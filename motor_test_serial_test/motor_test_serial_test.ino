@@ -5,18 +5,19 @@
 
 // N: step
 // 1.8 deg/N
-// Variables rectas:
-// int Pa = 200;			// Cantidad de pasos para acelerar
-// int Tas = 1600;			// Tiempo inicial entre pasos
-// int Tai = 1000;			// Tiempo final entre pasos (Tmin = 600)
+// Variables globales:
 
 // Definicion de pines:
 #define SETPPIN GPIO_1	//12 (en esquemático)
 #define DIRPIN GPIO_2	//11
 #define ENAPIN GPIO_3	//10
 
-
+int N_lap_g = 6400;		// steps por vuelta
+int Pa_g = 200;			// Cantidad de pasos para acelerar
+int Tas_g = 1000;			// Tiempo inicial entre pasos
+int Tai_g = 600;			// Tiempo final entre pasos (Tmin = 600)
 int currentPos_g = 0; // absolute position "global"
+bool param_set_flag = false;
 
 float getSlope(float x1,float y1,float x2,float y2){
 	return (y2-y1)/(x2-x1);
@@ -101,14 +102,14 @@ void forward(int N=400, bool reverse=false, int Pa=200, int Tas=1600, int Tai=10
 	// Serial.println(); // \n at the end to let know PC all info has been sent
 }
 
-int calculateStep(String input, int currentPos)
+int calculateStep(String input, int currentPos, int N_lap = 6400)
 {
 	int steps_to_move = 0;
 	bool dir_flag = false;
-	int N_lap = 200; //number of steps equal to one lap
+	//N_lap: number of steps equal to one lap
 	input.trim(); // remove \n,\r,\0
-	char direction = input[0];
-	String N_rx_string = input.substring(1);
+	char direction = input[0]; //extract letter
+	String N_rx_string = input.substring(1); //extract number
 	int N_rx = N_rx_string.toInt();
 	switch (direction)
 	{
@@ -138,17 +139,38 @@ int calculateStep(String input, int currentPos)
 			Serial.println("INVALID");
 			return -1;
 	}
-	forward(steps_to_move, dir_flag);
+	forward(steps_to_move, dir_flag, Pa_g, Tas_g, Tai_g);
 	Serial.print(currentPos);
 	Serial.print('-');
 	//debug: motor presents non-consistent behaviour
-	//char debug_char = dir_flag ? 'l' : 'r';
-	//Serial.print(debug_char);
-	//Serial.print('-');
-	//Serial.print(steps_to_move);
-	//Serial.print('-');
+	// no comentar
+	char debug_char = dir_flag ? 'l' : 'r';
+	Serial.print(debug_char);
+	Serial.print('-');
+	Serial.print(steps_to_move);
+	Serial.print('-');
 	return currentPos;
 }
+
+// https://stackoverflow.com/questions/29671455/how-to-split-a-string-using-a-specific-delimiter-in-arduino
+String getValue(String data, char separator, int index)
+{
+  int found = 0;
+  int strIndex[] = {0, -1};
+  int maxIndex = data.length()-1;
+
+  for(int i=0; i<=maxIndex && found<=index; i++){
+    if(data.charAt(i)==separator || i==maxIndex){
+        found++;
+        strIndex[0] = strIndex[1]+1;
+        strIndex[1] = (i == maxIndex) ? i+1 : i;
+    }
+  }
+
+  return found>index ? data.substring(strIndex[0], strIndex[1]) : "";
+}
+
+
 void setup() {
 	Serial.begin(9600);
 	//while (!Serial);
@@ -157,13 +179,23 @@ void setup() {
 }
 
 void loop() 
-{
+{	
 	int resultPos;
 	String receivedString = "0";
 	if (Serial.available() > 0)
 	{
 		receivedString = Serial.readString();
-		resultPos = calculateStep(receivedString, currentPos_g);
+		if (!param_set_flag) {
+			receivedString.trim(); // remove \n,\r,\0
+			N_lap_g = getValue(receivedString,'-',0).toInt();
+			Pa_g = getValue(receivedString,'-',1).toInt();
+			Tas_g = getValue(receivedString,'-',2).toInt();
+			Tai_g = getValue(receivedString,'-',3).toInt();
+			param_set_flag = true;
+			//Serial.println();
+			return;
+		}
+		resultPos = calculateStep(receivedString, currentPos_g, N_lap_g);
 		if (resultPos != -1){
 			currentPos_g = resultPos;
 		}
