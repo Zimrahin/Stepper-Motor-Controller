@@ -52,7 +52,7 @@ def csvLogger(opt):
 		receivedString = serialPort.readline()       	# Change to receive mode, Arduino sends \n to terminate
 		receivedString = str(receivedString,'utf-8').rstrip() 	# utf8 encoding
 		valuesList = receivedString.split('-')[0:-1] # there is an empty char at the end 
-		print(valuesList) #debug only
+		# print(valuesList) #debug only
 		mean_time = valuesList[-5] #microseconds
 		mean_time_total = valuesList[-4] #microseconds
 		angle = valuesList[-3]
