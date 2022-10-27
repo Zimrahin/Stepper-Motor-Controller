@@ -1,4 +1,4 @@
 .vscode
-.proj_CCTVal
+qt_env
 *.csv
 _pycache_
