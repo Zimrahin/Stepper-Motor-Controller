@@ -3,20 +3,16 @@
 // #include "FATFileSystem.h"
 // #include "SDMMCBlockDevice.h"
 
-// N: step
-// 1.8 deg/N
-// Variables globales:
-
 // Definicion de pines:
 #define SETPPIN GPIO_1	//12 (en esquemático)
 #define DIRPIN GPIO_2	//11
 #define ENAPIN GPIO_3	//10
 
-int N_lap_g = 6400;		// steps por vuelta
+int N_rev_g = 6400;		// steps por vuelta
 int Pa_g = 200;			// Cantidad de pasos para acelerar
-int Tas_g = 1000;			// Tiempo inicial entre pasos
-int Tai_g = 600;			// Tiempo final entre pasos (Tmin = 600)
-int currentPos_g = 0; // absolute position "global"
+int Tas_g = 1000;		// Tiempo inicial entre pasos
+int Tai_g = 600;		// Tiempo final entre pasos (Tmin = 600)
+int currentPos_g = 0; 	// absolute position "global"
 
 float getSlope(float x1,float y1,float x2,float y2){
 	return (y2-y1)/(x2-x1);
@@ -44,7 +40,6 @@ void forward(int N=400, bool reverse=false, int Pa=200, int Tas=1600, int Tai=10
 	float sensorVoltage = 0;
 	digitalWrite(ENAPIN,LOW);
 	digitalWrite(DIRPIN,reverse?LOW:HIGH);
-
 
 	if (N<2*Pa){
 		m1 = getSlope(0,Tas,Pa,Tai);
@@ -79,7 +74,6 @@ void forward(int N=400, bool reverse=false, int Pa=200, int Tas=1600, int Tai=10
 			if (n_step%2 == 0){
 				sensorValue = analogRead(A0);
 				sensorVoltage = sensorValue * (3.3/1023.0);
-				// fprintf(myFile,"%d,%.2f\n",n_step,sensorVoltage);
 				Serial.print(sensorVoltage);
 				Serial.print('-');
         		stop_meas_time = micros();
@@ -101,36 +95,36 @@ void forward(int N=400, bool reverse=false, int Pa=200, int Tas=1600, int Tai=10
 	// Serial.println(); // \n at the end to let know PC all info has been sent
 }
 
-int calculateStep(String input, int currentPos, int N_lap = 6400)
+int calculateStep(String input, int currentPos, int N_rev = 6400)
 {
 	int steps_to_move = 0;
 	bool dir_flag = false;
-	//N_lap: number of steps equal to one lap
+	//N_rev: number of steps equal to one lap
 	char direction = input[0]; //extract letter
 	int N_rx= input.substring(1).toInt(); //extract number
 	switch (direction)
 	{
 		case 'l': // move to the left, positive, counterclockwise
 			steps_to_move = N_rx;
-			currentPos = (N_lap + currentPos - N_rx)%N_lap;
+			currentPos = (N_rev + currentPos - N_rx)%N_rev;
 			dir_flag = true;
 			break;
 		case 'r': // move to the right, negative, clockwise
 			steps_to_move = N_rx;
-			currentPos = (currentPos + N_rx)%N_lap;
+			currentPos = (currentPos + N_rx)%N_rev;
 			dir_flag = false;
 			break;
 		case 'a': // move to an absolute position (shortest path)
-			steps_to_move = N_rx%N_lap - currentPos;
-			if (abs(steps_to_move) <= N_lap/2) {
+			steps_to_move = N_rx%N_rev - currentPos;
+			if (abs(steps_to_move) <= N_rev/2) {
 				dir_flag = steps_to_move > 0 ? true : false; //left or right?
 				steps_to_move = abs(steps_to_move);
 			}
 			else {
 				dir_flag = steps_to_move <= 0 ? true : false; //the other way around
-				steps_to_move = N_lap - abs(steps_to_move);
+				steps_to_move = N_rev - abs(steps_to_move);
 			}
-			currentPos = N_rx%N_lap;
+			currentPos = N_rx%N_rev;
 			break;
 		default:
 			Serial.println("INVALID");
@@ -139,7 +133,6 @@ int calculateStep(String input, int currentPos, int N_lap = 6400)
 	forward(steps_to_move, dir_flag, Pa_g, Tas_g, Tai_g);
 	Serial.print(currentPos);
 	Serial.print('-');
-	//debug: motor presents non-consistent behaviour
 	// no comentar
 	char debug_char = dir_flag ? 'l' : 'r';
 	Serial.print(debug_char);
@@ -170,7 +163,6 @@ String getValue(String data, char separator, int index)
 
 void setup() {
 	Serial.begin(9600);
-	//while (!Serial);
 	pinMode(SETPPIN,OUTPUT);
 	pinMode(DIRPIN,OUTPUT);
 }
@@ -184,13 +176,13 @@ void loop()
 		receivedString = Serial.readString();
 		receivedString.trim(); // remove \n,\r,\0
 		if (receivedString[0] == 'p') { //extract letter, 'p' for param changes, p-Nlap-Pa-Tas-Tai
-			N_lap_g = getValue(receivedString,'-',1).toInt();
+			N_rev_g = getValue(receivedString,'-',1).toInt();
 			Pa_g = getValue(receivedString,'-',2).toInt();
 			Tas_g = getValue(receivedString,'-',3).toInt();
 			Tai_g = getValue(receivedString,'-',4).toInt();
 			return;
 		}
-		resultPos = calculateStep(receivedString, currentPos_g, N_lap_g);
+		resultPos = calculateStep(receivedString, currentPos_g, N_rev_g);
 		if (resultPos != -1){
 			currentPos_g = resultPos;
 		}

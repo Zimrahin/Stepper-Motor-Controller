@@ -5,6 +5,7 @@ from matplotlib import pyplot as plt
 import matplotlib 
 matplotlib.use('tkAgg') # solves conflict with pyqt library (use only when running program from terminal)
 import argparse
+from math import floor
 
 def csvLogger(opt):
 	log_count = 1
@@ -19,12 +20,17 @@ def csvLogger(opt):
 	serialPort = serial.Serial(COMport,baudrate) 
 
 	#Send setup parameters
-	N_lap_tx = input('\nEnter number of steps per revolution: ')
+	N_rev_tx = input('\nEnter number of steps per revolution: ')
 	Pa_tx = input('Enter Pa: ')
 	Tas_tx = input('Enter Tas: ')
 	Tai_tx = input('Enter Tai: ')	
+	while(True):
+		input_format = input('(d)egrees or (s)teps?: ')
+		if input_format != 'd' and input_format != 's':
+			continue
+		break
 	print('\n')
-	message = 'p-' + N_lap_tx + '-' + Pa_tx + '-' + Tas_tx + '-' + Tai_tx + '\n'
+	message = 'p-' + N_rev_tx + '-' + Pa_tx + '-' + Tas_tx + '-' + Tai_tx + '\n'
 	serialPort.write(message.encode())
 	time.sleep(0.10) # seconds
 
@@ -37,6 +43,9 @@ def csvLogger(opt):
 			filename = time.strftime("%d_%B_%Y_%Hh_%Mm_%Ss.csv", time.localtime())# 20_October_2022_12h_36m_49s
 			print(f'\nFile succesfully created: {filename}')
 		print('\n')
+		# convert angle to step
+		if input_format == 'd': # if (d)egrees is selected
+			message = angleToStep(message, int(N_rev_tx))
 		serialPort.write(message.encode()) #encode message
 		print('\''+message+'\'' + ' sent to Arduino board')
 		time.sleep(0.10) # seconds
@@ -62,10 +71,12 @@ def csvLogger(opt):
 				log_text += valuesList[n] + ','
 			else:
 				log_text += valuesList[n]
+
 		#print(log_text) #debug only
 		header = str(log_count) + ',' + log_date + ',' + log_time + ',' + \
 					mean_time + 'us,' +  mean_time_total + 'us,' + 'angle ' + angle
 		log_text =  header + ',' + log_text + '\n'
+
 		#print(log_text)
 		print(header + '\n')
 
@@ -100,6 +111,13 @@ def plotFunction(list_in, angle, directionChar):
 	plt.figure(0).tight_layout()
 	plt.grid()
 	plt.show(block=False) # keep running code
+
+def angleToStep(message_angle, N_max):
+	angle = float(message_angle[1:])
+	letter = message_angle[0]
+	step = str(int(floor(angle * N_max / 360)))
+	message_step = letter + step
+	return message_step
 
 def parse_opt(known=False):
 	parser = argparse.ArgumentParser()
