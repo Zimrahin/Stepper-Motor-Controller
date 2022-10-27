@@ -1,7 +1,9 @@
 from numpy import unsignedinteger
 import serial   # PySerial
 import time    
-from matplotlib import pyplot as plt 
+from matplotlib import pyplot as plt
+import matplotlib 
+matplotlib.use('tkAgg') # solves conflict with pyqt library (use only when running program from terminal)
 import argparse
 
 def csvLogger(opt):
@@ -22,7 +24,7 @@ def csvLogger(opt):
 	Tas_tx = input('Enter Tas: ')
 	Tai_tx = input('Enter Tai: ')	
 	print('\n')
-	message = N_lap_tx + '-' + Pa_tx + '-' + Tas_tx + '-' + Tai_tx + '\n'
+	message = 'p-' + N_lap_tx + '-' + Pa_tx + '-' + Tas_tx + '-' + Tai_tx + '\n'
 	serialPort.write(message.encode())
 	time.sleep(0.10) # seconds
 

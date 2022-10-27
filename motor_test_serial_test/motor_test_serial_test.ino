@@ -17,7 +17,6 @@ int Pa_g = 200;			// Cantidad de pasos para acelerar
 int Tas_g = 1000;			// Tiempo inicial entre pasos
 int Tai_g = 600;			// Tiempo final entre pasos (Tmin = 600)
 int currentPos_g = 0; // absolute position "global"
-bool param_set_flag = false;
 
 float getSlope(float x1,float y1,float x2,float y2){
 	return (y2-y1)/(x2-x1);
@@ -107,10 +106,8 @@ int calculateStep(String input, int currentPos, int N_lap = 6400)
 	int steps_to_move = 0;
 	bool dir_flag = false;
 	//N_lap: number of steps equal to one lap
-	input.trim(); // remove \n,\r,\0
 	char direction = input[0]; //extract letter
-	String N_rx_string = input.substring(1); //extract number
-	int N_rx = N_rx_string.toInt();
+	int N_rx= input.substring(1).toInt(); //extract number
 	switch (direction)
 	{
 		case 'l': // move to the left, positive, counterclockwise
@@ -185,14 +182,12 @@ void loop()
 	if (Serial.available() > 0)
 	{
 		receivedString = Serial.readString();
-		if (!param_set_flag) {
-			receivedString.trim(); // remove \n,\r,\0
-			N_lap_g = getValue(receivedString,'-',0).toInt();
-			Pa_g = getValue(receivedString,'-',1).toInt();
-			Tas_g = getValue(receivedString,'-',2).toInt();
-			Tai_g = getValue(receivedString,'-',3).toInt();
-			param_set_flag = true;
-			//Serial.println();
+		receivedString.trim(); // remove \n,\r,\0
+		if (receivedString[0] == 'p') { //extract letter, 'p' for param changes, p-Nlap-Pa-Tas-Tai
+			N_lap_g = getValue(receivedString,'-',1).toInt();
+			Pa_g = getValue(receivedString,'-',2).toInt();
+			Tas_g = getValue(receivedString,'-',3).toInt();
+			Tai_g = getValue(receivedString,'-',4).toInt();
 			return;
 		}
 		resultPos = calculateStep(receivedString, currentPos_g, N_lap_g);
