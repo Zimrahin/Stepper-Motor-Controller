@@ -1,11 +1,12 @@
 from numpy import unsignedinteger
 import serial   # PySerial
 import time    
-from matplotlib import pyplot as plt
+from matplotlib import pyplot as plt, scale
 import matplotlib 
 matplotlib.use('tkAgg') # solves conflict with pyqt library (use only when running program from terminal)
 import argparse
 from math import floor
+import numpy as np
 
 def csvLogger(opt):
 	log_count = 1
@@ -59,7 +60,7 @@ def csvLogger(opt):
 		directionChar = valuesList[-2]
 		valuesList = valuesList[0:-5]  #delete last elements
 		floatList = list(map(float,valuesList))
-		plotFunction(floatList, angle, directionChar)
+		plotFunction(floatList, angle, directionChar, input_format, int(N_rev_tx))
 		
 		log_time = time.strftime("%H:%M:%S", time.localtime() ) #hh:mm:ss
 		log_date = time.strftime("%d %B %Y", time.localtime() ) #dd monthName year
@@ -88,8 +89,11 @@ def csvLogger(opt):
 
 	serialPort.close()          # Close serial port
 
-def plotFunction(list_in, angle, directionChar):
+def plotFunction(list_in, angle, directionChar, input_format, N_rev):
 	angle = int(angle)
+	# if input_format == 'd':
+	# 	angle = angle * 360. / N_rev
+	scale_factor = 360./N_rev
 	directionFlag = False if directionChar == 'r' else True
 	plt.style.use('dark_background')
 	plt.figure(0)
@@ -100,13 +104,22 @@ def plotFunction(list_in, angle, directionChar):
 	plt.gca().tick_params(axis='y', colors='#ffffff')
 	plt.gca().yaxis.label.set_color('#ffffff')
 	plt.gca().xaxis.label.set_color('#ffffff')
-	plt.gca().set_ylim(0, 3.35)
+	plt.gca().set_ylim(0, 3.2)
 	if directionFlag:
-		plt.plot( range(angle + 1 - len(list_in), angle + 1) , list_in, color='lime')
+		if input_format == 'd':
+			plt.plot( np.linspace((angle+1-len(list_in))*scale_factor, (angle+1)*scale_factor, len(list_in)) , list_in, color='lime')
+		else:
+			plt.plot( range(angle + 1 - len(list_in), angle + 1) , list_in, color='lime')
 	else:
-		plt.plot( list(reversed(list(range(angle, angle + len(list_in))))) , list_in, color='lime')
+		if input_format == 'd':
+			plt.plot(np.linspace((angle + len(list_in))*scale_factor, angle*scale_factor, len(list_in)), list_in, color='lime')
+		else:	
+			plt.plot( list(range(angle, angle + len(list_in)))[::-1] , list_in, color='lime') 
 		plt.gca().invert_xaxis()
-	plt.xlabel('N steps')
+	if input_format == 'd':
+		plt.xlabel('Degrees')
+	else:	
+		plt.xlabel('N steps')
 	plt.ylabel('Voltage')
 	plt.figure(0).tight_layout()
 	plt.grid()
@@ -117,7 +130,7 @@ def angleToStep(message_angle, N_max):
 	letter = message_angle[0]
 	step = str(int(floor(angle * N_max / 360)))
 	message_step = letter + step
-	return message_step
+	return message_step	
 
 def parse_opt(known=False):
 	parser = argparse.ArgumentParser()

@@ -73,7 +73,8 @@ void forward(int N=400, bool reverse=false, int Pa=200, int Tas=1600, int Tai=10
 			
 			if (n_step%2 == 0){
 				sensorValue = analogRead(A0);
-				sensorVoltage = sensorValue * (3.3/1023.0);
+				//sensorVoltage = sensorValue * (3.3/1023.0);
+				sensorVoltage = sensorValue * (3.110/1023.0);
 				Serial.print(sensorVoltage);
 				Serial.print('-');
         		stop_meas_time = micros();
