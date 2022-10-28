@@ -1,7 +1,11 @@
 TODO:
 
-- hacer interfaz gráfica dummy con pyqt (bajar código de internet y entenderlo)
-- experimentar con baudrates más altos
+- GUI
+    Miércoles-Viernes
+    - agregar interacción con programa
+
+
 
 baja prioridad
 - guardar datos en la tarjeta SD sin necesidad de comunicación con el computador
+- experimentar con baudrates más altos

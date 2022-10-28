@@ -3,7 +3,7 @@ import serial   # PySerial
 import time    
 from matplotlib import pyplot as plt
 import matplotlib 
-matplotlib.use('tkAgg') # solves conflict with pyqt library (use only when running program from terminal)
+#matplotlib.use('tkAgg') # solves conflict with pyqt library (use only when running program from terminal)
 import argparse
 from math import floor
 
