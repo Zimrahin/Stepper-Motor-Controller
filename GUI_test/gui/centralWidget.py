@@ -1,6 +1,7 @@
 import sys 
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout
-from PyQt5.QtCore import QThread
+from PyQt5.QtCore import QThread, Qt
+from PyQt5.QtGui import QPalette, QColor
 from connectionFields import connectionFields
 from paramFields import paramFields
 from messageFields import messageFields
@@ -165,19 +166,6 @@ class centralWidget(QWidget):
         self.lockForRun()
         self.param_wdg.stopHandler()
 
-    def manualRoutine(self):
-        # Generate Window
-        manual_window = ManualControl(self.comms, channel, self)
-
-        # Lock automatic control fields 
-        self.lockForRun()
-
-        # Signals 
-        manual_window.finished.connect(self.lockForRun)
-
-        # Start Window
-        manual_window.exec_()
-
     def updateBar(self, val):
         self.param_wdg.progressHandler(val)
 
@@ -188,8 +176,33 @@ class centralWidget(QWidget):
 
 if __name__ == '__main__':
     app = QApplication([])
-    if os.name == 'nt':
-        app.setStyle('Fusion')
+    # if os.name == 'nt': # New Technology GUI (Windows)
+    app.setStyle('fusion') 
+
+    # Dark Theme
+    # https://github.com/pyqt/examples/tree/_/src/09%20Qt%20dark%20theme
+    palette = QPalette()
+    palette.setColor(QPalette.Window, QColor(53, 53, 53))
+    palette.setColor(QPalette.WindowText, Qt.white)
+    palette.setColor(QPalette.Base, QColor(25, 25, 25))
+    palette.setColor(QPalette.AlternateBase, QColor(53, 53, 53))
+    palette.setColor(QPalette.ToolTipBase, Qt.black)
+    palette.setColor(QPalette.ToolTipText, Qt.white)
+    palette.setColor(QPalette.Text, Qt.white)
+    palette.setColor(QPalette.Button, QColor(53, 53, 53))
+    palette.setColor(QPalette.ButtonText, Qt.white)
+    palette.setColor(QPalette.BrightText, Qt.red)
+    palette.setColor(QPalette.Link, QColor(42, 130, 218))
+    palette.setColor(QPalette.Highlight, QColor(42, 130, 218))
+    palette.setColor(QPalette.HighlightedText, Qt.black)
+    palette.setColor(QPalette.Disabled, QPalette.Base, QColor(49, 49, 49))
+    palette.setColor(QPalette.Disabled, QPalette.Text, QColor(90, 90, 90))
+    palette.setColor(QPalette.Disabled, QPalette.Button, QColor(42, 42, 42))
+    palette.setColor(QPalette.Disabled, QPalette.ButtonText, QColor(90, 90, 90))
+    palette.setColor(QPalette.Disabled, QPalette.Window, QColor(49, 49, 49))
+    palette.setColor(QPalette.Disabled, QPalette.WindowText, QColor(90, 90, 90))
+    app.setPalette(palette)
+        
     widget = centralWidget()
     widget.show()
     sys.exit(app.exec_())
