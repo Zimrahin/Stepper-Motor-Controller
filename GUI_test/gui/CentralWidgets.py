@@ -10,7 +10,7 @@ import os
 
 ABORT_CMD = 'az.{channel}P1=0.000\r'
 
-class CentralWidget(QWidget):
+class centralWidget(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
 
@@ -52,6 +52,7 @@ class CentralWidget(QWidget):
         v_layout.addWidget(self.connection_wdg)
         v_layout.addWidget(self.param_wdg)
         v_layout.addWidget(self.msg_wdg)
+        v_layout.addStretch()
         
 
         h_layout = QHBoxLayout()
@@ -189,6 +190,6 @@ if __name__ == '__main__':
     app = QApplication([])
     if os.name == 'nt':
         app.setStyle('Fusion')
-    widget = CentralWidget()
+    widget = centralWidget()
     widget.show()
     sys.exit(app.exec_())
