@@ -11,6 +11,7 @@ import numpy as np
 def csvLogger(opt):
 	log_count = 1
 	baudrate  = 9600
+	serial_timeout = None # seconds
 
 	# Serial port number and Baud rate
 	COMport = 'COM' + input('Enter serial port number: ')
@@ -18,7 +19,7 @@ def csvLogger(opt):
 	print('Baud rate: ', baudrate )
 	
 	#Open serial port
-	serialPort = serial.Serial(COMport,baudrate) 
+	serialPort = serial.Serial(COMport,baudrate = baudrate, timeout=serial_timeout) 
 
 	#Send setup parameters
 	N_rev_tx = input('\nEnter number of steps per revolution: ')
@@ -33,7 +34,6 @@ def csvLogger(opt):
 	print('\n')
 	message = 'p-' + N_rev_tx + '-' + Pa_tx + '-' + Tas_tx + '-' + Tai_tx + '\n'
 	serialPort.write(message.encode())
-	time.sleep(0.10) # seconds
 
 	while True:
 		message = input('Write something: ') #r400

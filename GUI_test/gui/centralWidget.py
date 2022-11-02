@@ -29,7 +29,7 @@ class centralWidget(QWidget):
         self.Dispatcher = None
         self.dispatcher_ctrl = None
         self.route = None
-        self.comms = None
+        self.COM = None
 
         # Widgets
         # -> Connection Widget
@@ -70,11 +70,11 @@ class centralWidget(QWidget):
         self.setLayout(h_layout)
 
     def disconnectLock(self):
-        self.comms = None
+        self.COM = None
         self.param_wdg.setEnabled(False)
 
     def connectUnlock(self):
-        self.comms = self.connection_wdg.getComms()
+        self.COM = self.connection_wdg.serial_COM
         self.param_wdg.setEnabled(True)
 
 
@@ -166,7 +166,7 @@ class centralWidget(QWidget):
         # Set all channels to zero
         for i in range(1,5):
             CMD = ABORT_CMD.format(channel=2*i).encode('utf_8')
-            self.comms.write(CMD)
+            self.COM.write(CMD)
 
     def ThreadEnd(self):
         # Unlock fields

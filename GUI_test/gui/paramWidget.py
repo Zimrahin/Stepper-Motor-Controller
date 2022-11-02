@@ -10,7 +10,7 @@ from MessageBox import warningBox
 LOWEST_PA = 0 
 HIGHEST_PA = 1000
 STEP_INCREMENT = 10
-PA_UNITS = '\t step'
+PA_UNITS = '\t\t\t step'
 PA_TOLERANCE = STEP_INCREMENT/10.0
 
 
@@ -18,7 +18,7 @@ PA_TOLERANCE = STEP_INCREMENT/10.0
 MIN_TIME_STEP = 0 # us
 MAX_TIME_STEP = 2000 # us
 TIME_STEP_INCREMENT = 10
-TIME_UNITS = '\t \u03BCs'
+TIME_UNITS = '\t\t\t \u03BCs'
 
 
 class paramWidget(QWidget):
