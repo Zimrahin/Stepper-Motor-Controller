@@ -6,6 +6,8 @@ class imgResize(QWidget):
     def __init__(self, parent=None):
         QWidget.__init__(self, parent=parent)
         self.p = QPixmap()
+        # self.p.resize(440, 330)
+
 
     def setPixmap(self, p):
         self.p = p
@@ -26,6 +28,10 @@ class plotWidget(QWidget):
 
         # Object init 
         self.img.setPixmap(QPixmap('osc.png'))
+        # self.resize(440, 330)
+        # self.resize(self.sizeHint())
+        self.setMinimumWidth(600)
+        self.setMinimumHeight(330)
 
         # Signal and Slots
 
@@ -34,13 +40,14 @@ class plotWidget(QWidget):
         layout.addWidget(self.img)
         
         self.setLayout(layout)
+        
+    # restos código ejemplo 
+    # def changeImg(self, value):
+    #     if(value):
+    #         self.img.setPixmap(self.blue)
 
-    def changeImg(self, value):
-        if(value):
-            self.img.setPixmap(self.blue)
-
-        else:
-            self.img.setPixmap(self.red)
+    #     else:
+    #         self.img.setPixmap(self.red)
 
             
 
@@ -48,6 +55,6 @@ class plotWidget(QWidget):
 if __name__ == '__main__':
     app = QApplication([])
     widget = plotWidget()
-    widget.resize(440, 330)
+    # widget.resize(440, 330)
     widget.show()
     sys.exit(app.exec_())

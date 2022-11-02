@@ -33,7 +33,7 @@ class CentralWidget(QWidget):
 
         # -> Plot Widget
         self.plot_wdg = plotWidget(self)
-        self.plot_wdg.resize(440,330)
+        # self.plot_wdg.resize(440,330)
 
 
         # Init routines
@@ -55,8 +55,8 @@ class CentralWidget(QWidget):
         
 
         h_layout = QHBoxLayout()
-        h_layout.addWidget(self.plot_wdg)
-        h_layout.addLayout(v_layout)
+        h_layout.addWidget(self.plot_wdg,6)
+        h_layout.addLayout(v_layout,2)
 
         self.setLayout(h_layout)
 
