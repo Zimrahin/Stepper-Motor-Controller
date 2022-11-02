@@ -1,7 +1,7 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QMessageBox
 
-class ErrorBox(QMessageBox):
+class errorBox(QMessageBox):
     
     def __init__(self, error_e, parent=None):
         super().__init__(parent)
@@ -11,7 +11,7 @@ class ErrorBox(QMessageBox):
         self.setWindowTitle('Error!')
 
 
-class WarningBox(QMessageBox):
+class warningBox(QMessageBox):
     def __init__(self, warning, parent=None):
         super().__init__(parent)
         self.setIcon(QMessageBox.Warning)
@@ -19,7 +19,7 @@ class WarningBox(QMessageBox):
         self.setInformativeText(warning)
         self.setWindowTitle('Warning!')
 
-class InformationBox(QMessageBox):
+class informationBox(QMessageBox):
     def __init__(self, info, parent=None):
         super().__init__(parent)
         self.setIcon(QMessageBox.Information)
@@ -30,6 +30,6 @@ class InformationBox(QMessageBox):
 
 if __name__ == '__main__':
     app = QApplication([])
-    widget = ErrorBox('Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla porta est interdum, vulputate metus et, bibendum dui. Nunc fermentum tincidunt mi nec semper')
+    widget = errorBox('Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla porta est interdum, vulputate metus et, bibendum dui. Nunc fermentum tincidunt mi nec semper')
     widget.show()
     sys.exit(app.exec_())

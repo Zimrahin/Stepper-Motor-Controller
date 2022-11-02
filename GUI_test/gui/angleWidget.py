@@ -1,10 +1,9 @@
-# Fields to control the test
 import sys
 from PyQt5.QtWidgets import QWidget, QPushButton, QApplication, QHBoxLayout, QFormLayout, QVBoxLayout, QRadioButton, QDoubleSpinBox
 from PyQt5.QtCore import pyqtSignal
 import math
 import numpy as np
-from MessageBox import WarningBox
+from MessageBox import warningBox
 
 # Constants for operation
 # -> Angle parameters: degree
@@ -16,7 +15,7 @@ DEG_UNITS = '\u00b0'
 DEG_TOLERANCE = STEP_INCREMENT/10.0
 
 
-class messageFields(QWidget):
+class angleWidget(QWidget):
     start_signal = pyqtSignal()
     stop_signal = pyqtSignal()
     abort_signal = pyqtSignal()
@@ -119,7 +118,7 @@ class messageFields(QWidget):
         if (math.isclose(delta_sp, 0.0, rel_tol = SP_TOLERANCE, abs_tol = 0.0)):
             self.colorSpin(self.Nrev_spinbox)
             self.colorSpin(self.msg_spinbox)
-            warning_msg = WarningBox('Initial and Final SP rates are too close, less than tolerance: {}'.format(SP_TOLERANCE), self)
+            warning_msg = warningBox('Initial and Final SP rates are too close, less than tolerance: {}'.format(SP_TOLERANCE), self)
             warning_msg.exec_()
             self.colorSpin(self.Nrev_spinbox, color='')
             self.colorSpin(self.msg_spinbox, color='')
@@ -206,6 +205,6 @@ class messageFields(QWidget):
 
 if __name__ == '__main__':
     app = QApplication([])
-    widget = messageFields()
+    widget = angleWidget()
     widget.show()
     sys.exit(app.exec_())

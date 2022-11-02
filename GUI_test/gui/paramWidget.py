@@ -1,10 +1,9 @@
-# Fields to control the test
 import sys
 from PyQt5.QtWidgets import QWidget, QPushButton, QApplication, QHBoxLayout, QFormLayout, QVBoxLayout, QRadioButton, QSpinBox, QComboBox
 from PyQt5.QtCore import pyqtSignal
 import math
 import numpy as np
-from MessageBox import WarningBox
+from MessageBox import warningBox
 
 # Constants for operation
 # -> Pa parameters: steps
@@ -22,7 +21,7 @@ TIME_STEP_INCREMENT = 10
 TIME_UNITS = '\t \u03BCs'
 
 
-class paramFields(QWidget):
+class paramWidget(QWidget):
     start_signal = pyqtSignal()
     stop_signal = pyqtSignal()
     abort_signal = pyqtSignal()
@@ -142,7 +141,7 @@ class paramFields(QWidget):
         if (math.isclose(delta_sp, 0.0, rel_tol = PA_TOLERANCE, abs_tol = 0.0)):
             self.colorSpin(self.Nrev_spinbox)
             self.colorSpin(self.Pa_spinbox)
-            warning_msg = WarningBox('Initial and Final SP rates are too close, less than tolerance: {}'.format(PA_TOLERANCE), self)
+            warning_msg = warningBox('Initial and Final SP rates are too close, less than tolerance: {}'.format(PA_TOLERANCE), self)
             warning_msg.exec_()
             self.colorSpin(self.Nrev_spinbox, color='')
             self.colorSpin(self.Pa_spinbox, color='')
@@ -229,6 +228,6 @@ class paramFields(QWidget):
 
 if __name__ == '__main__':
     app = QApplication([])
-    widget = paramFields()
+    widget = paramWidget()
     widget.show()
     sys.exit(app.exec_())

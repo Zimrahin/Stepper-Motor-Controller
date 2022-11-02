@@ -1,19 +1,28 @@
 import sys 
-from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout
+from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QMainWindow
+from PyQt5 import QtGui
 from PyQt5.QtCore import QThread, Qt
 from PyQt5.QtGui import QPalette, QColor
-from connectionFields import connectionFields
-from paramFields import paramFields
-from messageFields import messageFields
+
+from connectionWidget import connectionWidget
+from paramWidget import paramWidget
+from angleWidget import angleWidget
 from plotWidget import plotWidget
-from MessageBox import InformationBox
-import os
+from MessageBox import informationBox
+
+# https://stackoverflow.com/questions/1551605/how-to-set-applications-taskbar-icon-in-windows-7/1552105#1552105
+import ctypes
+myappid = 'StepperMotorController' # arbitrary string
+ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 
 ABORT_CMD = 'az.{channel}P1=0.000\r'
 
 class centralWidget(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
+
+        self.setWindowIcon(QtGui.QIcon('logo.png'))
+        self.setWindowTitle("Stepper motor controller")
 
         #Objects 
         self.Thread = None
@@ -24,18 +33,16 @@ class centralWidget(QWidget):
 
         # Widgets
         # -> Connection Widget
-        self.connection_wdg = connectionFields(self)
+        self.connection_wdg = connectionWidget(self)
         
         # -> Param fields Widget
-        self.param_wdg = paramFields(self)
+        self.param_wdg = paramWidget(self)
 
         # -> Message fields Widget
-        self.msg_wdg = messageFields(self)
+        self.msg_wdg = angleWidget(self)
 
         # -> Plot Widget
         self.plot_wdg = plotWidget(self)
-        # self.plot_wdg.resize(440,330)
-
 
         # Init routines
         self.param_wdg.setEnabled(False)
@@ -57,8 +64,8 @@ class centralWidget(QWidget):
         
 
         h_layout = QHBoxLayout()
-        h_layout.addWidget(self.plot_wdg,6)
-        h_layout.addLayout(v_layout,2)
+        h_layout.addWidget(self.plot_wdg, 5)
+        h_layout.addLayout(v_layout, 1)
 
         self.setLayout(h_layout)
 
@@ -124,7 +131,7 @@ class centralWidget(QWidget):
         # Clear Thread
         self.Thread = None
 
-        msg = InformationBox('Abort sequence ended. All channels were set to zero')
+        msg = informationBox('Abort sequence ended. All channels were set to zero')
         msg.exec_()
 
         # Restore progress bar
@@ -173,14 +180,9 @@ class centralWidget(QWidget):
     def resetBar(self):
         self.param_wdg.resetBar()
 
-
-if __name__ == '__main__':
-    app = QApplication([])
-    # if os.name == 'nt': # New Technology GUI (Windows)
-    app.setStyle('fusion') 
-
+def darkMode():
     # Dark Theme
-    # https://github.com/pyqt/examples/tree/_/src/09%20Qt%20dark%20theme
+    # Adapted from https://github.com/pyqt/examples/tree/_/src/09%20Qt%20dark%20theme
     palette = QPalette()
     palette.setColor(QPalette.Window, QColor(53, 53, 53))
     palette.setColor(QPalette.WindowText, Qt.white)
@@ -193,7 +195,7 @@ if __name__ == '__main__':
     palette.setColor(QPalette.ButtonText, Qt.white)
     palette.setColor(QPalette.BrightText, Qt.red)
     palette.setColor(QPalette.Link, QColor(42, 130, 218))
-    palette.setColor(QPalette.Highlight, QColor(42, 130, 218))
+    palette.setColor(QPalette.Highlight, QColor(255, 130, 218))
     palette.setColor(QPalette.HighlightedText, Qt.black)
     palette.setColor(QPalette.Disabled, QPalette.Base, QColor(49, 49, 49))
     palette.setColor(QPalette.Disabled, QPalette.Text, QColor(90, 90, 90))
@@ -201,8 +203,17 @@ if __name__ == '__main__':
     palette.setColor(QPalette.Disabled, QPalette.ButtonText, QColor(90, 90, 90))
     palette.setColor(QPalette.Disabled, QPalette.Window, QColor(49, 49, 49))
     palette.setColor(QPalette.Disabled, QPalette.WindowText, QColor(90, 90, 90))
+    return palette
+
+
+if __name__ == '__main__':
+    app = QApplication([])
+    # if os.name == 'nt': # New Technology GUI (Windows)
+    app.setStyle('fusion') 
+    palette = darkMode()
     app.setPalette(palette)
         
     widget = centralWidget()
     widget.show()
+
     sys.exit(app.exec_())
