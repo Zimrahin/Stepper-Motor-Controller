@@ -15,7 +15,7 @@ import random
 
 class figCanvas(FigureCanvas):
 	def __init__(self, parent=None, width=8, height=4, dpi=100):
-		self.fig = Figure(figsize=(width, height), dpi=dpi)
+		self.fig = Figure(figsize=(width, height), dpi=dpi, tight_layout=True)
 		self.axes = self.fig.add_subplot(111)
 		super(figCanvas, self).__init__(self.fig)
 
@@ -41,6 +41,8 @@ class plotWidget(QWidget):
 		layout.addWidget(self.plot_btn)
 		self.setLayout(layout)
 	
+		self.setMinimumWidth(700)
+
 		self.updatePlot()
 
 	def updatePlot(self):
@@ -60,8 +62,7 @@ class plotWidget(QWidget):
 		self.canvas_wdg.axes.set_facecolor('#191919')
 		self.canvas_wdg.axes.set_xlabel('Degrees')
 		self.canvas_wdg.axes.figure.gca().set_ylim(0, 3.2)
-		self.canvas_wdg.axes.grid()
-		self.canvas_wdg.axes.figure.tight_layout()
+		self.canvas_wdg.axes.grid(color = '#303030', linewidth = 1)
 		self.canvas_wdg.draw()
 
 def darkMode():
