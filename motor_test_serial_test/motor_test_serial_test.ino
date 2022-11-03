@@ -9,9 +9,9 @@
 #define ENAPIN GPIO_3	//10
 
 int N_rev_g = 6400;		// steps por vuelta
-int Pa_g = 200;			// Cantidad de pasos para acelerar
-int Tas_g = 1000;		// Tiempo inicial entre pasos
-int Tai_g = 600;		// Tiempo final entre pasos (Tmin = 600)
+int Pa_g = 0;			// Cantidad de pasos para acelerar
+int Tas_g = 0;		// Tiempo inicial entre pasos
+int Tai_g = 0;		// Tiempo final entre pasos (Tmin = 600)
 int currentPos_g = 0; 	// absolute position "global"
 
 float getSlope(float x1,float y1,float x2,float y2){

@@ -1,4 +1,5 @@
 .vscode
 qt_env
 *.csv
-_pycache_
+*.pyc
+
