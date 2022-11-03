@@ -177,7 +177,7 @@ void loop()
 		receivedString = Serial.readString();
 		receivedString.trim(); // remove \n,\r,\0
 		if (receivedString == "okay") {
-			Serial.println("aknowledge"); // \n at the end to let know PC all info has been sent
+			Serial.println("ack"); // \n at the end to let know PC all info has been sent
 			return;
 		}
 		if (receivedString[0] == 'p') { //extract letter, 'p' for param changes, p-Nlap-Pa-Tas-Tai

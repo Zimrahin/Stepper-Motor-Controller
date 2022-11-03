@@ -74,6 +74,9 @@ class connectionWidget(QWidget):
 
     def connectionHandler(self):
         port = self.serial_ports_cbox.currentText()
+        if not(port): # port == None
+            # No port is selected
+            raise Exception('No port selected') 
         try:
             if self.serial_COM: # != None
                 self.serial_COM.close()
@@ -107,7 +110,7 @@ class connectionWidget(QWidget):
         response = self.serial_COM.readline() # Change to receive mode, Arduino sends \n to terminate
         response = str(response,'utf-8').rstrip()
         # print(response)
-        if (response == 'aknowledge'):
+        if (response == 'ack'):
             return True
         else:
             raise Exception('Device did not respond')

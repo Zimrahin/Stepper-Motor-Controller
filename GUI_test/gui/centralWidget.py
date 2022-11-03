@@ -39,13 +39,15 @@ class centralWidget(QWidget):
         self.param_wdg = paramWidget(self)
 
         # -> Message fields Widget
-        self.msg_wdg = angleWidget(self)
+        self.angle_wdg = angleWidget(self)
 
         # -> Plot Widget
         self.plot_wdg = plotWidget(self)
 
         # Init routines
         self.param_wdg.setEnabled(False)
+        self.angle_wdg.setEnabled(False)
+
 
         # Signals and Slots
         self.connection_wdg.connect_signal.connect(self.connectUnlock)
@@ -59,7 +61,7 @@ class centralWidget(QWidget):
         
         v_layout.addWidget(self.connection_wdg)
         v_layout.addWidget(self.param_wdg)
-        v_layout.addWidget(self.msg_wdg)
+        v_layout.addWidget(self.angle_wdg)
         v_layout.addStretch()
         
 
