@@ -1,8 +1,8 @@
 import sys
-from PyQt5 import QtGui
 from PyQt5.QtWidgets import *
+from PyQt5.QtCore import  Qt
+from PyQt5.QtGui import QPalette, QColor
 
-from matplotlib import pyplot as plt
 import matplotlib
 matplotlib.use('Qt5Agg')
 
@@ -12,63 +12,90 @@ from matplotlib.figure import Figure
 
 import random
 
-class Window(QDialog):
-    def __init__(self, parent=None):
-        super(Window, self).__init__(parent)
 
-        # a figure instance to plot on ·container"
-        self.figure = Figure()
+class figCanvas(FigureCanvas):
+	def __init__(self, parent=None, width=8, height=4, dpi=100):
+		self.fig = Figure(figsize=(width, height), dpi=dpi)
+		self.axes = self.fig.add_subplot(111)
+		super(figCanvas, self).__init__(self.fig)
 
-        # this is the Canvas Widget that displays the `figure`
-        # it takes the `figure` instance as a parameter to __init__
-        self.canvas_wdg = FigureCanvas(self.figure)
+class plotWidget(QWidget):
+	def __init__(self, parent=None):
+		super(plotWidget, self).__init__(parent)
 
-        # this is the Navigation widget
-        # it takes the Canvas widget and a parent
-        self.toolbar_wdg = NavigationToolbar(self.canvas_wdg)
+		# Objects
+		self.data = [random.random() for i in range(10)]
 
-        # Just some button connected to `plot` method
-        self.button_wdg = QPushButton('Plot')
-        self.button_wdg.clicked.connect(self.plot)
+		# Widgets
+		self.canvas_wdg = figCanvas()
+		self.toolbar_wdg = NavigationToolbar(self.canvas_wdg)
+		self.plot_btn = QPushButton('Plot')
+		
+		# Signals
+		self.plot_btn.clicked.connect(self.updatePlot)
 
-        # set the layout
-        layout = QVBoxLayout()
-        layout.addWidget(self.toolbar_wdg)
-        layout.addWidget(self.canvas_wdg)
-        layout.addWidget(self.button_wdg)
-        self.setLayout(layout)
+		# Layout
+		layout = QVBoxLayout()
+		layout.addWidget(self.canvas_wdg)
+		layout.addWidget(self.toolbar_wdg)
+		layout.addWidget(self.plot_btn)
+		self.setLayout(layout)
+	
+		self.updatePlot()
 
-    def plot(self):
-        ''' plot some random stuff '''
-        # random data
-        data = [random.random() for i in range(10)]
+	def updatePlot(self):
+		self.data = [3.1* random.random() for i in range(10)]
+		self.canvas_wdg.axes.cla()
+		self.canvas_wdg.axes.plot(self.data, color='lime', linewidth=2)
+		self.canvas_wdg.axes.set_ylabel('Voltage')
+		self.canvas_wdg.axes.yaxis.label.set_color('#ffffff')
+		self.canvas_wdg.axes.xaxis.label.set_color('#ffffff')
+		self.canvas_wdg.axes.tick_params(axis='x', colors='#ffffff')
+		self.canvas_wdg.axes.tick_params(axis='y', colors='#ffffff')
+		for spine in self.canvas_wdg.axes.spines.values():
+			spine.set_edgecolor('white')
+		self.canvas_wdg.axes.spines
+		self.canvas_wdg.axes.tick_params(axis='y', colors='#ffffff')
+		self.canvas_wdg.fig.set_facecolor('#353535')
+		self.canvas_wdg.axes.set_facecolor('#191919')
+		self.canvas_wdg.axes.set_xlabel('Degrees')
+		self.canvas_wdg.axes.figure.gca().set_ylim(0, 3.2)
+		self.canvas_wdg.axes.grid()
+		self.canvas_wdg.axes.figure.tight_layout()
+		self.canvas_wdg.draw()
 
-        # plt.style.use('dark_background')
-        # create an axis
-        ax = self.figure.add_subplot(111)
-
-        # discards the old graph
-        ax.clear()
-        # plt.cla()
-        # plt.figure.patch.set_facecolor('#000000')
-
-        # ax.figure.gca().set_ylim(0, 3.2)
-
-        
-
-        # plot data
-        ax.plot(data, '*-')
-        ax.set_ylabel('Voltage')
-        ax.grid()
-        ax.figure.tight_layout()
-
-        # refresh canvas
-        self.canvas_wdg.draw()
+def darkMode():
+    # Dark Theme
+    # Adapted from https://github.com/pyqt/examples/tree/_/src/09%20Qt%20dark%20theme
+    palette = QPalette()
+    palette.setColor(QPalette.Window, QColor(53, 53, 53))
+    palette.setColor(QPalette.WindowText, Qt.white)
+    palette.setColor(QPalette.Base, QColor(25, 25, 25))
+    palette.setColor(QPalette.AlternateBase, QColor(53, 53, 53))
+    palette.setColor(QPalette.ToolTipBase, Qt.black)
+    palette.setColor(QPalette.ToolTipText, Qt.white)
+    palette.setColor(QPalette.Text, Qt.white)
+    palette.setColor(QPalette.Button, QColor(53, 53, 53))
+    palette.setColor(QPalette.ButtonText, Qt.white)
+    palette.setColor(QPalette.BrightText, Qt.red)
+    palette.setColor(QPalette.Link, QColor(42, 130, 218))
+    palette.setColor(QPalette.Highlight, QColor(42, 130, 218))
+    palette.setColor(QPalette.HighlightedText, Qt.black)
+    palette.setColor(QPalette.Disabled, QPalette.Base, QColor(49, 49, 49))
+    palette.setColor(QPalette.Disabled, QPalette.Text, QColor(90, 90, 90))
+    palette.setColor(QPalette.Disabled, QPalette.Button, QColor(42, 42, 42))
+    palette.setColor(QPalette.Disabled, QPalette.ButtonText, QColor(90, 90, 90))
+    palette.setColor(QPalette.Disabled, QPalette.Window, QColor(49, 49, 49))
+    palette.setColor(QPalette.Disabled, QPalette.WindowText, QColor(90, 90, 90))
+    return palette
 
 if __name__ == '__main__':
-    app = QApplication(sys.argv)
+	app = QApplication(sys.argv)
+	app.setStyle('fusion') 
+	palette = darkMode()
+	app.setPalette(palette)
+	
+	main = plotWidget()
+	main.show()
 
-    main = Window()
-    main.show()
-
-    sys.exit(app.exec_())
+	sys.exit(app.exec_())

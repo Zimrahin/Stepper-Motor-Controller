@@ -7,13 +7,16 @@ from PyQt5.QtGui import QPalette, QColor
 from connectionWidget import connectionWidget
 from paramWidget import paramWidget
 from angleWidget import angleWidget
-from plotWidget import plotWidget
+from plotTest import plotWidget
 from MessageBox import informationBox
 
 # https://stackoverflow.com/questions/1551605/how-to-set-applications-taskbar-icon-in-windows-7/1552105#1552105
 import ctypes
 myappid = 'StepperMotorController' # arbitrary string
 ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
+
+
+# Adapted from https://github.com/Wauro21/bssc/tree/main/gui
 
 ABORT_CMD = 'az.{channel}P1=0.000\r'
 
