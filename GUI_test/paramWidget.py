@@ -18,7 +18,6 @@ class paramWidget(QWidget):
 	def __init__(self, parent=None):
 		super().__init__(parent)
 
-		# Objects
 
 		# Widgets
 		# -> Combo boxes
@@ -38,7 +37,7 @@ class paramWidget(QWidget):
 		# self.step_radio = QRadioButton('Step')
 
 		# -> Bottom buttons
-		self.reset_btn = QPushButton('Reset')
+		self.reset_btn = QPushButton('Default')
 		self.apply_btn = QPushButton('Apply')
 
 		# Init routine 
@@ -46,6 +45,9 @@ class paramWidget(QWidget):
 		self.NBoxConfig(self.Pa_spinbox)
 		self.TimeBoxConfig(self.Tai_spinbox)
 		self.TimeBoxConfig(self.Tas_spinbox)
+
+		# Objects
+		self.param_dict = self.getFieldsValues()
 
 		# Signals 
 		self.reset_btn.clicked.connect(self.resetParameters)
@@ -109,8 +111,11 @@ class paramWidget(QWidget):
 		out_dict = self.getFieldsValues()
 		out_string = 'p-' + str(out_dict['Nrev']) + '-' + str(out_dict['Pa']) + '-' + str(out_dict['Tas']) + '-' + str(out_dict['Tai']) + '\n'
 		self.out_label.setText(out_string)
+		# self.parent().connection_wdg.send2COM(out_string)
+		self.param_dict = out_dict #necessary for degree->step conversion (called from angleWidget)
 
 	def resetParameters(self):
+		# add logic: if Nrev == 200: values -> 200, 800, 500 (circa)
 		self.Nrev_combo.setCurrentText('6400 step/rev')
 		self.Pa_spinbox.setValue(0)
 		self.Tai_spinbox.setValue(0)

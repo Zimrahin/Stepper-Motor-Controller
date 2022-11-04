@@ -8,7 +8,6 @@ from connectionWidget import connectionWidget
 from paramWidget import paramWidget
 from angleWidget import angleWidget
 from plotWidget import plotWidget
-from MessageBox import informationBox
 
 # https://stackoverflow.com/questions/1551605/how-to-set-applications-taskbar-icon-in-windows-7/1552105#1552105
 import ctypes
@@ -34,23 +33,23 @@ class centralWidget(QWidget):
 
 		# Widgets
 		# -> Serial Connection Widget
-		self.connection_wdg = connectionWidget()
+		self.connection_wdg = connectionWidget(self)
 		
 		# -> Parameters Widget
-		self.param_wdg = paramWidget()
+		self.param_wdg = paramWidget(self)
 
 		# -> Angle Widget
-		self.angle_wdg = angleWidget()
+		self.angle_wdg = angleWidget(self)
 
 		# -> Plot Widget
-		self.plot_wdg = plotWidget()
+		self.plot_wdg = plotWidget(self)
 
 		# -> Logo Widget
-		self.logo_wdg = logoWidget()
+		self.logo_wdg = logoWidget(self)
 
 		# Init routines
-		self.param_wdg.setEnabled(False)
-		self.angle_wdg.setEnabled(False)
+		# self.param_wdg.setEnabled(False)
+		# self.angle_wdg.setEnabled(False)
 
 
 		# Signals and Slots
@@ -79,113 +78,13 @@ class centralWidget(QWidget):
 	def disconnectLock(self):
 		self.COM = None
 		self.param_wdg.setEnabled(False)
+		self.angle_wdg.setEnabled(False)
 
 	def connectUnlock(self):
 		self.COM = self.connection_wdg.serial_COM
 		self.param_wdg.setEnabled(True)
+		self.angle_wdg.setEnabled(True)
 
-
-	def runTest(self):
-		# Lock Control fields during Thread operation
-		self.lockForRun()
-
-		# Reset progress bar
-		self.resetBar()
-
-		# Create a thread
-		self.Thread = QThread()
-		
-		# -> Get Route 
-		self.route = self.param_wdg.getRoute()
-
-		# -> Generate dispatcher ctrl
-		self.dispatcher_ctrl = {'abort':False}
-		self.dispatcher_ctrl['stop'] = False
-
-		# Assign worker to thread
-		self.Dispatcher.moveToThread(self.Thread)
-
-		# Connect signals
-		self.Thread.started.connect(self.Dispatcher.run)
-		self.Dispatcher.finished.connect(self.Thread.quit)
-		self.Dispatcher.finished.connect(self.Dispatcher.deleteLater)
-		self.Thread.finished.connect(self.Thread.deleteLater)
-		self.Thread.finished.connect(self.ThreadEnd)
-		self.Dispatcher.progress.connect(self.updateBar)
-		# Start Dispatcher on thread
-		self.Thread.start()    
-	
-	def abortSequence(self):
-		# Stop any running threads
-		if self.Thread and self.Thread.isRunning():
-			
-			# Disable thread ability to send cmds to device
-			self.dispatcher_ctrl['abort'] = True
-
-			# Wait for thread to end
-			self.Thread.quit()
-			self.Thread.wait()
-
-			# Clean before ending
-			self.dispatcher_ctrl = None
-			self.route = None
-		
-		else:
-			# No thread is running
-			self.abortRoutine()
-
-			
-		# Clear Thread
-		self.Thread = None
-
-		msg = informationBox('Abort sequence ended. All channels were set to zero')
-		msg.exec_()
-
-		# Restore progress bar
-		self.resetBar()
-	
-	def lockForRun(self):
-		# Lock fields
-		self.param_wdg.lockFields()
-
-
-	def stopSequence(self):
-		if self.Thread and self.Thread.isRunning():
-			
-			# Disable thread ability to send cmds to device
-			self.dispatcher_ctrl['stop'] = True
-
-			# Wait for thread to end
-			self.Thread.quit()
-			self.Thread.wait()
-
-			# Clean before ending
-			self.dispatcher_ctrl = None
-			self.route = None
-		
-		# Clear Thread
-		self.Thread = None
-
-		# Reset progress bar
-		self.resetBar()
-
-	def abortRoutine(self):
-		# Set all channels to zero
-		for i in range(1,5):
-			CMD = ABORT_CMD.format(channel=2*i).encode('utf_8')
-			self.COM.write(CMD)
-
-	def ThreadEnd(self):
-		# Unlock fields
-		self.lockForRun()
-		self.param_wdg.stopHandler()
-
-	def updateBar(self, val):
-		self.param_wdg.progressHandler(val)
-
-
-	def resetBar(self):
-		self.param_wdg.resetBar()
 
 class logoWidget(QWidget):
 	def __init__(self, parent=None):

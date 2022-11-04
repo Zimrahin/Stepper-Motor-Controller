@@ -1,5 +1,6 @@
 import sys
 from PyQt5.QtWidgets import QWidget, QPushButton, QApplication, QHBoxLayout, QFormLayout, QVBoxLayout, QRadioButton, QDoubleSpinBox, QLabel
+from math import floor
 
 # Constants for operation
 # -> Angle parameters: degree
@@ -70,11 +71,16 @@ class angleWidget(QWidget):
 
 	def sendParameters(self):
 		out_angle = self.angle_spinbox.value()
+		out_step = self.angleToStep(out_angle, int(self.parent().param_wdg.param_dict['Nrev']))
 		listLetters = ['a', 'l', 'r']
 		listRadioBtn = [self.a_radio, self.l_radio, self.r_radio]
 		for i in range(len(listRadioBtn)):
 			if listRadioBtn[i].isChecked():
-				self.out_label.setText(listLetters[i] + str(out_angle) + '\n')
+				self.out_label.setText(listLetters[i] + str(out_step) + '\n')
+
+	def angleToStep(self, angle, N_rev):
+		step = int(floor(angle * N_rev / 360))
+		return step	
 		  
 	def colorSpin(self, spin, color='#f86e6c'):
 		spin.setStyleSheet('background-color : {};'.format(color))

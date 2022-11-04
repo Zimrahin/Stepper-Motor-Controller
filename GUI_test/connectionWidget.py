@@ -74,7 +74,7 @@ class connectionWidget(QWidget):
 
     def connectionHandler(self):
         port = self.serial_ports_cbox.currentText()
-        if not(port): # port == None
+        if port == None: # port == None
             # No port is selected
             raise Exception('No port selected') 
         try:
@@ -114,6 +114,10 @@ class connectionWidget(QWidget):
             return True
         else:
             raise Exception('Device did not respond')
+
+    def send2COM(self, string):
+        self.serial_COM.write(string.encode())
+
 
 
 if __name__ == '__main__':

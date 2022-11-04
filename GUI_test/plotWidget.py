@@ -62,7 +62,7 @@ class plotWidget(QWidget):
 		self.canvas_wdg.axes.set_facecolor('#191919')
 		self.canvas_wdg.axes.set_xlabel('Degrees')
 		self.canvas_wdg.axes.figure.gca().set_ylim(0, 3.2)
-		self.canvas_wdg.axes.grid(color = '#303030', linewidth = 1)
+		self.canvas_wdg.axes.grid(color = '#353535', linewidth = 1)
 		self.canvas_wdg.draw()
 
 def darkMode():
