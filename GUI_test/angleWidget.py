@@ -76,7 +76,9 @@ class angleWidget(QWidget):
 		listRadioBtn = [self.a_radio, self.l_radio, self.r_radio]
 		for i in range(len(listRadioBtn)):
 			if listRadioBtn[i].isChecked():
-				self.out_label.setText(listLetters[i] + str(out_step) + '\n')
+				self.out_label.setText(listLetters[i] + str(out_step))
+				self.parent().connection_wdg.send2COM(listLetters[i] + str(out_step))
+		self.parent().connection_wdg.receiveFromCOM()
 
 	def angleToStep(self, angle, N_rev):
 		step = int(floor(angle * N_rev / 360))

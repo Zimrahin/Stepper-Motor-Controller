@@ -42,7 +42,7 @@ def csvLogger(opt):
 		if log_count == 1:
 			# File name with current date and time
 			filename = time.strftime("%d_%B_%Y_%Hh_%Mm_%Ss.csv", time.localtime())# 20_October_2022_12h_36m_49s
-			print(f'\nFile succesfully created: {filename}')
+			print(f'\nFile created successfully: {filename}')
 		print('\n')
 		# convert angle to step
 		if input_format == 'd': # if (d)egrees is selected

@@ -11,117 +11,131 @@ from MessageBox import errorBox
 # Default values
 CONNECTION_STATUS_LABEL = '{}'
 SERIAL_TIMEOUT = 1.0 # second (wait for Arduino response)
-TEST_CMD = b'okay\n' #b: format, send this message to Arduino and receive aknowledge
+TEST_CMD = b'okay\n' #b: format, send this message to Arduino and receive acknowledge 
 BAUDRATE = 9600
 
 class connectionWidget(QWidget):
 
-    # Class Signals
-    connect_signal = QtCore.pyqtSignal()
-    disconnect_signal = QtCore.pyqtSignal()
+	# Class Signals
+	connect_signal = QtCore.pyqtSignal()
+	disconnect_signal = QtCore.pyqtSignal()
 
-    def __init__(self, parent=None):
-        
-        super().__init__(parent)
+	def __init__(self, parent=None):
+		
+		super().__init__(parent)
 
-        # Objects
-        self.serial_COM = None
+		# Objects
+		self.serial_COM = None
 
-        # Widgets 
-        self.serial_ports_cbox = QComboBox()
-        self.refresh_btn = QPushButton('Refresh') # refresh COMs
-        self.connect_btn = QPushButton('Connect')
-        self.status_label = QLabel(CONNECTION_STATUS_LABEL.format('Not connected'))
+		# Widgets 
+		self.serial_ports_cbox = QComboBox()
+		self.refresh_btn = QPushButton('Refresh') # refresh COMs
+		self.connect_btn = QPushButton('Connect')
+		self.status_label = QLabel(CONNECTION_STATUS_LABEL.format('Not connected'))
 
-        # Init routines
-        self.status_label.setAlignment(Qt.AlignCenter)
-        self.serialList()
+		# Init routines
+		self.status_label.setAlignment(Qt.AlignCenter)
+		self.serialList()
 
-        # Signals and slots
-        self.refresh_btn.clicked.connect(self.serialList)
-        self.connect_btn.clicked.connect(self.connectionHandler)
+		# Signals and slots
+		self.refresh_btn.clicked.connect(self.serialList)
+		self.connect_btn.clicked.connect(self.connectionHandler)
 
-        # Widget Layout
-        layout = QHBoxLayout()
-        layout.addWidget(self.serial_ports_cbox)
-        layout.addWidget(self.refresh_btn)
-        layout.addWidget(self.connect_btn)
-        layout.addWidget(self.status_label)
+		# Widget Layout
+		layout = QHBoxLayout()
+		layout.addWidget(self.serial_ports_cbox)
+		layout.addWidget(self.refresh_btn)
+		layout.addWidget(self.connect_btn)
+		layout.addWidget(self.status_label)
 
-        self.setLayout(layout)
-
-
-    def serialList(self):
-        # Clear combobox 
-        self.serial_ports_cbox.clear()
-
-        # Get list of available ports
-        show_ports = []
-        ports = serial.tools.list_ports.comports()
-        for port, _, _ in sorted(ports):
-            show_ports.append(port)
-
-        # If no ports found, disable connect button
-        if(len(show_ports) == 0):
-            self.connect_btn.setEnabled(False)
-            return
-        else:
-            # Add ports to combobox
-            self.serial_ports_cbox.addItems(show_ports)
-            # Enable connect button
-            self.connect_btn.setEnabled(True)
+		self.setLayout(layout)
 
 
-    def connectionHandler(self):
-        port = self.serial_ports_cbox.currentText()
-        if port == None: # port == None
-            # No port is selected
-            raise Exception('No port selected') 
-        try:
-            if self.serial_COM: # != None
-                self.serial_COM.close()
-                self.serial_COM = None
-                self.disconnect_signal.emit()
-                connect_btn_text = 'Connect'
-                status_label_text = 'Not Connected'
-                port_list_refresh_enable = True
-            else:
-                self.serial_COM = serial.Serial(port, baudrate=BAUDRATE, timeout=SERIAL_TIMEOUT)
-                self.connectionTest()
-                self.connect_signal.emit()
-                connect_btn_text = 'Disconnect'
-                status_label_text = 'Connected'
-                port_list_refresh_enable = False
-            self.connect_btn.setText(connect_btn_text)
-            self.status_label.setText(CONNECTION_STATUS_LABEL.format(status_label_text))
-            self.serial_ports_cbox.setEnabled(port_list_refresh_enable)
-            self.refresh_btn.setEnabled(port_list_refresh_enable)
+	def serialList(self):
+		# Clear combobox 
+		self.serial_ports_cbox.clear()
 
-        except Exception as e:
-            self.serial_COM.close()
-            self.serial_COM = None
-            self.serial_ports_cbox.setEnabled(True)
-            self.refresh_btn.setEnabled(True)
-            show_error = errorBox(e, self)
-            show_error.exec_()
+		# Get list of available ports
+		show_ports = []
+		ports = serial.tools.list_ports.comports()
+		for port, _, _ in sorted(ports):
+			show_ports.append(port)
 
-    def connectionTest(self):
-        self.serial_COM.write(TEST_CMD)
-        response = self.serial_COM.readline() # Change to receive mode, Arduino sends \n to terminate
-        response = str(response,'utf-8').rstrip()
-        # print(response)
-        if (response == 'ack'):
-            return True
-        else:
-            raise Exception('Device did not respond')
+		# If no ports found, disable connect button
+		if(len(show_ports) == 0):
+			self.connect_btn.setEnabled(False)
+			return
+		else:
+			# Add ports to combobox
+			self.serial_ports_cbox.addItems(show_ports)
+			# Enable connect button
+			self.connect_btn.setEnabled(True)
 
-    def send2COM(self, string):
-        self.serial_COM.write(string.encode())
+
+	def connectionHandler(self):
+		port = self.serial_ports_cbox.currentText()
+		if port == None: # port == None
+			# No port is selected
+			raise Exception('No port selected') 
+		try:
+			if self.serial_COM: # != None
+				self.serial_COM.close()
+				self.serial_COM = None
+				self.disconnect_signal.emit()
+				connect_btn_text = 'Connect'
+				status_label_text = 'Not Connected'
+				port_list_refresh_enable = True
+			else:
+				self.serial_COM = serial.Serial(port, baudrate=BAUDRATE, timeout=SERIAL_TIMEOUT)
+				self.connectionTest()
+				self.connect_signal.emit()
+				connect_btn_text = 'Disconnect'
+				status_label_text = 'Connected'
+				port_list_refresh_enable = False
+			self.connect_btn.setText(connect_btn_text)
+			self.status_label.setText(CONNECTION_STATUS_LABEL.format(status_label_text))
+			self.serial_ports_cbox.setEnabled(port_list_refresh_enable)
+			self.refresh_btn.setEnabled(port_list_refresh_enable)
+
+		except Exception as e:
+			self.serial_COM.close()
+			self.serial_COM = None
+			self.serial_ports_cbox.setEnabled(True)
+			self.refresh_btn.setEnabled(True)
+			show_error = errorBox(e, self)
+			show_error.exec_()
+
+	def connectionTest(self):
+		self.serial_COM.write(TEST_CMD)
+		response = self.serial_COM.readline() # Change to receive mode, Arduino sends \n to terminate
+		response = str(response,'utf-8').rstrip()
+		# print(response)
+		if (response == 'ack'):
+			return True
+		else:
+			raise Exception('Device did not respond')
+
+	def send2COM(self, string):
+		self.serial_COM.write(string.encode())
+	
+	def receiveFromCOM(self):
+		receivedString = self.serial_COM.readline()  
+		receivedString = str(receivedString,'utf-8').rstrip() 
+		valuesList = receivedString.split('-')[0:-1] # there is an empty char at the end 
+		print(valuesList) #debug only
+		mean_time = valuesList[-5] #microseconds
+		mean_time_total = valuesList[-4] #microseconds
+		angle = valuesList[-3]
+		directionChar = valuesList[-2]
+		valuesList = valuesList[0:-5]  #delete last elements
+		floatList = list(map(float,valuesList))
+		self.parent().plot_wdg.updatePlot(floatList)
+		# plotFunction(floatList, angle, directionChar, input_format, int(N_rev_tx))
 
 
 
 if __name__ == '__main__':
-    app = QApplication([])
-    widget = connectionWidget()
-    widget.show()
-    sys.exit(app.exec_())
+	app = QApplication([])
+	widget = connectionWidget()
+	widget.show()
+	sys.exit(app.exec_())

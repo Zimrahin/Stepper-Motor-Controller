@@ -48,8 +48,8 @@ class centralWidget(QWidget):
 		self.logo_wdg = logoWidget(self)
 
 		# Init routines
-		# self.param_wdg.setEnabled(False)
-		# self.angle_wdg.setEnabled(False)
+		self.param_wdg.setEnabled(False)
+		self.angle_wdg.setEnabled(False)
 
 
 		# Signals and Slots

@@ -11,6 +11,7 @@ from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as Navigatio
 from matplotlib.figure import Figure
 
 import random
+import numpy as np
 
 
 class figCanvas(FigureCanvas):
@@ -24,31 +25,32 @@ class plotWidget(QWidget):
 		super(plotWidget, self).__init__(parent)
 
 		# Objects
-		self.data = [random.random() for i in range(10)]
+		# self.data = [random.random() for i in range(10)]
+
 
 		# Widgets
 		self.canvas_wdg = figCanvas()
 		self.toolbar_wdg = NavigationToolbar(self.canvas_wdg)
-		self.plot_btn = QPushButton('Plot')
+		# self.plot_btn = QPushButton('Plot')
 		
 		# Signals
-		self.plot_btn.clicked.connect(self.updatePlot)
+		# self.plot_btn.clicked.connect(self.updatePlot)
 
 		# Layout
 		layout = QVBoxLayout()
 		layout.addWidget(self.canvas_wdg)
 		layout.addWidget(self.toolbar_wdg)
-		layout.addWidget(self.plot_btn)
+		# layout.addWidget(self.plot_btn)
 		self.setLayout(layout)
 	
 		self.setMinimumWidth(700)
 
-		self.updatePlot()
+		self.updatePlot(np.zeros(360))
 
-	def updatePlot(self):
-		self.data = [3.1* random.random() for i in range(10)]
+	def updatePlot(self, data):
+		# self.data = [3.1* random.random() for i in range(10)]
 		self.canvas_wdg.axes.cla()
-		self.canvas_wdg.axes.plot(self.data, color='lime', linewidth=2)
+		self.canvas_wdg.axes.plot(data, color='lime', linewidth=2)
 		self.canvas_wdg.axes.set_ylabel('Voltage')
 		self.canvas_wdg.axes.yaxis.label.set_color('#ffffff')
 		self.canvas_wdg.axes.xaxis.label.set_color('#ffffff')

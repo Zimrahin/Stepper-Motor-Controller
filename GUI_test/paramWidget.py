@@ -109,17 +109,38 @@ class paramWidget(QWidget):
 		  
 	def sendParameters(self):
 		out_dict = self.getFieldsValues()
-		out_string = 'p-' + str(out_dict['Nrev']) + '-' + str(out_dict['Pa']) + '-' + str(out_dict['Tas']) + '-' + str(out_dict['Tai']) + '\n'
+		out_string = 'p-' + str(out_dict['Nrev']) + '-' + str(out_dict['Pa']) + '-' + str(out_dict['Tas']) + '-' + str(out_dict['Tai'])  + '\n'
 		self.out_label.setText(out_string)
-		# self.parent().connection_wdg.send2COM(out_string)
-		self.param_dict = out_dict #necessary for degree->step conversion (called from angleWidget)
+		self.parent().connection_wdg.send2COM(out_string)
+		self.param_dict = out_dict #update necessary for degree->step conversion (called from angleWidget)
 
 	def resetParameters(self):
-		# add logic: if Nrev == 200: values -> 200, 800, 500 (circa)
-		self.Nrev_combo.setCurrentText('6400 step/rev')
-		self.Pa_spinbox.setValue(0)
-		self.Tai_spinbox.setValue(0)
-		self.Tas_spinbox.setValue(0)
+		if self.Nrev_combo.currentText() == '6400 step/rev':
+			self.Pa_spinbox.setValue(0)
+			self.Tai_spinbox.setValue(0)
+			self.Tas_spinbox.setValue(0)
+		elif self.Nrev_combo.currentText() == '3200 step/rev':
+			self.Pa_spinbox.setValue(0)
+			self.Tai_spinbox.setValue(0)
+			self.Tas_spinbox.setValue(0)
+		elif self.Nrev_combo.currentText() == '1600 step/rev':
+			self.Pa_spinbox.setValue(0)
+			self.Tai_spinbox.setValue(0)
+			self.Tas_spinbox.setValue(0)
+		elif self.Nrev_combo.currentText() == '800 step/rev':
+			self.Pa_spinbox.setValue(0)
+			self.Tai_spinbox.setValue(0)
+			self.Tas_spinbox.setValue(0)
+		elif self.Nrev_combo.currentText() == '400 step/rev':
+			self.Pa_spinbox.setValue(200)
+			self.Tai_spinbox.setValue(200)
+			self.Tas_spinbox.setValue(400)
+		elif self.Nrev_combo.currentText() == '200 step/rev':
+			self.Pa_spinbox.setValue(200)
+			self.Tai_spinbox.setValue(500)
+			self.Tas_spinbox.setValue(700)
+		else:
+			print('if you see this there is an error (probably)')
 			  
 
 if __name__ == '__main__':
