@@ -30,7 +30,7 @@ class paramWidget(QWidget):
 		self.Tai_spinbox = QSpinBox()
 
 		# -> Output text
-		self.out_label = QLabel("")
+		# self.out_label = QLabel("")
 
 		# -> Radio buttons
 		# self.degree_radio = QRadioButton('Degree')
@@ -77,7 +77,7 @@ class paramWidget(QWidget):
 		v_layout.addLayout(btn_row)
 
 		# -> Output text label widget
-		v_layout.addWidget(self.out_label)
+		# v_layout.addWidget(self.out_label)
 
 		# -> Final layout
 		self.setLayout(v_layout)
@@ -110,7 +110,7 @@ class paramWidget(QWidget):
 	def sendParameters(self):
 		out_dict = self.getFieldsValues()
 		out_string = 'p-' + str(out_dict['Nrev']) + '-' + str(out_dict['Pa']) + '-' + str(out_dict['Tas']) + '-' + str(out_dict['Tai'])  + '\n'
-		self.out_label.setText(out_string)
+		# self.out_label.setText(out_string)
 		self.parent().connection_wdg.send2COM(out_string)
 		self.param_dict = out_dict #update necessary for degree->step conversion (called from angleWidget)
 

@@ -25,32 +25,33 @@ class plotWidget(QWidget):
 		super(plotWidget, self).__init__(parent)
 
 		# Objects
-		# self.data = [random.random() for i in range(10)]
-
 
 		# Widgets
 		self.canvas_wdg = figCanvas()
 		self.toolbar_wdg = NavigationToolbar(self.canvas_wdg)
-		# self.plot_btn = QPushButton('Plot')
-		
-		# Signals
-		# self.plot_btn.clicked.connect(self.updatePlot)
 
 		# Layout
 		layout = QVBoxLayout()
 		layout.addWidget(self.canvas_wdg)
 		layout.addWidget(self.toolbar_wdg)
-		# layout.addWidget(self.plot_btn)
+
 		self.setLayout(layout)
 	
 		self.setMinimumWidth(700)
 
-		self.updatePlot(np.zeros(360))
+		self.updatePlot(np.zeros(100), 0, 'l', 100)
 
-	def updatePlot(self, data):
-		# self.data = [3.1* random.random() for i in range(10)]
+	def updatePlot(self, data, angle, direction_char, N_rev):
+		scale_factor = 360./N_rev
 		self.canvas_wdg.axes.cla()
-		self.canvas_wdg.axes.plot(data, color='lime', linewidth=2)
+		if direction_char == 'l': # positive
+			self.canvas_wdg.axes.plot( np.linspace((angle+1-len(data))*scale_factor, (angle+1)*scale_factor, len(data)) , data, color='lime')
+		else: # negative
+			self.canvas_wdg.axes.plot( np.linspace((angle + len(data))*scale_factor, angle*scale_factor, len(data)), data, color='lime')
+			self.canvas_wdg.axes.invert_xaxis()
+
+		# self.canvas_wdg.axes.plot(data, color='lime', linewidth=2)
+
 		self.canvas_wdg.axes.set_ylabel('Voltage')
 		self.canvas_wdg.axes.yaxis.label.set_color('#ffffff')
 		self.canvas_wdg.axes.xaxis.label.set_color('#ffffff')

@@ -29,7 +29,7 @@ class angleWidget(QWidget):
 		self.send_btn = QPushButton('Send')
 
         # -> Output text
-		self.out_label = QLabel("")
+		# self.out_label = QLabel("")
 
 		# Init routine 
 		self.angleBoxConfig(self.angle_spinbox)
@@ -59,7 +59,7 @@ class angleWidget(QWidget):
 		v_layout.addLayout(btn_row)
 
         # -> Output text label widget
-		v_layout.addWidget(self.out_label)
+		# v_layout.addWidget(self.out_label)
 
 		self.setLayout(v_layout)
 
@@ -76,7 +76,7 @@ class angleWidget(QWidget):
 		listRadioBtn = [self.a_radio, self.l_radio, self.r_radio]
 		for i in range(len(listRadioBtn)):
 			if listRadioBtn[i].isChecked():
-				self.out_label.setText(listLetters[i] + str(out_step))
+				# self.out_label.setText(listLetters[i] + str(out_step))
 				self.parent().connection_wdg.send2COM(listLetters[i] + str(out_step))
 		self.parent().connection_wdg.receiveFromCOM()
 
