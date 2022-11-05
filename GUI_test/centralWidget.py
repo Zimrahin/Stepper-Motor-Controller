@@ -14,7 +14,6 @@ import ctypes
 myappid = 'StepperMotorController' # arbitrary string
 ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 
-# ABORT_CMD = 'az.{channel}P1=0.000\r'
 
 class centralWidget(QWidget):
 	def __init__(self, parent=None):
@@ -24,10 +23,6 @@ class centralWidget(QWidget):
 		self.setWindowTitle("Stepper motor controller")
 
 		#Objects 
-		self.Thread = None
-		self.Dispatcher = None
-		self.dispatcher_ctrl = None
-		self.route = None
 		self.COM = None
 
 
@@ -51,13 +46,9 @@ class centralWidget(QWidget):
 		self.param_wdg.setEnabled(False)
 		self.angle_wdg.setEnabled(False)
 
-
 		# Signals and Slots
 		self.connection_wdg.connect_signal.connect(self.connectUnlock)
 		self.connection_wdg.disconnect_signal.connect(self.disconnectLock)
-		# self.param_wdg.start_signal.connect(self.runTest)
-		# self.param_wdg.abort_signal.connect(self.abortSequence)
-		# self.param_wdg.stop_signal.connect(self.stopSequence)
 
 		# Layout
 		v_layout = QVBoxLayout()

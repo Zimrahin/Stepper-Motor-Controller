@@ -10,7 +10,6 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 from matplotlib.figure import Figure
 
-import random
 import numpy as np
 
 
@@ -39,7 +38,7 @@ class plotWidget(QWidget):
 	
 		self.setMinimumWidth(700)
 
-		self.updatePlot(np.zeros(100), 0, 'l', 100)
+		self.updatePlot([], 0, 'l', 100)
 
 	def updatePlot(self, data, angle, direction_char, N_rev):
 		scale_factor = 360./N_rev
