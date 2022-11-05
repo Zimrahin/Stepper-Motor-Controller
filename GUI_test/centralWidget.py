@@ -83,7 +83,7 @@ class logoWidget(QWidget):
 
 		self.logo_wdg = QLabel()
 		self.img = QPixmap('logo2.png')
-		self.img = self.img.scaled(250, 100, Qt.KeepAspectRatio, Qt.FastTransformation)
+		self.img = self.img.scaled(250, 100, Qt.KeepAspectRatio, Qt.SmoothTransformation)
 		self.logo_wdg.setPixmap(self.img)
 		# self.setMaximumHeight(100)
 		# self.setMaximumWidth(354)

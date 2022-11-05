@@ -1,5 +1,6 @@
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QPushButton, QApplication
-from PyQt5.QtGui import QPalette, QColor
+from PyQt5.QtWidgets import *
+from PyQt5.QtGui import *
+from PyQt5.QtCore import * 
 
 class Window(QWidget):
 
@@ -7,8 +8,14 @@ class Window(QWidget):
 		super().__init__()
 		self.flag = False
 
-		self.button = QPushButton('change the colors of the buttons', self)
+
+		self.button = QPushButton()
+		icon = QIcon("logo2.png")
+		self.button.setIcon(icon)
+		self.button.setIconSize(QSize(857,289))
+		self.button.setFixedSize(857,289)
 		self.button.clicked.connect(self.click)
+
 		lay = QVBoxLayout(self)
 		lay.addWidget(self.button)
 
