@@ -10,3 +10,7 @@ TODO:
 baja prioridad
 - guardar datos en la tarjeta SD sin necesidad de comunicación con el computador
 - experimentar con baudrates más altos
+
+
+comandos útiles
+pyinstaller --onefile --noconsole --icon logo.ico centralWidget.py
