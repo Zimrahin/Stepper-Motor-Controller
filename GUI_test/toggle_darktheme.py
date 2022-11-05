@@ -9,7 +9,7 @@ class Window(QWidget):
 		self.flag = False
 
 
-		self.button = QPushButton()
+		self.button = QToolButton()
 		icon = QIcon("logo2.png")
 		self.button.setIcon(icon)
 		self.button.setIconSize(QSize(857,289))

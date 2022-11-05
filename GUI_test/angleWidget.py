@@ -1,5 +1,7 @@
 import sys
 from PyQt5.QtWidgets import QWidget, QPushButton, QApplication, QHBoxLayout, QFormLayout, QVBoxLayout, QRadioButton, QDoubleSpinBox, QLabel
+from PyQt5.QtCore import QSize
+from PyQt5.QtGui import QIcon
 from math import floor
 
 # Constants for operation
@@ -21,9 +23,30 @@ class angleWidget(QWidget):
 		self.angle_spinbox = QDoubleSpinBox()
 
 		# -> Radio buttons
-		self.a_radio = QRadioButton('Absolute')
-		self.l_radio = QRadioButton('Counterclockwise')
-		self.r_radio = QRadioButton('Clockwise')
+		self.a_radio = QRadioButton()
+		self.l_radio = QRadioButton()
+		self.r_radio = QRadioButton()
+
+		self.setStyleSheet("""QToolTip { 
+                           background-color: #252525; 
+                           color: white; 
+                           border: black solid 1px
+                           }""")
+
+		self.a_radio.setIcon(QIcon('protractor.png'))
+		self.a_radio.setIconSize(QSize(90,60))
+		self.a_radio.setFixedSize(90,60)
+		self.a_radio.setToolTip('Move to an <b>absolute</b> angle')
+
+		self.l_radio.setIcon(QIcon('counterclockwise.png'))
+		self.l_radio.setIconSize(QSize(90,60))
+		self.l_radio.setFixedSize(90,60)
+		self.l_radio.setToolTip('Move <b>counterclockwise</b>')
+
+		self.r_radio.setIcon(QIcon('clockwise.png'))
+		self.r_radio.setIconSize(QSize(90,60))
+		self.r_radio.setFixedSize(90,60)
+		self.r_radio.setToolTip('Move <b>clockwise</b>')
 
 		# -> Bottom buttons
 		self.send_btn = QPushButton('Send')

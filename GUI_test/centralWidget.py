@@ -2,7 +2,7 @@ import sys
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLabel
 from PyQt5 import QtGui
 from PyQt5.QtCore import QThread, Qt
-from PyQt5.QtGui import QPalette, QColor, QPixmap
+from PyQt5.QtGui import QPalette, QColor, QPixmap, QFont
 
 from connectionWidget import connectionWidget
 from paramWidget import paramWidget
@@ -106,7 +106,7 @@ def darkMode():
 	palette.setColor(QPalette.Base, QColor(25, 25, 25))
 	palette.setColor(QPalette.AlternateBase, QColor(53, 53, 53))
 	palette.setColor(QPalette.ToolTipBase, Qt.black)
-	palette.setColor(QPalette.ToolTipText, Qt.white)
+	palette.setColor(QPalette.ToolTipText, QColor(255, 255, 255))
 	palette.setColor(QPalette.Text, Qt.white)
 	palette.setColor(QPalette.Button, QColor(53, 53, 53))
 	palette.setColor(QPalette.ButtonText, Qt.white)
@@ -129,6 +129,7 @@ if __name__ == '__main__':
 	app.setStyle('fusion') 
 	palette = darkMode()
 	app.setPalette(palette)
+	app.setFont(QFont("Arial", 9))
 		
 	widget = centralWidget()
 	widget.show()
