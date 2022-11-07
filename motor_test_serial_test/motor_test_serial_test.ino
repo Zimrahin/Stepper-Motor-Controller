@@ -185,6 +185,12 @@ void loop()
 			Pa_g = getValue(receivedString,'-',2).toInt();
 			Tas_g = getValue(receivedString,'-',3).toInt();
 			Tai_g = getValue(receivedString,'-',4).toInt();
+			Serial.println("ack");
+			return;
+		}
+		if (receivedString == "reset"){
+			currentPos_g = 0;
+			Serial.println("ack");
 			return;
 		}
 		resultPos = calculateStep(receivedString, currentPos_g, N_rev_g);

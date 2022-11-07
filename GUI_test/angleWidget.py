@@ -3,6 +3,8 @@ from PyQt5.QtWidgets import QWidget, QPushButton, QApplication, QHBoxLayout, QFo
 from PyQt5.QtCore import QSize
 from PyQt5.QtGui import QIcon
 from math import floor
+from messageBox import receivedSuccessBox
+import time
 
 # Constants for operation
 # -> Angle parameters: degree
@@ -10,7 +12,7 @@ LOWEST_DEG = 0
 HIGHEST_DEG = 360*40  # 40 revs
 STEP_INCREMENT = 10
 USE_DECIMALS = 2
-DEG_UNITS = '\u00b0'
+DEG_UNITS = '\u00b0' #º
 
 class angleWidget(QWidget):
 	def __init__(self, parent=None):
@@ -50,6 +52,7 @@ class angleWidget(QWidget):
 
 		# -> Bottom buttons
 		self.send_btn = QPushButton('Send')
+		self.reset_btn = QPushButton('Reset initial angle')
 
         # -> Output text
 		# self.out_label = QLabel("")
@@ -60,6 +63,7 @@ class angleWidget(QWidget):
 
 		# Signals and slots
 		self.send_btn.clicked.connect(self.sendParameters)
+		self.reset_btn.clicked.connect(self.sendReset)
 
 		# Layout
 		v_layout = QVBoxLayout()
@@ -79,6 +83,7 @@ class angleWidget(QWidget):
 		# -> Bottom buttons
 		btn_row = QHBoxLayout()
 		btn_row.addWidget(self.send_btn)
+		btn_row.addWidget(self.reset_btn)
 		v_layout.addLayout(btn_row)
 
         # -> Output text label widget
@@ -102,6 +107,15 @@ class angleWidget(QWidget):
 				# self.out_label.setText(listLetters[i] + str(out_step))
 				self.parent().connection_wdg.send2COM(listLetters[i] + str(out_step))
 		self.parent().connection_wdg.receiveFromCOM()
+
+	def sendReset(self):
+		self.parent().connection_wdg.send2COM("reset")	
+		response = self.parent().connection_wdg.receiveOnlyCOM()
+		if (response == 'ack'):			
+			receivedSuccessBox('Angle reset successfully').exec_()
+			return True
+		else:
+			raise Exception('Device did not respond')	
 
 	def angleToStep(self, angle, N_rev):
 		step = int(floor(angle * N_rev / 360))

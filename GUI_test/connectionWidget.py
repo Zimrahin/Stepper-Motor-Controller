@@ -4,7 +4,8 @@ from PyQt5.QtCore import Qt
 from PyQt5 import QtCore
 import serial
 import serial.tools.list_ports
-from MessageBox import errorBox
+from messageBox import errorBox
+import time
 
 # Adapted from https://github.com/Wauro21/bssc/tree/main/gui
 
@@ -32,6 +33,9 @@ class connectionWidget(QWidget):
 		self.refresh_btn = QPushButton('Refresh') # refresh COMs
 		self.connect_btn = QPushButton('Connect')
 		self.status_label = QLabel(CONNECTION_STATUS_LABEL.format('Not connected'))
+
+		self.status_label.setMinimumWidth(96)
+		self.connect_btn.setMinimumWidth(96)
 
 		# Init routines
 		self.status_label.setAlignment(Qt.AlignCenter)
@@ -107,6 +111,7 @@ class connectionWidget(QWidget):
 
 	def connectionTest(self):
 		self.serial_COM.write(TEST_CMD)
+		time.sleep(0.10) # seconds
 		response = self.serial_COM.readline() # Change to receive mode, Arduino sends \n to terminate
 		response = str(response,'utf-8').rstrip()
 		# print(response)
@@ -119,6 +124,7 @@ class connectionWidget(QWidget):
 		self.serial_COM.write(string.encode())
 	
 	def receiveFromCOM(self):
+		time.sleep(0.10) # seconds
 		receivedString = self.serial_COM.readline()  
 		receivedString = str(receivedString,'utf-8').rstrip() 
 		values_list = receivedString.split('-')[0:-1] # there is an empty char at the end 
@@ -130,6 +136,12 @@ class connectionWidget(QWidget):
 		values_list = values_list[0:-5]  #delete last elements
 		float_list = list(map(float,values_list))
 		self.parent().plot_wdg.updatePlot(float_list, int(angle), direction_char, int(self.parent().param_wdg.param_dict['Nrev']))
+
+	def receiveOnlyCOM(self):
+		time.sleep(0.10)
+		receivedString = self.serial_COM.readline()  
+		receivedString = str(receivedString,'utf-8').rstrip() 
+		return receivedString
 	
 
 if __name__ == '__main__':

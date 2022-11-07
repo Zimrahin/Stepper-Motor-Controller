@@ -1,7 +1,7 @@
 import sys 
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLabel
 from PyQt5 import QtGui
-from PyQt5.QtCore import QThread, Qt
+from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPalette, QColor, QPixmap, QFont
 
 from connectionWidget import connectionWidget

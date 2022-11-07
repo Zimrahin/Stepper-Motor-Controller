@@ -5,6 +5,8 @@
 - [ ] Implementar envío automático de parámetros una vez se logra la conexión (para que sean coherentes los parámatros que se muestran en la GUI con los que tiene guardado el Arduino)
 - [ ] Primer 'send' debe comenzar a guardar data en un diccionario o lista
     - [ ] Se debe agregar widget en QWindow tipo File -> Save as en donde se elija el directorio de destino. De esta manera, una vez se haya finalizado con los experimentos, se guarda el contenido del diccionario/lista creado en un .csv o .json (también debe ser posible elegir esta opción)
+- [ ] Implementar boton de reset para el ángulo
+- [ ] Implementar acknowledge de apply parameters
 
 - [ ] Guardar datos en tarjeta SD
 

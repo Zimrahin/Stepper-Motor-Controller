@@ -1,6 +1,7 @@
 import sys
 from PyQt5.QtWidgets import QWidget, QPushButton, QApplication, QHBoxLayout, QFormLayout, QVBoxLayout, QSpinBox, QComboBox, QLabel
-
+from messageBox import receivedSuccessBox
+import time
 # Constants for operation
 # -> Pa parameters: steps
 LOWEST_PA = 0 
@@ -112,7 +113,14 @@ class paramWidget(QWidget):
 		out_string = 'p-' + str(out_dict['Nrev']) + '-' + str(out_dict['Pa']) + '-' + str(out_dict['Tas']) + '-' + str(out_dict['Tai'])  + '\n'
 		# self.out_label.setText(out_string)
 		self.parent().connection_wdg.send2COM(out_string)
-		self.param_dict = out_dict #update necessary for degree->step conversion (called from angleWidget)
+		
+		response = self.parent().connection_wdg.receiveOnlyCOM()
+		if (response == 'ack'):
+			self.param_dict = out_dict #update necessary for degree->step conversion (called from angleWidget)
+			receivedSuccessBox('Parameters received successfully').exec_()
+			return True
+		else:
+			raise Exception('Device did not respond')
 
 	def resetParameters(self):
 		if self.Nrev_combo.currentText() == '6400 step/rev':
