@@ -122,20 +122,6 @@ class connectionWidget(QWidget):
 
 	def send2COM(self, string):
 		self.serial_COM.write(string.encode())
-	
-	# def receiveFromCOM(self):
-	# 	time.sleep(0.10) # seconds
-	# 	received_string = self.serial_COM.readline()  
-	# 	received_string = str(received_string,'utf-8').rstrip() 
-	# 	values_list = received_string.split('-')[0:-1] # there is an empty char at the end 
-	# 	print(values_list) #debug only
-	# 	# mean_time = values_list[-5] #microseconds
-	# 	# mean_time_total = values_list[-4] #microseconds
-	# 	angle = values_list[-3]
-	# 	direction_char = values_list[-2]
-	# 	values_list = values_list[0:-5]  #delete last elements
-	# 	float_list = list(map(float,values_list))
-	# 	self.parent().plot_wdg.updatePlot(float_list, int(angle), direction_char, int(self.parent().param_wdg.param_dict['Nrev']))
 
 	def receiveOnlyCOM(self):
 		time.sleep(0.10)
