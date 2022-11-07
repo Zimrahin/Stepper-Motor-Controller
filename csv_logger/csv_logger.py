@@ -34,6 +34,8 @@ def csvLogger(opt):
 	print('\n')
 	message = 'p-' + N_rev_tx + '-' + Pa_tx + '-' + Tas_tx + '-' + Tai_tx + '\n'
 	serialPort.write(message.encode())
+	time.sleep(0.10) # seconds
+	ignorado = serialPort.readline()  
 
 	while True:
 		message = input('Write something: ') #r400
@@ -41,7 +43,7 @@ def csvLogger(opt):
 			break
 		if log_count == 1:
 			# File name with current date and time
-			filename = time.strftime("%d_%B_%Y_%Hh_%Mm_%Ss.csv", time.localtime())# 20_October_2022_12h_36m_49s
+			filename = time.strftime("csv_files/%d_%B_%Y_%Hh_%Mm_%Ss.csv", time.localtime())# 20_October_2022_12h_36m_49s
 			print(f'\nFile created successfully: {filename}')
 		print('\n')
 		# convert angle to step
@@ -53,7 +55,7 @@ def csvLogger(opt):
 		receivedString = serialPort.readline()       	# Change to receive mode, Arduino sends \n to terminate
 		receivedString = str(receivedString,'utf-8').rstrip() 	# utf8 encoding
 		valuesList = receivedString.split('-')[0:-1] # there is an empty char at the end 
-		# print(valuesList) #debug only
+		print(valuesList) #debug only
 		mean_time = valuesList[-5] #microseconds
 		mean_time_total = valuesList[-4] #microseconds
 		angle = valuesList[-3]

@@ -176,10 +176,10 @@ void loop()
 	{
 		receivedString = Serial.readString();
 		receivedString.trim(); // remove \n,\r,\0
-		if (receivedString == "okay") {
-			Serial.println("ack"); // \n at the end to let know PC all info has been sent
-			return;
-		}
+		// if (receivedString == "okay") {
+		// 	Serial.println("ack"); // \n at the end to let know PC all info has been sent
+		// 	return;
+		// }
 		if (receivedString[0] == 'p') { //extract letter, 'p' for param changes, p-Nlap-Pa-Tas-Tai
 			N_rev_g = getValue(receivedString,'-',1).toInt();
 			Pa_g = getValue(receivedString,'-',2).toInt();
