@@ -123,7 +123,7 @@ class angleWidget(QWidget):
 		self.parent().connection_wdg.send2COM("reset")	
 		response = self.parent().connection_wdg.receiveOnlyCOM()
 		if (response == 'ack'):			
-			receivedSuccessBox('Angle reset successfully').exec_()
+			receivedSuccessBox('Angle reset successfully!').exec_()
 			return True
 		else:
 			raise Exception('Device did not respond')	

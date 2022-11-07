@@ -2,7 +2,11 @@
 
 ### To do
 
+- [ ] Añadir títulos a widgets
 
+- [ ] Migrar a PySide
+
+- [ ] Cambiar imagenesa a carpeta de imagenes
 
 - [ ] Implementar shortcut para escritura de datos
 

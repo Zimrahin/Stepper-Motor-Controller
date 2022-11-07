@@ -117,7 +117,7 @@ class paramWidget(QWidget):
 		response = self.parent().connection_wdg.receiveOnlyCOM()
 		if (response == 'ack'):
 			self.param_dict = out_dict #update necessary for degree->step conversion (called from angleWidget)
-			receivedSuccessBox('Parameters received successfully').exec_()
+			receivedSuccessBox('Parameters set successfully!').exec_()
 			return True
 		else:
 			raise Exception('Device did not respond')

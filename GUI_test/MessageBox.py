@@ -1,10 +1,7 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QMessageBox
-
-
+from PyQt5.QtWidgets import QApplication, QMessageBox, QStyle
 
 class errorBox(QMessageBox):
-    
     def __init__(self, error_e, parent=None):
         super().__init__(parent)
         self.setIcon(QMessageBox.Critical)
@@ -27,15 +24,18 @@ class informationBox(QMessageBox):
         self.setIcon(QMessageBox.Information)
         self.setText('<b>Information:</b>')
         self.setInformativeText(info)
-        self.setWindowTitle('Information!')
+        self.setWindowTitle('Information')
 
 class receivedSuccessBox(QMessageBox):
     def __init__(self, info, parent=None):
         super().__init__(parent)
         self.setIcon(QMessageBox.Information)
-        self.setText('<b>' + info + '!</b>')
+        self.setText('<b>' + info + '</b>')
         # self.setInformativeText(info)
         self.setWindowTitle('Information')
+        pixmapi = QStyle.SP_MessageBoxInformation
+        icon = self.style().standardIcon(pixmapi)
+        self.setWindowIcon(icon)
 
 
 if __name__ == '__main__':
