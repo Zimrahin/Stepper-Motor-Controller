@@ -51,7 +51,7 @@ class plotWidget(QWidget):
 
 		# self.canvas_wdg.axes.plot(data, color='lime', linewidth=2)
 
-		self.canvas_wdg.axes.set_ylabel('Voltage')
+		self.canvas_wdg.axes.set_ylabel('Voltage (V)')
 		self.canvas_wdg.axes.yaxis.label.set_color('#ffffff')
 		self.canvas_wdg.axes.xaxis.label.set_color('#ffffff')
 		self.canvas_wdg.axes.tick_params(axis='x', colors='#ffffff')
@@ -62,7 +62,7 @@ class plotWidget(QWidget):
 		self.canvas_wdg.axes.tick_params(axis='y', colors='#ffffff')
 		self.canvas_wdg.fig.set_facecolor('#353535')
 		self.canvas_wdg.axes.set_facecolor('#191919')
-		self.canvas_wdg.axes.set_xlabel('Degrees')
+		self.canvas_wdg.axes.set_xlabel('Degrees (\u00b0)')
 		self.canvas_wdg.axes.figure.gca().set_ylim(0, 3.2)
 		self.canvas_wdg.axes.grid(color = '#353535', linewidth = 1)
 		self.canvas_wdg.draw()
