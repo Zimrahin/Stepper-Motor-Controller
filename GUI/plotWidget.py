@@ -1,11 +1,11 @@
 import sys
-from PyQt5.QtWidgets import *
-from PyQt5.QtCore import  Qt
-from PyQt5.QtGui import QPalette, QColor
+from PySide2.QtWidgets import QWidget, QVBoxLayout
+from PySide2.QtCore import  Qt
+from PySide2.QtGui import QPalette, QColor
 
 import matplotlib
 matplotlib.use('Qt5Agg')
-
+# matplotlib.rcParams['backend.qt5']='PySide'
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 from matplotlib.figure import Figure

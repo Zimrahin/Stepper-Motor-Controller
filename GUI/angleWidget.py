@@ -1,10 +1,9 @@
 import sys
-from PyQt5.QtWidgets import QWidget, QPushButton, QApplication, QHBoxLayout, QFormLayout, QVBoxLayout, QRadioButton, QDoubleSpinBox, QLabel
-from PyQt5.QtCore import QSize
-from PyQt5.QtGui import QIcon
+from PySide2.QtWidgets import QWidget, QPushButton, QApplication, QHBoxLayout, QFormLayout, QVBoxLayout, QRadioButton, QDoubleSpinBox, QLabel
+from PySide2.QtCore import QSize
+from PySide2.QtGui import QIcon
 from math import floor
 from messageBox import receivedSuccessBox
-import time
 
 # Constants for operation
 # -> Angle parameters: degree

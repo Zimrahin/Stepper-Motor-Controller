@@ -5,17 +5,16 @@
     - [ ] Primero se escribe csv apenas se envía el primer dato (igual que en el csv)
     - [ ] Se debe agregar widget en QWindow tipo File -> Save as en donde se elija el directorio de destino. De esta manera, una vez se haya finalizado con los experimentos, se guarda el contenido del diccionario/lista creado en un .csv o .json (también debe ser posible elegir esta opción)
 
+- [ ] Añadir títulos a widgets
 
 - [ ] Guardar datos en tarjeta SD
 
-### In Progress
-- [ ] Añadir títulos a widgets
-
-- [ ] Migrar a PySide
-
-- [ ] Cambiar imagenesa a carpeta de imagenes
-
 - [ ] Implementar shortcut para escritura de datos
+
+### In Progress
+
+- [ ] Hover over information (tooltip) for every widget
+
 
 # Stepper Motor Controller
 

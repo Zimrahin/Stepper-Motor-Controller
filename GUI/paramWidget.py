@@ -1,7 +1,7 @@
 import sys
-from PyQt5.QtWidgets import QWidget, QPushButton, QApplication, QHBoxLayout, QFormLayout, QVBoxLayout, QSpinBox, QComboBox, QLabel
+from PySide2.QtWidgets import QWidget, QPushButton, QApplication, QHBoxLayout, QFormLayout, QVBoxLayout, QSpinBox, QComboBox, QLabel
 from messageBox import receivedSuccessBox
-import time
+
 # Constants for operation
 # -> Pa parameters: steps
 LOWEST_PA = 0 

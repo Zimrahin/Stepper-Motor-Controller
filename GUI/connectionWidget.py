@@ -1,7 +1,7 @@
 import sys
-from PyQt5.QtWidgets import QWidget, QComboBox, QPushButton, QLabel, QApplication, QHBoxLayout
-from PyQt5.QtCore import Qt
-from PyQt5 import QtCore
+from PySide2.QtWidgets import QWidget, QComboBox, QPushButton, QLabel, QApplication, QHBoxLayout
+from PySide2.QtCore import Qt
+from PySide2 import QtCore
 import serial
 import serial.tools.list_ports
 from messageBox import errorBox
@@ -18,8 +18,8 @@ BAUDRATE = 9600
 class connectionWidget(QWidget):
 
 	# Class Signals
-	connect_signal = QtCore.pyqtSignal()
-	disconnect_signal = QtCore.pyqtSignal()
+	connect_signal = QtCore.Signal()
+	disconnect_signal = QtCore.Signal()
 
 	def __init__(self, parent=None):
 		

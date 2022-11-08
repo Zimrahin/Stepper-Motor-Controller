@@ -1,5 +1,5 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QMessageBox, QStyle
+from PySide2.QtWidgets import QApplication, QMessageBox, QStyle
 
 class errorBox(QMessageBox):
     def __init__(self, error_e, parent=None):

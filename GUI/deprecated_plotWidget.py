@@ -1,6 +1,6 @@
 import sys
-from PyQt5.QtWidgets import QVBoxLayout, QApplication, QWidget, QLabel
-from PyQt5.QtGui import QPixmap, QPainter
+from PySide2.QtWidgets import QVBoxLayout, QApplication, QWidget, QLabel
+from PySide2.QtGui import QPixmap, QPainter
 
 class imgResize(QWidget):
 	def __init__(self, parent=None):
@@ -27,7 +27,7 @@ class plotWidget(QWidget):
 		self.img = imgResize(self)
 
 		# Object init 
-		self.img.setPixmap(QPixmap('osc.png'))
+		self.img.setPixmap(QPixmap('img/osc.png'))
 		# self.resize(440, 330)
 		# self.resize(self.sizeHint())
 		self.setMinimumWidth(600)

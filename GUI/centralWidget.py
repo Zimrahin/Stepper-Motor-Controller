@@ -1,8 +1,8 @@
 import sys 
-from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLabel
-from PyQt5 import QtGui
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QPalette, QColor, QPixmap, QFont
+from PySide2.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLabel
+from PySide2 import QtGui
+from PySide2.QtCore import Qt
+from PySide2.QtGui import QPalette, QColor, QPixmap, QFont
 
 from connectionWidget import connectionWidget
 from paramWidget import paramWidget
