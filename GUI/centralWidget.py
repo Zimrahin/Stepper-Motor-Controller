@@ -19,7 +19,7 @@ class centralWidget(QWidget):
 	def __init__(self, parent=None):
 		super().__init__(parent)
 
-		self.setWindowIcon(QtGui.QIcon('logo.png'))
+		self.setWindowIcon(QtGui.QIcon('img/logo.png'))
 		self.setWindowTitle("Stepper motor controller")
 
 		#Objects 
@@ -82,7 +82,7 @@ class logoWidget(QWidget):
 		super().__init__(parent)
 
 		self.logo_wdg = QLabel()
-		self.img = QPixmap('logo2.png')
+		self.img = QPixmap('img/logo2.png')
 		self.img = self.img.scaled(250, 100, Qt.KeepAspectRatio, Qt.SmoothTransformation)
 		self.logo_wdg.setPixmap(self.img)
 		# self.setMaximumHeight(100)

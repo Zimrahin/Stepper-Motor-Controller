@@ -36,17 +36,17 @@ class angleWidget(QWidget):
                            border: black solid 1px
                            }""")
 
-		self.a_radio.setIcon(QIcon('protractor.png'))
+		self.a_radio.setIcon(QIcon('img/protractor.png'))
 		self.a_radio.setIconSize(QSize(90,60))
 		self.a_radio.setFixedSize(90,60)
 		self.a_radio.setToolTip('Move to an <b>absolute</b> angle')
 
-		self.l_radio.setIcon(QIcon('counterclockwise.png'))
+		self.l_radio.setIcon(QIcon('img/counterclockwise.png'))
 		self.l_radio.setIconSize(QSize(90,60))
 		self.l_radio.setFixedSize(90,60)
 		self.l_radio.setToolTip('Move <b>counterclockwise</b>')
 
-		self.r_radio.setIcon(QIcon('clockwise.png'))
+		self.r_radio.setIcon(QIcon('img/clockwise.png'))
 		self.r_radio.setIconSize(QSize(90,60))
 		self.r_radio.setFixedSize(90,60)
 		self.r_radio.setToolTip('Move <b>clockwise</b>')
