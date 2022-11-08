@@ -29,12 +29,6 @@ class angleWidget(QWidget):
 		self.l_radio = QRadioButton()
 		self.r_radio = QRadioButton()
 
-		self.setStyleSheet("""QToolTip { 
-                           background-color: #252525; 
-                           color: white; 
-                           border: black solid 1px
-                           }""")
-
 		self.a_radio.setIcon(QIcon('img/protractor.png'))
 		self.a_radio.setIconSize(QSize(90,60))
 		self.a_radio.setFixedSize(90,60)

@@ -39,7 +39,7 @@ class paramWidget(QWidget):
 		# self.step_radio = QRadioButton('Step')
 
 		# -> Bottom buttons
-		self.reset_btn = QPushButton('Default')
+		self.default_btn = QPushButton('Default')
 		self.apply_btn = QPushButton('Apply')
 
 		# Init routine 
@@ -52,7 +52,7 @@ class paramWidget(QWidget):
 		self.param_dict = self.getFieldsValues()
 
 		# Signals 
-		self.reset_btn.clicked.connect(self.resetParameters)
+		self.default_btn.clicked.connect(self.resetParameters)
 		self.apply_btn.clicked.connect(self.sendParameters)
 
 		# Layout
@@ -62,9 +62,17 @@ class paramWidget(QWidget):
 		param_fields = QFormLayout()
 		param_fields.addRow('Resolution', self.Nrev_combo)
 		param_fields.addRow('Acceleration period', self.Pa_spinbox)
-		param_fields.addRow('Max added delay', self.Tas_spinbox)
-		param_fields.addRow('Min added delay', self.Tai_spinbox)
+		param_fields.addRow('Maximum added delay', self.Tas_spinbox)
+		param_fields.addRow('Minimum added delay', self.Tai_spinbox)
 		v_layout.addLayout(param_fields)
+
+		# Tooltips
+		self.Nrev_combo.setToolTip('Angular resolution')
+		self.Pa_spinbox.setToolTip('Number of steps <b>between \nminimum</b> added delay and <b>\nmaximum</b> added delay')
+		self.Tas_spinbox.setToolTip('<b>Maximum delay</b> added to <b>each step</b> \n to decrease rotation speed')
+		self.Tai_spinbox.setToolTip('<b>Minimum delay</b> added to <b>each step</b> \n to decrease rotation speed')
+		self.default_btn.setToolTip('Set optimum empirical parameters to <b>maximise</b> rotation speed while keeping a <b>stable behaviour</b> of stepper motor')
+		self.apply_btn.setToolTip('Send command to set parameters')
 
 		# # -> Radio buttons
 		# radio_btn_row = QHBoxLayout()
@@ -74,7 +82,7 @@ class paramWidget(QWidget):
 
 		# -> Bottom buttons
 		btn_row = QHBoxLayout()
-		btn_row.addWidget(self.reset_btn)
+		btn_row.addWidget(self.default_btn)
 		btn_row.addWidget(self.apply_btn)
 		v_layout.addLayout(btn_row)
 

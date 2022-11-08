@@ -30,7 +30,9 @@ class connectionWidget(QWidget):
 
 		# Widgets 
 		self.serial_ports_cbox = QComboBox()
+		self.serial_ports_cbox.setToolTip('Available serial ports')
 		self.refresh_btn = QPushButton('Refresh') # refresh COMs
+		self.refresh_btn.setToolTip('Update available serial ports ')
 		self.connect_btn = QPushButton('Connect')
 		self.status_label = QLabel(CONNECTION_STATUS_LABEL.format('Not connected'))
 
@@ -40,6 +42,7 @@ class connectionWidget(QWidget):
 		# Init routines
 		self.status_label.setAlignment(Qt.AlignCenter)
 		self.serialList()
+		self.connect_btn.setToolTip('Send initialisation parameters and \nreceive acknowledgment message')
 
 		# Signals and slots
 		self.refresh_btn.clicked.connect(self.serialList)
@@ -87,6 +90,7 @@ class connectionWidget(QWidget):
 				self.serial_COM = None
 				self.disconnect_signal.emit()
 				connect_btn_text = 'Connect'
+				self.connect_btn.setToolTip('Send initialisation parameters and \nreceive acknowledgment message')
 				status_label_text = 'Not Connected'
 				port_list_refresh_enable = True
 			else:
@@ -94,6 +98,7 @@ class connectionWidget(QWidget):
 				self.connectionTest()
 				self.connect_signal.emit()
 				connect_btn_text = 'Disconnect'
+				self.connect_btn.setToolTip('Set serial port to <b>None</b>')
 				status_label_text = 'Connected'
 				port_list_refresh_enable = False
 			self.connect_btn.setText(connect_btn_text)

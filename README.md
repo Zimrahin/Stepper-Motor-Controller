@@ -13,9 +13,6 @@
 
 ### In Progress
 
-- [ ] Hover over information (tooltip) for every widget
-
-
 # Stepper Motor Controller
 
 Python program with Graphic User Interface that allows communication via serial port with an Arduino Portenta board, which is used to control a stepper motor.

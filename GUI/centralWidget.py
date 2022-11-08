@@ -22,6 +22,12 @@ class centralWidget(QWidget):
 		self.setWindowIcon(QtGui.QIcon('img/logo.png'))
 		self.setWindowTitle("Stepper motor controller")
 
+		self.setStyleSheet("""QToolTip { 
+                           background-color: #252525; 
+                           color: white; 
+                           border: black solid 1px
+                           }""")
+
 		#Objects 
 		self.COM = None
 
