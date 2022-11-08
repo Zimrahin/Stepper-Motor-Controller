@@ -23,7 +23,8 @@ class paramWidget(QWidget):
 		# Widgets
 		# -> Combo boxes
 		self.Nrev_combo = QComboBox()
-		self.Nrev_combo.addItems(['200 step/rev','400 step/rev','800 step/rev','1600 step/rev','3200 step/rev','6400 step/rev'])
+		self.Nrev_list = ['1.8 degree/step','0.9 degree/step','0.45 step/rev','0.225 degree/step','0.1125 degree/step','0.05625 degree/step']
+		self.Nrev_combo.addItems(self.Nrev_list)
 		
 		# -> Spinboxes
 		self.Pa_spinbox = QSpinBox()
@@ -42,7 +43,7 @@ class paramWidget(QWidget):
 		self.apply_btn = QPushButton('Apply')
 
 		# Init routine 
-		self.Nrev_combo.setCurrentText('6400 step/rev')
+		self.Nrev_combo.setCurrentText(self.Nrev_list[5])
 		self.NBoxConfig(self.Pa_spinbox)
 		self.TimeBoxConfig(self.Tai_spinbox)
 		self.TimeBoxConfig(self.Tas_spinbox)
@@ -59,10 +60,10 @@ class paramWidget(QWidget):
 
 		# -> Boxes
 		param_fields = QFormLayout()
-		param_fields.addRow('Nrev', self.Nrev_combo)
-		param_fields.addRow('Pa', self.Pa_spinbox)
-		param_fields.addRow('Tas', self.Tas_spinbox)
-		param_fields.addRow('Tai', self.Tai_spinbox)
+		param_fields.addRow('Resolution', self.Nrev_combo)
+		param_fields.addRow('Acceleration period', self.Pa_spinbox)
+		param_fields.addRow('Max added delay', self.Tas_spinbox)
+		param_fields.addRow('Min added delay', self.Tai_spinbox)
 		v_layout.addLayout(param_fields)
 
 		# # -> Radio buttons
@@ -98,7 +99,7 @@ class paramWidget(QWidget):
 
 	def getFieldsValues(self):
 		ret_dict = {
-			'Nrev':self.Nrev_combo.currentText().split()[0],
+			'Nrev':int(360/float(self.Nrev_combo.currentText().split()[0])),
 			'Pa':self.Pa_spinbox.value(),
 			'Tas':self.Tas_spinbox.value(),
 			'Tai':self.Tai_spinbox.value()
@@ -112,6 +113,7 @@ class paramWidget(QWidget):
 		out_dict = self.getFieldsValues()
 		out_string = 'p-' + str(out_dict['Nrev']) + '-' + str(out_dict['Pa']) + '-' + str(out_dict['Tas']) + '-' + str(out_dict['Tai'])  + '\n'
 		# self.out_label.setText(out_string)
+		print(out_string)
 		self.parent().connection_wdg.send2COM(out_string)
 		
 		response = self.parent().connection_wdg.receiveOnlyCOM()
@@ -123,32 +125,32 @@ class paramWidget(QWidget):
 			raise Exception('Device did not respond')
 
 	def resetParameters(self):
-		if self.Nrev_combo.currentText() == '6400 step/rev':
+		if self.Nrev_combo.currentText() == self.Nrev_list[5]:
 			self.Pa_spinbox.setValue(0)
 			self.Tai_spinbox.setValue(0)
 			self.Tas_spinbox.setValue(0)
-		elif self.Nrev_combo.currentText() == '3200 step/rev':
+		elif self.Nrev_combo.currentText() == self.Nrev_list[4]:
 			self.Pa_spinbox.setValue(0)
 			self.Tai_spinbox.setValue(0)
 			self.Tas_spinbox.setValue(0)
-		elif self.Nrev_combo.currentText() == '1600 step/rev':
+		elif self.Nrev_combo.currentText() == self.Nrev_list[3]:
 			self.Pa_spinbox.setValue(0)
 			self.Tai_spinbox.setValue(0)
 			self.Tas_spinbox.setValue(0)
-		elif self.Nrev_combo.currentText() == '800 step/rev':
+		elif self.Nrev_combo.currentText() == self.Nrev_list[2]:
 			self.Pa_spinbox.setValue(0)
 			self.Tai_spinbox.setValue(0)
 			self.Tas_spinbox.setValue(0)
-		elif self.Nrev_combo.currentText() == '400 step/rev':
+		elif self.Nrev_combo.currentText() == self.Nrev_list[1]:
 			self.Pa_spinbox.setValue(200)
 			self.Tai_spinbox.setValue(200)
 			self.Tas_spinbox.setValue(400)
-		elif self.Nrev_combo.currentText() == '200 step/rev':
+		elif self.Nrev_combo.currentText() == self.Nrev_list[0]:
 			self.Pa_spinbox.setValue(200)
 			self.Tai_spinbox.setValue(500)
 			self.Tas_spinbox.setValue(700)
 		else:
-			print('if you see this there is an error (probably)')
+			print('if you see this, there is an error (probably)')
 			  
 
 if __name__ == '__main__':
