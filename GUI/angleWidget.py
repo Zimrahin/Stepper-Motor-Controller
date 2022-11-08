@@ -1,7 +1,7 @@
 import sys
-from PySide2.QtWidgets import QWidget, QPushButton, QApplication, QHBoxLayout, QFormLayout, QVBoxLayout, QRadioButton, QDoubleSpinBox, QLabel
+from PySide2.QtWidgets import QWidget, QPushButton, QApplication, QHBoxLayout, QFormLayout, QVBoxLayout, QRadioButton, QDoubleSpinBox, QShortcut
 from PySide2.QtCore import QSize
-from PySide2.QtGui import QIcon
+from PySide2.QtGui import QIcon, QKeySequence
 from math import floor
 from messageBox import receivedSuccessBox
 
@@ -51,14 +51,21 @@ class angleWidget(QWidget):
 		self.send_btn.setToolTip('Rotate stepper motor')
 		self.reset_btn.setToolTip('Set current position as initial angle')
 
-        # -> Output text
-		# self.out_label = QLabel("")
-
 		# Init routine 
 		self.angleBoxConfig(self.angle_spinbox)
 		self.a_radio.setChecked(True)
 
 		# Signals and slots
+		self.enter_short = QShortcut(QKeySequence('s'), self) # Change to 'Enter' key
+		self.a_short = QShortcut(QKeySequence('a'), self)
+		self.l_short = QShortcut(QKeySequence('l'), self)
+		self.r_short = QShortcut(QKeySequence('r'), self)
+
+		self.enter_short.activated.connect(self.sendMovement)
+		self.a_short.activated.connect(self.pressA)
+		self.l_short.activated.connect(self.pressL)
+		self.r_short.activated.connect(self.pressR)
+
 		self.send_btn.clicked.connect(self.sendMovement)
 		self.reset_btn.clicked.connect(self.sendReset)
 
@@ -83,9 +90,6 @@ class angleWidget(QWidget):
 		btn_row.addWidget(self.reset_btn)
 		v_layout.addLayout(btn_row)
 
-        # -> Output text label widget
-		# v_layout.addWidget(self.out_label)
-
 		self.setLayout(v_layout)
 
 	def angleBoxConfig(self, box):
@@ -93,7 +97,7 @@ class angleWidget(QWidget):
 		box.setMaximum(HIGHEST_DEG)
 		box.setSingleStep(STEP_INCREMENT)
 		box.setSuffix(DEG_UNITS)
-
+	
 	def sendMovement(self):
 		out_angle = self.angle_spinbox.value()
 		out_step = self.angleToStep(out_angle, int(self.parent().param_wdg.param_dict['Nrev']))
@@ -138,6 +142,15 @@ class angleWidget(QWidget):
 		  
 	def colorSpin(self, spin, color='#f86e6c'):
 		spin.setStyleSheet('background-color : {};'.format(color))
+
+	def pressA(self):
+		self.a_radio.setChecked(True)
+
+	def pressL(self):
+		self.l_radio.setChecked(True)
+
+	def pressR(self):
+		self.r_radio.setChecked(True)
 
 	# def saveCSV(self, data_string)
 

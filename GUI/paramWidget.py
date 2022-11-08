@@ -121,7 +121,7 @@ class paramWidget(QWidget):
 		out_dict = self.getFieldsValues()
 		out_string = 'p-' + str(out_dict['Nrev']) + '-' + str(out_dict['Pa']) + '-' + str(out_dict['Tas']) + '-' + str(out_dict['Tai'])  + '\n'
 		# self.out_label.setText(out_string)
-		print(out_string)
+		# print(out_string)
 		self.parent().connection_wdg.send2COM(out_string)
 		
 		response = self.parent().connection_wdg.receiveOnlyCOM()

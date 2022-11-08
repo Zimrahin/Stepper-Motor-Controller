@@ -1,17 +1,29 @@
 # TO DO LIST
 
-### To do
+## To do
+### Escritura de CSV/JSON
 - [ ] Primer 'send' debe comenzar a guardar data en un diccionario o lista
     - [ ] Primero se escribe csv apenas se envía el primer dato (igual que en el csv)
     - [ ] Se debe agregar widget en QWindow tipo File -> Save as en donde se elija el directorio de destino. De esta manera, una vez se haya finalizado con los experimentos, se guarda el contenido del diccionario/lista creado en un .csv o .json (también debe ser posible elegir esta opción)
+
+### Resolución
+- [ ] Por requerimiento, en la GUI, la resolución ya no debe *espejar* la configuración del driver. El driver debe estar seteado siempre a 6400, y el cambio de resolución en la GUI debe enviar un comando al arduino para **saltarse** una cantidad de steps para minimizar *virtualmente* la resolución.
+
+### Extras
+- [ ] Implementar shortcut para escritura de datos
+    - [ ] enter = move ('s' for now)
+    - [ ] any number input must trigger a click in angle spinbox
+    - [x] 'a', 'l' and 'r' trigger the radio buttons
 
 - [ ] Añadir títulos a widgets
 
 - [ ] Guardar datos en tarjeta SD
 
-- [ ] Implementar shortcut para escritura de datos
+
 
 ### In Progress
+
+
 
 # Stepper Motor Controller
 
