@@ -35,7 +35,7 @@ def csvLogger(opt):
 	message = 'p-' + N_rev_tx + '-' + Pa_tx + '-' + Tas_tx + '-' + Tai_tx + '\n'
 	serialPort.write(message.encode())
 	time.sleep(0.10) # seconds
-	ignorado = serialPort.readline()  
+	ignorado = serialPort.readline()   # para que no se arruine la comunicación serial
 
 	while True:
 		message = input('Write something: ') #r400

@@ -56,15 +56,15 @@ class angleWidget(QWidget):
 		self.a_radio.setChecked(True)
 
 		# Signals and slots
-		self.enter_short = QShortcut(QKeySequence('s'), self) # Change to 'Enter' key
-		self.a_short = QShortcut(QKeySequence('a'), self)
-		self.l_short = QShortcut(QKeySequence('l'), self)
-		self.r_short = QShortcut(QKeySequence('r'), self)
+		# self.enter_short = QShortcut(QKeySequence('s'), self) # Change to 'Enter' key
+		# self.a_short = QShortcut(QKeySequence('a'), self)
+		# self.l_short = QShortcut(QKeySequence('l'), self)
+		# self.r_short = QShortcut(QKeySequence('r'), self)
 
-		self.enter_short.activated.connect(self.sendMovement)
-		self.a_short.activated.connect(self.pressA)
-		self.l_short.activated.connect(self.pressL)
-		self.r_short.activated.connect(self.pressR)
+		# self.enter_short.activated.connect(self.sendMovement)
+		# self.a_short.activated.connect(self.pressA)
+		# self.l_short.activated.connect(self.pressL)
+		# self.r_short.activated.connect(self.pressR)
 
 		self.send_btn.clicked.connect(self.sendMovement)
 		self.reset_btn.clicked.connect(self.sendReset)
