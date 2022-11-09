@@ -8,8 +8,9 @@
 #define DIRPIN GPIO_2	//11
 #define ENAPIN GPIO_3	//10
 
-int N_rev_max = 6400;	// steps por vuelta - valor maximo
+int N_rev_max = 6400;	// steps por vuelta - valor maximo (valor seteado en el driver del motor)
 int N_rev_g = 6400;		// steps por vuelta - variable global que cambia segun el valor ingresado por el usuario
+
 int Pa_g = 0;			// Cantidad de pasos para acelerar
 int Tas_g = 0;			// Tiempo inicial entre pasos
 int Tai_g = 0;			// Tiempo final entre pasos (Tmin = 600)
@@ -102,8 +103,8 @@ void forward(int N=400, bool reverse=false, int Pa=200, int Tas=1600, int Tai=10
 	// Serial.println(); // \n at the end to let know PC all info has been sent
 }
 
-int calculateStep(String input, int currentPos, int N_rev = 6400)
-{
+int calculateStep(String input, int currentPos)
+{	
 	int steps_to_move = 0;
 	bool dir_flag = false;
 	//N_rev: number of steps equal to one lap
@@ -113,31 +114,32 @@ int calculateStep(String input, int currentPos, int N_rev = 6400)
 	{
 		case 'l': // move to the left, positive, counterclockwise
 			steps_to_move = N_rx;
-			currentPos = (N_rev + currentPos - N_rx)%N_rev;
+			currentPos = (N_rev_max + currentPos - N_rx)%N_rev_max;
 			dir_flag = true;
 			break;
 		case 'r': // move to the right, negative, clockwise
 			steps_to_move = N_rx;
-			currentPos = (currentPos + N_rx)%N_rev;
+			currentPos = (currentPos + N_rx)%N_rev_max;
 			dir_flag = false;
 			break;
 		case 'a': // move to an absolute position (shortest path)
-			steps_to_move = N_rx%N_rev - currentPos;
-			if (abs(steps_to_move) <= N_rev/2) {
+			steps_to_move = N_rx%N_rev_max - currentPos;
+			if (abs(steps_to_move) <= N_rev_max/2) {
 				dir_flag = steps_to_move > 0 ? true : false; //left or right?
 				steps_to_move = abs(steps_to_move);
 			}
 			else {
 				dir_flag = steps_to_move <= 0 ? true : false; //the other way around
-				steps_to_move = N_rev - abs(steps_to_move);
+				steps_to_move = N_rev_max - abs(steps_to_move);
 			}
-			currentPos = N_rx%N_rev;
+			currentPos = N_rx%N_rev_max;
 			break;
 		default:
 			Serial.println("INVALID");
 			return -1;
-	}
-	forward(steps_to_move, dir_flag, Pa_g, Tas_g, Tai_g, N_rev);
+	}	
+	steps_to_move = steps_to_move*(N_rev_max/N_rev_g);
+	forward(steps_to_move, dir_flag, Pa_g, Tas_g, Tai_g, N_rev_g);
 	Serial.print(currentPos);
 	Serial.print('-');
 	// no comentar
@@ -186,7 +188,7 @@ void loop()
 		// 	Serial.println("ack"); // \n at the end to let know PC all info has been sent
 		// 	return;
 		// }
-		if (receivedString[0] == 'p') { //extract letter, 'p' for param changes, p-Nlap-Pa-Tas-Tai
+		if (receivedString[0] == 'p') { //extract letter, 'p' for param changes, p-Nrev-Pa-Tas-Tai
 			N_rev_g = getValue(receivedString,'-',1).toInt();
 			Pa_g = getValue(receivedString,'-',2).toInt();
 			Tas_g = getValue(receivedString,'-',3).toInt();
@@ -199,7 +201,7 @@ void loop()
 			Serial.println("ack");
 			return;
 		}
-		resultPos = calculateStep(receivedString, currentPos_g, N_rev_g);
+		resultPos = calculateStep(receivedString, currentPos_g);
 		if (resultPos != -1){
 			currentPos_g = resultPos;
 		}

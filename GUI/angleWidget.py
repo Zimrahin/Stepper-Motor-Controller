@@ -132,6 +132,7 @@ class angleWidget(QWidget):
 	def unpackData(self, received_string):
 		values_list = received_string.split('-')[0:-1] # there is an empty char at the end 
 		print(values_list) #debug only
+		print(len(values_list))
 		# mean_time = values_list[-5] #microseconds
 		# mean_time_total = values_list[-4] #microseconds
 		angle = values_list[-3]
@@ -141,7 +142,7 @@ class angleWidget(QWidget):
 		return angle, direction_char, float_list
 		  
 	def colorSpin(self, spin, color='#f86e6c'):
-		spin.setStyleSheet('background-color : {};'.format(color))
+		spin.setStyleSheet(f'background-color : {color};')
 
 	def pressA(self):
 		self.a_radio.setChecked(True)

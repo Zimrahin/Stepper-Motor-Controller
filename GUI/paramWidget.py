@@ -23,7 +23,7 @@ class paramWidget(QWidget):
 		# Widgets
 		# -> Combo boxes
 		self.Nrev_combo = QComboBox()
-		self.Nrev_list = ['1.8 degree/step','0.9 degree/step','0.45 step/rev','0.225 degree/step','0.1125 degree/step','0.05625 degree/step']
+		self.Nrev_list = ['1.8 degree/step','0.9 degree/step','0.45 degree/step','0.225 degree/step','0.1125 degree/step','0.05625 degree/step']
 		self.Nrev_combo.addItems(self.Nrev_list)
 		
 		# -> Spinboxes
@@ -150,13 +150,13 @@ class paramWidget(QWidget):
 			self.Tai_spinbox.setValue(0)
 			self.Tas_spinbox.setValue(0)
 		elif self.Nrev_combo.currentText() == self.Nrev_list[1]:
-			self.Pa_spinbox.setValue(200)
-			self.Tai_spinbox.setValue(200)
-			self.Tas_spinbox.setValue(400)
+			self.Pa_spinbox.setValue(1000)
+			self.Tai_spinbox.setValue(6)
+			self.Tas_spinbox.setValue(12)
 		elif self.Nrev_combo.currentText() == self.Nrev_list[0]:
-			self.Pa_spinbox.setValue(200)
-			self.Tai_spinbox.setValue(500)
-			self.Tas_spinbox.setValue(700)
+			self.Pa_spinbox.setValue(1000)
+			self.Tai_spinbox.setValue(16)
+			self.Tas_spinbox.setValue(22)
 		else:
 			print('if you see this, there is an error (probably)')
 			  
