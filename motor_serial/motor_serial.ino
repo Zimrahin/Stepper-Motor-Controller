@@ -8,10 +8,11 @@
 #define DIRPIN GPIO_2	//11
 #define ENAPIN GPIO_3	//10
 
-int N_rev_g = 6400;		// steps por vuelta
+int N_rev_max = 6400;	// steps por vuelta - valor maximo
+int N_rev_g = 6400;		// steps por vuelta - variable global que cambia segun el valor ingresado por el usuario
 int Pa_g = 0;			// Cantidad de pasos para acelerar
-int Tas_g = 0;		// Tiempo inicial entre pasos
-int Tai_g = 0;		// Tiempo final entre pasos (Tmin = 600)
+int Tas_g = 0;			// Tiempo inicial entre pasos
+int Tai_g = 0;			// Tiempo final entre pasos (Tmin = 600)
 int currentPos_g = 0; 	// absolute position "global"
 
 float getSlope(float x1,float y1,float x2,float y2){
@@ -22,7 +23,7 @@ float getIntercept(float x1,float y1,float m){
 	return y1-m*x1;
 }
 
-void forward(int N=400, bool reverse=false, int Pa=200, int Tas=1600, int Tai=1000){
+void forward(int N=400, bool reverse=false, int Pa=200, int Tas=1600, int Tai=1000, int N_rev=6400){
 	// N numero de pasos
 	// reverse direccion hacia donde gira, reloj o contrareloj
 	unsigned long previousMicros = 0;
@@ -40,6 +41,8 @@ void forward(int N=400, bool reverse=false, int Pa=200, int Tas=1600, int Tai=10
 	float sensorVoltage = 0;
 	digitalWrite(ENAPIN,LOW);
 	digitalWrite(DIRPIN,reverse?LOW:HIGH);
+	int read_cnt = 0;
+	int read_mod = N_rev_max/N_rev;
 
 	if (N<2*Pa){
 		m1 = getSlope(0,Tas,Pa,Tai);
@@ -72,16 +75,19 @@ void forward(int N=400, bool reverse=false, int Pa=200, int Tas=1600, int Tai=10
 			digitalWrite(SETPPIN,!digitalRead(SETPPIN));
 			
 			if (n_step%2 == 0){
-				sensorValue = analogRead(A0);
-				//sensorVoltage = sensorValue * (3.3/1023.0);
-				sensorVoltage = sensorValue * (3.110/1023.0);
-				Serial.print(sensorVoltage);
-				Serial.print('-');
-        		stop_meas_time = micros();
-				stop_time = micros();
-				total_time = total_time + (stop_time - init_time);   
-        		total_meas_time = total_meas_time + (stop_meas_time - init_meas_time);       
-				init_time = micros();
+				if (read_cnt%read_mod == 0){
+					sensorValue = analogRead(A0);
+					//sensorVoltage = sensorValue * (3.3/1023.0);
+					sensorVoltage = sensorValue * (3.110/1023.0);
+					Serial.print(sensorVoltage);
+					Serial.print('-');
+        			stop_meas_time = micros();
+					stop_time = micros();
+					total_time = total_time + (stop_time - init_time);   
+        			total_meas_time = total_meas_time + (stop_meas_time - init_meas_time);       
+					init_time = micros();
+				}
+				read_cnt++;
 			}			
 			n_step++;
 		}
@@ -131,7 +137,7 @@ int calculateStep(String input, int currentPos, int N_rev = 6400)
 			Serial.println("INVALID");
 			return -1;
 	}
-	forward(steps_to_move, dir_flag, Pa_g, Tas_g, Tai_g);
+	forward(steps_to_move, dir_flag, Pa_g, Tas_g, Tai_g, N_rev);
 	Serial.print(currentPos);
 	Serial.print('-');
 	// no comentar
