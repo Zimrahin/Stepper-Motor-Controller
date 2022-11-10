@@ -48,12 +48,12 @@ class plotWidget(QWidget):
 		self.canvas_wdg.axes.cla()
 		if direction_char == 'l': # positive
 			self.canvas_wdg.axes.plot( 
-				np.linspace((angle-len(data))*angle_scale_factor, (angle)*angle_scale_factor, len(data)), 
+				np.linspace((angle-len(data) *plot_scale_factor)*angle_scale_factor, (angle)*angle_scale_factor, len(data)), 
 				data, 
 				color='lime')
 		else: # negative
 			self.canvas_wdg.axes.plot( 
-				np.linspace((angle + len(data))*angle_scale_factor, angle*angle_scale_factor, len(data)), 
+				np.linspace((angle + len(data) *plot_scale_factor)*angle_scale_factor, angle*angle_scale_factor, len(data)), 
 				data, 
 				color='lime')
 			self.canvas_wdg.axes.invert_xaxis()

@@ -14,7 +14,7 @@
 - [x] corregir bug current position
 - [x] corregir bug sentido positivo (left)(en plot se suma 1 que no es necesario)
 
-- [ ] corregir escalamiento en el plot (len(values))
+- [x] corregir escalamiento en el plot (len(values))
 
 - [ ] Agregar información sobre plot (peak power, peak angle, mean power, RPM)
 - [ ] Cambiar que cuando se conecte, se resetee el angulo cero
