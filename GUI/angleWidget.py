@@ -14,6 +14,8 @@ STEP_INCREMENT = 10
 USE_DECIMALS = 2
 DEG_UNITS = 'º' 
 
+STATUS_BAR_TIMEOUT = 5000
+
 class angleWidget(QWidget):
 	def __init__(self, parent=None):
 		super().__init__(parent)
@@ -108,6 +110,9 @@ class angleWidget(QWidget):
 			if listRadioBtn[i].isChecked():
 				# self.out_label.setText(listLetters[i] + str(out_step))
 				self.parent().connection_wdg.send2COM(listLetters[i] + str(out_step))
+		
+		self.parent().parent().status_bar.showMessage("Moving...", 1000)
+
 		# READ
 		received_string = self.parent().connection_wdg.receiveOnlyCOM()
 		angle, direction_char, float_list, mean_time, mean_time_total, values_list = self.unpackData(received_string)
@@ -115,7 +120,7 @@ class angleWidget(QWidget):
 		# SAVE CSV
 		if self.parent().parent().file_name_flag: # mainWindow
 			log_time = time.strftime("%H:%M:%S", time.localtime()) #hh:mm:ss
-			log_date = time.strftime("%d %B %Y", time.localtime() ) #dd monthName year
+			log_date = time.strftime("%d %B %Y", time.localtime()) #dd monthName year
 			# write into CSV file
 			log_text = ''
 			for n in range(len(values_list)):
@@ -139,7 +144,8 @@ class angleWidget(QWidget):
 		self.parent().connection_wdg.send2COM("reset")	
 		response = self.parent().connection_wdg.receiveOnlyCOM()
 		if (response == 'ack'):			
-			receivedSuccessBox('Angle reset successfully!').exec_()
+			# receivedSuccessBox('Angle reset successfully!').exec_()
+			self.parent().parent().status_bar.showMessage('Angle reset successfully!', STATUS_BAR_TIMEOUT)
 			return True
 		else:
 			raise Exception('Device did not respond')	

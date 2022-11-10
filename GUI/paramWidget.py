@@ -5,7 +5,7 @@ from messageBox import receivedSuccessBox
 # Constants for operation
 # -> Pa parameters: steps
 LOWEST_PA = 0 
-HIGHEST_PA = 1000
+HIGHEST_PA = 10000
 STEP_INCREMENT = 10
 PA_UNITS = ' step'
 
@@ -145,20 +145,20 @@ class paramWidget(QWidget):
 			self.Tai_spinbox.setValue(0)
 			self.Tas_spinbox.setValue(0)
 		elif self.Nrev_combo.currentText() == self.Nrev_list[3]:
-			self.Pa_spinbox.setValue(0)
+			self.Pa_spinbox.setValue(800)
 			self.Tai_spinbox.setValue(0)
-			self.Tas_spinbox.setValue(0)
+			self.Tas_spinbox.setValue(8)
 		elif self.Nrev_combo.currentText() == self.Nrev_list[2]:
-			self.Pa_spinbox.setValue(0)
-			self.Tai_spinbox.setValue(0)
-			self.Tas_spinbox.setValue(0)
+			self.Pa_spinbox.setValue(800)
+			self.Tai_spinbox.setValue(8)
+			self.Tas_spinbox.setValue(16)
 		elif self.Nrev_combo.currentText() == self.Nrev_list[1]:
-			self.Pa_spinbox.setValue(1000)
-			self.Tai_spinbox.setValue(6)
-			self.Tas_spinbox.setValue(12)
+			self.Pa_spinbox.setValue(800)
+			self.Tai_spinbox.setValue(12)
+			self.Tas_spinbox.setValue(20)
 		elif self.Nrev_combo.currentText() == self.Nrev_list[0]:
-			self.Pa_spinbox.setValue(1000)
-			self.Tai_spinbox.setValue(16)
+			self.Pa_spinbox.setValue(800)
+			self.Tai_spinbox.setValue(14)
 			self.Tas_spinbox.setValue(22)
 		else:
 			print('if you see this, there is an error (probably)')
