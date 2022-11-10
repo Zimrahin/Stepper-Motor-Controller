@@ -2,20 +2,21 @@
 -------
 ## TO DO
 
-### Reordenar JUEVES
-- [ ] Reordenar codigo arduino
-
 ### Extras
 - [ ] Migrar PyOne dark a PySide2
 
 - [ ] Guardar datos en tarjeta SD
 
-----------------------------------------------------------
-### In Progress
 ### Escritura de CSV/JSON
 - [ ] Agregar opción de escribir como JSON
+----------------------------------------------------------
+### In Progress
+- [ ] corregir bug current position
+- [ ] corregir escalamiento en el plot
 
+- [ ] Agregar información sobre plot (peak power, peak angle, mean power, RPM)
 
+- [ ] Cambiar que cuando se conecte, se resetee el angulo cero
 ------------------------------------------------------------------------
 #### DONE
 ### Resolución
