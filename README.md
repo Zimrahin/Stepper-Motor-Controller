@@ -15,9 +15,9 @@
 - [x] corregir bug sentido positivo (left)(en plot se suma 1 que no es necesario)
 
 - [x] corregir escalamiento en el plot (len(values))
+- [x] Cambiar que cuando se conecte, se resetee el angulo cero
 
 - [ ] Agregar información sobre plot (peak power, peak angle, mean power, RPM)
-- [ ] Cambiar que cuando se conecte, se resetee el angulo cero
 ------------------------------------------------------------------------
 #### DONE
 

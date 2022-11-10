@@ -12,7 +12,7 @@ import time
 # Default values
 CONNECTION_STATUS_LABEL = '{}'
 SERIAL_TIMEOUT = 1.0 # second (wait for Arduino response)
-TEST_CMD = b'p-6400-0-0-0\n' #b: format, send this message to Arduino and receive acknowledge 
+INIT_CMD = b'p-6400-0-0-0\n' #b: format, send this message to Arduino and receive acknowledge 
 BAUDRATE = 9600
 
 class connectionWidget(QWidget):
@@ -115,11 +115,21 @@ class connectionWidget(QWidget):
 			show_error.exec_()
 
 	def connectionTest(self):
-		self.serial_COM.write(TEST_CMD)
+		self.serial_COM.write(INIT_CMD)
 		time.sleep(0.10) # seconds
 		response = self.serial_COM.readline() # Change to receive mode, Arduino sends \n to terminate
 		response = str(response,'utf-8').rstrip()
 		# print(response)
+		# if (response == 'ack'):
+		# 	return True
+		# else:
+		# 	raise Exception('Device did not respond')
+		if (response != 'ack'):
+			raise Exception('Device did not respond')
+		self.serial_COM.write(b'reset')
+		time.sleep(0.10)
+		response = self.serial_COM.readline() # Change to receive mode, Arduino sends \n to terminate
+		response = str(response,'utf-8').rstrip()
 		if (response == 'ack'):
 			return True
 		else:
