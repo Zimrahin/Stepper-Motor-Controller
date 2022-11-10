@@ -15,6 +15,8 @@ MAX_TIME_STEP = 2000 # us
 TIME_STEP_INCREMENT = 10
 TIME_UNITS = ' \u03BCs'
 
+STATUS_BAR_TIMEOUT = 5000
+
 class paramWidget(QWidget):
 	def __init__(self, parent=None):
 		super().__init__(parent)
@@ -127,7 +129,8 @@ class paramWidget(QWidget):
 		response = self.parent().connection_wdg.receiveOnlyCOM()
 		if (response == 'ack'):
 			self.param_dict = out_dict #update necessary for degree->step conversion (called from angleWidget)
-			receivedSuccessBox('Parameters set successfully!').exec_()
+			# receivedSuccessBox('Parameters set successfully!').exec_()
+			self.parent().parent().status_bar.showMessage("Parameters set successfully!", STATUS_BAR_TIMEOUT)
 			return True
 		else:
 			raise Exception('Device did not respond')

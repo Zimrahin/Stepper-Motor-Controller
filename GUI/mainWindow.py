@@ -29,6 +29,7 @@ class Window(QMainWindow):
 						   	""")
 		#Objects
 		self.file_name_flag = False
+		self.file_name = ''
 
 		# Widgets
 		# -> Central Widget
@@ -37,7 +38,7 @@ class Window(QMainWindow):
 
 		# Status Bar
 		self.status_bar = self.statusBar()
-		self.permanent_message = QLabel('Version 1.11.09')
+		self.permanent_message = QLabel('Version 1.11.10')
 		self.permanent_message.setAlignment(Qt.AlignRight)
 		self.status_bar.addPermanentWidget(self.permanent_message)
 
@@ -79,8 +80,9 @@ class Window(QMainWindow):
 		# options |= QFileDialog.DontUseNativeDialog
 		file_name, _ = QFileDialog.getSaveFileName(self,'Save File',time.strftime("csv_files/%d_%B_%Y_%Hh_%Mm_%Ss.csv", time.localtime()),"All Files (*);;CSV(*.csv)", options=options)
 		if file_name:
-			self.status_bar.showMessage(f'File created successfully: {file_name}', STATUS_BAR_TIMEOUT)
+			self.status_bar.showMessage(f'Selected path: {file_name}', STATUS_BAR_TIMEOUT)
 			self.file_name_flag = True
+			self.file_name = file_name
 
 	def helpContent(self):
 		self.status_bar.showMessage("Help > Help Content clicked", STATUS_BAR_TIMEOUT)

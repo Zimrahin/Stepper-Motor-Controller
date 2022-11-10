@@ -1,4 +1,5 @@
 import sys
+import time
 from PySide2.QtWidgets import QWidget, QPushButton, QApplication, QHBoxLayout, QFormLayout, QVBoxLayout, QRadioButton, QDoubleSpinBox, QShortcut
 from PySide2.QtCore import QSize
 from PySide2.QtGui import QIcon, QKeySequence
@@ -11,7 +12,7 @@ LOWEST_DEG = 0
 HIGHEST_DEG = 360*40  # 40 revs
 STEP_INCREMENT = 10
 USE_DECIMALS = 2
-DEG_UNITS = '\u00b0' #º
+DEG_UNITS = 'º' 
 
 class angleWidget(QWidget):
 	def __init__(self, parent=None):
@@ -109,14 +110,30 @@ class angleWidget(QWidget):
 				self.parent().connection_wdg.send2COM(listLetters[i] + str(out_step))
 		# READ
 		received_string = self.parent().connection_wdg.receiveOnlyCOM()
-		angle, direction_char, float_list = self.unpackData(received_string)
+		angle, direction_char, float_list, mean_time, mean_time_total, values_list = self.unpackData(received_string)
 
 		# SAVE CSV
-		# if self.parent().file_name_flag:
-		# 	print in csv
+		if self.parent().parent().file_name_flag: # mainWindow
+			log_time = time.strftime("%H:%M:%S", time.localtime()) #hh:mm:ss
+			log_date = time.strftime("%d %B %Y", time.localtime() ) #dd monthName year
+			# write into CSV file
+			log_text = ''
+			for n in range(len(values_list)):
+				if n < len(values_list) - 1:
+					log_text += values_list[n] + ','
+				else:
+					log_text += values_list[n]
+
+			header = 	log_date + ',' + log_time + ',' + \
+						mean_time + 'us,' +  mean_time_total + 'us,' + \
+						str(int(angle)*360./6400) + 'º'
+			log_text =  header + ',' + log_text + '\n'
+
+			with open(self.parent().parent().file_name,'a') as csvFile:
+				csvFile.write(log_text)
 
 		# PLOT
-		self.parent().plot_wdg.updatePlot(float_list, int(angle), direction_char, int(self.parent().param_wdg.param_dict['Nrev']))
+		self.parent().plot_wdg.updatePlot(float_list, int(angle), direction_char, int(self.parent().param_wdg.param_dict['Nrev']))		
 
 	def sendReset(self):
 		self.parent().connection_wdg.send2COM("reset")	
@@ -133,16 +150,16 @@ class angleWidget(QWidget):
 
 	def unpackData(self, received_string):
 		values_list = received_string.split('-')[0:-1] # there is an empty char at the end 
-		values_list = list(filter(None, values_list))	# delete empty value
+		values_list = list(filter(None, values_list)) # delete empty value
 		print(values_list) #debug only
 		print(len(values_list))
-		# mean_time = values_list[-5] #microseconds
-		# mean_time_total = values_list[-4] #microseconds
+		mean_time = values_list[-5] #microseconds
+		mean_time_total = values_list[-4] #microseconds
 		angle = values_list[-3]
 		direction_char = values_list[-2]
-		values_list = values_list[0:-5]  #delete last elements
+		values_list = values_list[0:-5]  #remove last elements
 		float_list = list(map(float,values_list))
-		return angle, direction_char, float_list
+		return angle, direction_char, float_list, mean_time, mean_time_total, values_list
 		  
 	def colorSpin(self, spin, color='#f86e6c'):
 		spin.setStyleSheet(f'background-color : {color};')
