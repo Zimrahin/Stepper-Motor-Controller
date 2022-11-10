@@ -1,5 +1,5 @@
 import sys
-from PySide2.QtWidgets import QWidget, QVBoxLayout
+from PySide2.QtWidgets import QWidget, QVBoxLayout, QApplication
 from PySide2.QtCore import  Qt
 from PySide2.QtGui import QPalette, QColor
 
@@ -41,7 +41,9 @@ class plotWidget(QWidget):
 		self.updatePlot([], 0, 'l', 100)
 
 	def updatePlot(self, data, angle, direction_char, N_rev):
-		scale_factor = 360./N_rev
+		# scale_factor = 360./N_rev
+		N_rev_max = 6400
+		scale_factor = 360./N_rev_max
 		self.canvas_wdg.axes.cla()
 		if direction_char == 'l': # positive
 			self.canvas_wdg.axes.plot( np.linspace((angle+1-len(data))*scale_factor, (angle+1)*scale_factor, len(data)) , data, color='lime')

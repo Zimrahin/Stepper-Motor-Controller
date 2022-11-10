@@ -112,6 +112,8 @@ class angleWidget(QWidget):
 		angle, direction_char, float_list = self.unpackData(received_string)
 
 		# SAVE CSV
+		# if self.parent().file_name_flag:
+		# 	print in csv
 
 		# PLOT
 		self.parent().plot_wdg.updatePlot(float_list, int(angle), direction_char, int(self.parent().param_wdg.param_dict['Nrev']))
@@ -131,6 +133,7 @@ class angleWidget(QWidget):
 
 	def unpackData(self, received_string):
 		values_list = received_string.split('-')[0:-1] # there is an empty char at the end 
+		values_list = list(filter(None, values_list))	# delete empty value
 		print(values_list) #debug only
 		print(len(values_list))
 		# mean_time = values_list[-5] #microseconds

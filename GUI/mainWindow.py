@@ -7,6 +7,8 @@ from PySide2.QtGui import QPalette, QColor, QFont
 
 from centralWidget import centralWidget
 
+STATUS_BAR_TIMEOUT = 5000
+
 class Window(QMainWindow):
 	def __init__(self, parent=None):
 		super().__init__(parent)
@@ -25,6 +27,9 @@ class Window(QMainWindow):
                            	border: black solid 1px
                            	}
 						   	""")
+		#Objects
+		self.file_name_flag = False
+
 		# Widgets
 		# -> Central Widget
 		self.central_wdg = centralWidget(self)
@@ -67,20 +72,21 @@ class Window(QMainWindow):
 		self.aboutAction = QAction("&About", self)
 
 	def newFile(self):
-		self.status_bar.showMessage("File > New clicked", 3000)
+		self.status_bar.showMessage("File > New clicked", STATUS_BAR_TIMEOUT)
 
 	def saveFile(self):
 		options = QFileDialog.Options()
 		# options |= QFileDialog.DontUseNativeDialog
 		file_name, _ = QFileDialog.getSaveFileName(self,'Save File',time.strftime("csv_files/%d_%B_%Y_%Hh_%Mm_%Ss.csv", time.localtime()),"All Files (*);;CSV(*.csv)", options=options)
 		if file_name:
-			print(file_name)
+			self.status_bar.showMessage(f'File created successfully: {file_name}', STATUS_BAR_TIMEOUT)
+			self.file_name_flag = True
 
 	def helpContent(self):
-		self.status_bar.showMessage("Help > Help Content clicked", 3000)
+		self.status_bar.showMessage("Help > Help Content clicked", STATUS_BAR_TIMEOUT)
 
 	def about(self):
-		self.status_bar.showMessage("Help > About clicked", 3000)
+		self.status_bar.showMessage("Help > About clicked", STATUS_BAR_TIMEOUT)
 	
 	def _connectActions(self):
 		# Connect File actions
