@@ -43,12 +43,19 @@ class plotWidget(QWidget):
 	def updatePlot(self, data, angle, direction_char, N_rev):
 		# scale_factor = 360./N_rev
 		N_rev_max = 6400
-		scale_factor = 360./N_rev_max
+		plot_scale_factor = int(N_rev_max/N_rev)
+		angle_scale_factor = 360./N_rev_max
 		self.canvas_wdg.axes.cla()
 		if direction_char == 'l': # positive
-			self.canvas_wdg.axes.plot( np.linspace((angle+1-len(data))*scale_factor, (angle+1)*scale_factor, len(data)) , data, color='lime')
+			self.canvas_wdg.axes.plot( 
+				np.linspace((angle-len(data))*angle_scale_factor, (angle)*angle_scale_factor, len(data)), 
+				data, 
+				color='lime')
 		else: # negative
-			self.canvas_wdg.axes.plot( np.linspace((angle + len(data))*scale_factor, angle*scale_factor, len(data)), data, color='lime')
+			self.canvas_wdg.axes.plot( 
+				np.linspace((angle + len(data))*angle_scale_factor, angle*angle_scale_factor, len(data)), 
+				data, 
+				color='lime')
 			self.canvas_wdg.axes.invert_xaxis()
 
 		# self.canvas_wdg.axes.plot(data, color='lime', linewidth=2)
