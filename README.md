@@ -4,22 +4,21 @@
 
 
 ### IMPORTANTE:
-- [ ] Revisar que el tiempo promedio por step medido y enviaod por la placa sea el correcto, ya que se usa para calcular las RPM
+- [ ] Revisar que el tiempo promedio por step medido y enviado por la placa sea el correcto, ya que se usa para calcular las RPM
 - [ ] Corregir problema que probablemente va a surgir en el argumento del peak power, dado que en cierto caso en el plot, se invierte el xaxis
 
 ### Extras
 - [ ] Guardar datos en tarjeta SD
 
-### Escritura de CSV/JSON
+### Escritura/Lectura de archivos
 - [ ] Agregar opción de escribir como JSON
-----------------------------------------------------------
-### In Progress
-- [x] Agregar información sobre plot (peak power, peak angle, mean power, RPM)
-    - [x] Se debe corregir peak angle con información del plot
-- [ ] Migrar PyOne dark a PySide2
-- [ ] Migrar proyecto a pyonedark
 - [ ] Agregar en csv información de plot : resolución angular y caracter de dirección ('l' o 'r')
 - [ ] Agregar funcionalidad que permita leer un archivo CSV o JSON y plotear su contenido (en otra pestaña dentro de la misma GUI)
+----------------------------------------------------------
+### In Progress
+- [x] Agregar tooltips a PP,Pa,MP, RPM
+- [ ] Migrar PyOne dark a PySide2
+- [ ] Migrar proyecto a pyonedark
 ------------------------------------------------------------------------
 #### DONE
 

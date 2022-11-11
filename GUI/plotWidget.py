@@ -47,6 +47,10 @@ class plotWidget(QWidget):
 		self.pa_label.setMaximumHeight(label_max_height)
 		self.mp_label.setMaximumHeight(label_max_height)
 		self.rpm_label.setMaximumHeight(label_max_height)
+		self.pp_label.setToolTip('Peak Power')
+		self.pa_label.setToolTip('Peak Angle')
+		self.mp_label.setToolTip('Mean Power')
+		self.rpm_label.setToolTip('Revolutions Per Minute')
 
 		# Layout
 		hlayout = QHBoxLayout()
