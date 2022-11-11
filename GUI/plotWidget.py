@@ -1,7 +1,8 @@
 import sys
-from PySide2.QtWidgets import QWidget, QVBoxLayout, QApplication
+from PySide2 import QtGui
+from PySide2.QtWidgets import QWidget, QVBoxLayout, QApplication, QHBoxLayout, QLabel
 from PySide2.QtCore import  Qt
-from PySide2.QtGui import QPalette, QColor
+from PySide2.QtGui import QPalette, QColor, QFont
 
 import matplotlib
 matplotlib.use('Qt5Agg')
@@ -28,17 +29,44 @@ class plotWidget(QWidget):
 		# Widgets
 		self.canvas_wdg = figCanvas()
 		self.toolbar_wdg = NavigationToolbar(self.canvas_wdg)
+		self.pp_label = QLabel(f'PP = {0.0:.2f} V')
+		self.pa_label = QLabel(f'PA = {0.0:.2f}º')
+		self.mp_label = QLabel(f'MP = {0.0:.2f} V')
+		self.rpm_label = QLabel(f'RPM = {0.0}')
+		self.pp_label.setAlignment(Qt.AlignCenter)
+		self.pa_label.setAlignment(Qt.AlignCenter)
+		self.mp_label.setAlignment(Qt.AlignCenter)
+		self.rpm_label.setAlignment(Qt.AlignCenter)
+		style_label_string = 'QLabel { color : #FFFFFF; font: 75 14pt "Verdana"}'
+		self.pp_label.setStyleSheet(style_label_string)
+		self.pa_label.setStyleSheet(style_label_string)
+		self.mp_label.setStyleSheet(style_label_string)
+		self.rpm_label.setStyleSheet(style_label_string)
+		label_max_height = 18
+		self.pp_label.setMaximumHeight(label_max_height)
+		self.pa_label.setMaximumHeight(label_max_height)
+		self.mp_label.setMaximumHeight(label_max_height)
+		self.rpm_label.setMaximumHeight(label_max_height)
 
 		# Layout
-		layout = QVBoxLayout()
-		layout.addWidget(self.canvas_wdg)
-		layout.addWidget(self.toolbar_wdg)
+		hlayout = QHBoxLayout()
+		hlayout.addWidget(self.pp_label)
+		hlayout.addWidget(self.pa_label)
+		hlayout.addWidget(self.mp_label)
+		hlayout.addWidget(self.rpm_label)
 
-		self.setLayout(layout)
+
+		vlayout = QVBoxLayout()
+		vlayout.addWidget(self.canvas_wdg)
+		vlayout.addLayout(hlayout)
+		# layout.addWidget(self.toolbar_wdg)
+		# vlayout.addStretch()
+
+		self.setLayout(vlayout)
 	
 		self.setMinimumWidth(700)
 
-		self.updatePlot([], 0, 'l', 100)
+		self.parent().data_xaxis = self.updatePlot([], 0, 'l', 100)
 
 	def updatePlot(self, data, angle, direction_char, N_rev):
 		# scale_factor = 360./N_rev
@@ -47,13 +75,15 @@ class plotWidget(QWidget):
 		angle_scale_factor = 360./N_rev_max
 		self.canvas_wdg.axes.cla()
 		if direction_char == 'l': # positive
+			data_xaxis = np.linspace((angle-len(data) *plot_scale_factor)*angle_scale_factor, angle*angle_scale_factor, len(data))
 			self.canvas_wdg.axes.plot( 
-				np.linspace((angle-len(data) *plot_scale_factor)*angle_scale_factor, (angle)*angle_scale_factor, len(data)), 
+				data_xaxis, 
 				data, 
 				color='lime')
 		else: # negative
+			data_xaxis = np.linspace((angle + len(data) *plot_scale_factor)*angle_scale_factor, angle*angle_scale_factor, len(data))
 			self.canvas_wdg.axes.plot( 
-				np.linspace((angle + len(data) *plot_scale_factor)*angle_scale_factor, angle*angle_scale_factor, len(data)), 
+				data_xaxis, 
 				data, 
 				color='lime')
 			self.canvas_wdg.axes.invert_xaxis()
@@ -75,6 +105,8 @@ class plotWidget(QWidget):
 		self.canvas_wdg.axes.figure.gca().set_ylim(0, 3.2)
 		self.canvas_wdg.axes.grid(color = '#353535', linewidth = 1)
 		self.canvas_wdg.draw()
+
+		return data_xaxis
 
 def darkMode():
     # Dark Theme

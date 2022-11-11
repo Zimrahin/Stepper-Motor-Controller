@@ -6,6 +6,8 @@ from PySide2.QtGui import QIcon, QKeySequence
 from math import floor
 from messageBox import receivedSuccessBox
 
+import numpy as np
+
 # Constants for operation
 # -> Angle parameters: degree
 LOWEST_DEG = 0 
@@ -138,7 +140,17 @@ class angleWidget(QWidget):
 				csvFile.write(log_text)
 
 		# PLOT
-		self.parent().plot_wdg.updatePlot(float_list, int(angle), direction_char, int(self.parent().param_wdg.param_dict['Nrev']))		
+		data_xaxis = self.parent().plot_wdg.updatePlot(float_list, int(angle), direction_char, int(self.parent().param_wdg.param_dict['Nrev']))		
+
+		# COMPUTE DATA STATISTICS (this section MUST be after updatePlot)
+		pp, pa = self.computePeakPower(float_list, data_xaxis)
+		mp = self.computeMeanPower(float_list)
+		rpm = self.computeRPM(int(mean_time_total))
+
+		self.parent().plot_wdg.pp_label.setText(f'PP = {pp:.2f} V')
+		self.parent().plot_wdg.pa_label.setText(f'PA = {pa:.2f}º')
+		self.parent().plot_wdg.mp_label.setText(f'MP = {mp:.2f} V')
+		self.parent().plot_wdg.rpm_label.setText(f'RPM = {rpm:.1f}')
 
 	def sendReset(self):
 		self.parent().connection_wdg.send2COM("reset")	
@@ -170,16 +182,39 @@ class angleWidget(QWidget):
 	def colorSpin(self, spin, color='#f86e6c'):
 		spin.setStyleSheet(f'background-color : {color};')
 
-	def pressA(self):
-		self.a_radio.setChecked(True)
+	# def pressA(self):
+	# 	self.a_radio.setChecked(True)
 
-	def pressL(self):
-		self.l_radio.setChecked(True)
+	# def pressL(self):
+	# 	self.l_radio.setChecked(True)
 
-	def pressR(self):
-		self.r_radio.setChecked(True)
+	# def pressR(self):
+	# 	self.r_radio.setChecked(True)
 
-	# def saveCSV(self, data_string)
+	def computePeakPower(self, data, data_xaxis):
+		if data:
+			peak_power = np.max(data)
+			peak_angle = data_xaxis[np.argmax(data)]
+			return peak_power, peak_angle
+		else:
+			return 0, 0 
+
+	def computeMeanPower(self, data):
+		if data:
+			mean_power = np.average(data)
+			return mean_power
+		else:
+			return 0
+
+	def computeRPM(self, mean_step_time):
+		if mean_step_time != 0:
+			N_max = 6400 	#step/rev, max resolution
+			rpm = 10**6 * 60 / (N_max * mean_step_time)
+			return rpm
+		else:
+			return 0
+
+	
 
 if __name__ == '__main__':
 	app = QApplication([])

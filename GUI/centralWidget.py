@@ -38,7 +38,6 @@ class centralWidget(QWidget):
 		#Objects 
 		self.COM = None
 
-
 		# Widgets
 		# -> Serial Connection Widget
 		self.connection_wdg = connectionWidget(self)

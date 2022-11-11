@@ -38,7 +38,7 @@ class Window(QMainWindow):
 
 		# Status Bar
 		self.status_bar = self.statusBar()
-		self.permanent_message = QLabel('Version 1.11.10')
+		self.permanent_message = QLabel('Version 1.11.11')
 		self.permanent_message.setAlignment(Qt.AlignRight)
 		self.status_bar.addPermanentWidget(self.permanent_message)
 
