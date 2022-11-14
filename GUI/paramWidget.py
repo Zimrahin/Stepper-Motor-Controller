@@ -1,5 +1,6 @@
 import sys
 from PySide2.QtWidgets import QWidget, QPushButton, QApplication, QHBoxLayout, QFormLayout, QVBoxLayout, QSpinBox, QComboBox, QLabel
+import PySide2.QtCore
 from messageBox import receivedSuccessBox
 
 # Constants for operation
@@ -56,6 +57,7 @@ class paramWidget(QWidget):
 		# Signals 
 		self.default_btn.clicked.connect(self.resetParameters)
 		self.apply_btn.clicked.connect(self.sendParameters)
+		self.connect(self.Nrev_combo, PySide2.QtCore.SIGNAL("currentIndexChanged(const QString&)"), self.resetParameters)
 
 		# Layout
 		v_layout = QVBoxLayout()

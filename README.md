@@ -4,24 +4,28 @@
 
 
 ### IMPORTANTE:
-- [ ] Corregir problema que probablemente va a surgir en el argumento del peak power, dado que en cierto caso en el plot, se invierte el xaxis (se hace con generador de señales)
+
+- [ ] Dejar grafico en decibeles
+- [ ] Elegir resolución de elevación (la GUI solo debe enviar un comando, que por mientras se puede imprimir, ej: e-6400 (e->elevacion))
+- [ ] Elegir rango de grados de elevación (Ej: desde: -30º, hasta: 30º) Esto es mas complicado porque los angulos del motor steper son relativos, pero por mientras hay que dejar lista la caja sin funcionalidad en la GUI
+- [ ] Elegir cantidad de grados por vuelta (polar)
+- [ ] Textbox con las frecuencias a utilizar (Ej, [200, 500, 1000             ])
+    y extraer las frecuencias procesando el string. Esto no debe hacer nada en un comienzo, quizás solo imprimir las frecuencias añadidas
+- [ ] Agregar otro comando con un widget aparte que diga "start routine" o algo así, que envíe cierto comando que el arduino interprete como (se debe hacer otro case en el loop) que debe tomar las variables globales ya seteadas( resolución polar y de elvación) y hacer una rutina de movimientos desde ej -30 hasta 30 dando X vueltas por cada movimiento de elevación. Para simular esto con un solo motor, se podría hacer un delay al final de un movimiento polar, luego *moverse un step de ida y vuelta (para quedar donde mismo, que represente un movimiento de elevación)* y continuar con la siguiete vuelta
+
 
 ### Extras
 - [ ] Guardar datos en tarjeta SD
+- [ ] Migrar proyecto a pyonedark
 
 ### Escritura/Lectura de archivos
 - [ ] Agregar opción de escribir como JSON
-- [ ] Agregar funcionalidad que permita leer un archivo CSV o JSON y plotear su contenido (en otra pestaña dentro de la misma GUI) 
+- [ ] Agregar funcionalidad que permita leer un archivo CSV o JSON y plotear su contenido (en otra pestaña dentro de la misma GUI)
 ----------------------------------------------------------
 ### In Progress
-- [ ] Migrar proyecto a pyonedark
+- [ ] Cambiar spinbox para que el default se setee automaticamente
 ------------------------------------------------------------------------
 #### DONE
-- [x] Revisar que el tiempo promedio por step medido y enviado por la placa sea el correcto, ya que se usa para calcular las RPM
-- [x] Agregar tooltips a PP,Pa,MP, RPM
-- [x] Migrar PyOne dark a PySide2
-- [x] Configurar pyOneDark (title bar, sidebar...)
-- [x] Agregar en csv información de plot : resolución angular y caracter de dirección ('l' o 'r')
 
 
 # Stepper Motor Controller
