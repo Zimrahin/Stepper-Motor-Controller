@@ -131,9 +131,11 @@ class angleWidget(QWidget):
 				else:
 					log_text += values_list[n]
 
+			dir_string = 'clockwise' if direction_char == 'r' else 'counterclockwise'
 			header = 	log_date + ',' + log_time + ',' + \
 						mean_time + 'us,' +  mean_time_total + 'us,' + \
-						str(int(angle)*360./6400) + 'º'
+						str(int(angle)*360./6400) + 'º,' + dir_string + ',' + \
+						str(self.parent().param_wdg.param_dict['Nrev']) + ' step/rev'
 			log_text =  header + ',' + log_text + '\n'
 
 			with open(self.parent().parent().file_name,'a') as csvFile:
