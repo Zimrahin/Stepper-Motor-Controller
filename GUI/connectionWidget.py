@@ -53,7 +53,7 @@ class connectionWidget(QWidget):
 		layout.addWidget(self.serial_ports_cbox)
 		layout.addWidget(self.refresh_btn)
 		layout.addWidget(self.connect_btn)
-		layout.addWidget(self.status_label)
+		# layout.addWidget(self.status_label)
 
 		self.setLayout(layout)
 

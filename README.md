@@ -5,8 +5,6 @@
 
 ### IMPORTANTE:
 
-- [ ] Dejar grafico en decibeles
-- [ ] Elegir resolución de elevación (la GUI solo debe enviar un comando, que por mientras se puede imprimir, ej: e-6400 (e->elevacion))
 - [ ] Elegir rango de grados de elevación (Ej: desde: -30º, hasta: 30º) Esto es mas complicado porque los angulos del motor steper son relativos, pero por mientras hay que dejar lista la caja sin funcionalidad en la GUI
 - [ ] Elegir cantidad de grados por vuelta (polar)
 - [ ] Textbox con las frecuencias a utilizar (Ej, [200, 500, 1000             ])
@@ -15,6 +13,7 @@
 
 
 ### Extras
+- [ ] Dejar grafico en decibeles
 - [ ] Guardar datos en tarjeta SD
 - [ ] Migrar proyecto a pyonedark
 
@@ -23,9 +22,11 @@
 - [ ] Agregar funcionalidad que permita leer un archivo CSV o JSON y plotear su contenido (en otra pestaña dentro de la misma GUI)
 ----------------------------------------------------------
 ### In Progress
-- [ ] Cambiar spinbox para que el default se setee automaticamente
+- [x] Cambiar tamaño por defecto de las fuentes (con diccionario)
+- [ ] Elegir resolución de elevación (la GUI solo debe enviar un comando, que por mientras se puede imprimir, ej: e-6400 (e->elevacion))
 ------------------------------------------------------------------------
 #### DONE
+- [x] Cambiar spinbox para que el default se setee automaticamente
 
 
 # Stepper Motor Controller

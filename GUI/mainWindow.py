@@ -13,20 +13,54 @@ class Window(QMainWindow):
 	def __init__(self, parent=None):
 		super().__init__(parent)
 
+		self.settings_dict = {
+							"font" : 
+							{
+							"family" : "Segoe UI",
+							"title_size" : 11,
+							"text_size" : 10
+							}
+						}
 		self.setWindowIcon(QtGui.QIcon('img/logo.png'))
 		self.setWindowTitle("Stepper motor controller")
-		self.setStyleSheet("""
-							QMenuBar { 
-                           	background-color: #191919; 
-                           	color: white; 
-                           	border: black solid 1px
-                           	}
-							QStatusBar { 
-                           	background-color: #191919; 
-                           	color: white; 
-                           	border: black solid 1px
-                           	}
+		# style_string = 
+		self.setStyleSheet(f"""
+							QMenuBar {{
+								font: {self.settings_dict['font']['text_size']}pt "{self.settings_dict['font']['family']}";
+								background-color: #191919; 
+								color: white; 
+								border: black solid 1px
+                           	}}
+							QStatusBar {{
+								font: {self.settings_dict['font']['text_size']}pt "{self.settings_dict['font']['family']}";
+								background-color: #191919; 
+								color: white; 
+								border: black solid 1px
+                           	}}
+							QLabel {{
+								font: {self.settings_dict['font']['text_size']}pt "{self.settings_dict['font']['family']}";
+							}}
+							QPushButton{{
+								font: {self.settings_dict['font']['text_size']}pt "{self.settings_dict['font']['family']}";
+							}}
+							QComboBox{{
+								font: {self.settings_dict['font']['text_size']}pt "{self.settings_dict['font']['family']}";
+							}}
+							QSpinBox{{
+								font: {self.settings_dict['font']['text_size']}pt "{self.settings_dict['font']['family']}";
+							}}
+							QDoubleSpinBox{{
+								font: {self.settings_dict['font']['text_size']}pt "{self.settings_dict['font']['family']}";
+							}}
+							QToolTip {{
+								font: {self.settings_dict['font']['title_size']}pt "{self.settings_dict['font']['family']}";
+								background-color: #252525; 
+								color: white; 
+								border: black solid 1px
+                           	}}
 						   	""")
+
+
 		#Objects
 		self.file_name_flag = False
 		self.file_name = ''

@@ -64,7 +64,7 @@ class paramWidget(QWidget):
 
 		# -> Boxes
 		param_fields = QFormLayout()
-		param_fields.addRow('Resolution', self.Nrev_combo)
+		param_fields.addRow('Azimuth resolution', self.Nrev_combo)
 		param_fields.addRow('Acceleration period', self.Pa_spinbox)
 		param_fields.addRow('Maximum added delay', self.Tas_spinbox)
 		param_fields.addRow('Minimum added delay', self.Tai_spinbox)
