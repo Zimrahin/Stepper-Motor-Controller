@@ -1,12 +1,11 @@
 import sys 
-from PySide2.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLabel
+from PySide2.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QScrollArea, QFrame
 from PySide2 import QtGui
 from PySide2.QtCore import Qt
 from PySide2.QtGui import QPalette, QColor, QPixmap, QFont
 
 from connectionWidget import connectionWidget
-from paramWidget import paramWidget
-from angleWidget import angleWidget
+from rightWidget import rightWidget
 from plotWidget import plotWidget
 
 # https://stackoverflow.com/questions/1551605/how-to-set-applications-taskbar-icon-in-windows-7/1552105#1552105
@@ -22,31 +21,13 @@ class centralWidget(QWidget):
 		self.setWindowIcon(QtGui.QIcon('img/logo.png'))
 		self.setWindowTitle("Stepper motor controller")
 
-		# self.setStyleSheet("""
-		# 					QToolTip { 
-        #                    	background-color: #252525; 
-        #                    	color: white; 
-        #                    	border: black solid 1px
-        #                    	}
-		# 				   	""")
-		# 				   	# QPushButton { 
-        #                    	# background-color: #454545; 
-        #                    	# color: white; 
-        #                    	# }
-
-
 		#Objects 
 		self.COM = None
-
+		# ------------------------------------------------------------
 		# Widgets
+
 		# -> Serial Connection Widget
 		self.connection_wdg = connectionWidget(self)
-		
-		# -> Parameters Widget
-		self.param_wdg = paramWidget(self)
-
-		# -> Angle Widget
-		self.angle_wdg = angleWidget(self)
 
 		# -> Plot Widget
 		self.plot_wdg = plotWidget(self)
@@ -54,20 +35,33 @@ class centralWidget(QWidget):
 		# -> Logo Widget
 		self.logo_wdg = logoWidget(self)
 
+		# -> Right Scroll Widget
+		self.right_wdg = rightWidget(self)
+		
+		# ->-> Scroll Area
+		self.scroll_area = QScrollArea()
+
+		self.scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+		self.scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+		self.scroll_area.setWidgetResizable(True)
+		self.scroll_area.setFrameShape(QFrame.NoFrame)
+		self.scroll_area.setMinimumWidth(360)
+		self.scroll_area.setWidget(self.right_wdg)
+
+		# ------------------------------------------------------------
 		# Init routines
-		self.param_wdg.setEnabled(False)
-		self.angle_wdg.setEnabled(False)
+		self.right_wdg.setEnabled(False)
 
 		# Signals and Slots
 		self.connection_wdg.connect_signal.connect(self.connectUnlock)
 		self.connection_wdg.disconnect_signal.connect(self.disconnectLock)
-
+		# ------------------------------------------------------------
 		# Layout
 		v_layout = QVBoxLayout()
 		
 		v_layout.addWidget(self.connection_wdg)
-		v_layout.addWidget(self.param_wdg)
-		v_layout.addWidget(self.angle_wdg)
+		# v_layout.addWidget(self.right_wdg)
+		v_layout.addWidget(self.scroll_area)
 		v_layout.addStretch()
 		v_layout.addWidget(self.logo_wdg)
 		
@@ -80,13 +74,11 @@ class centralWidget(QWidget):
 
 	def disconnectLock(self):
 		self.COM = None
-		self.param_wdg.setEnabled(False)
-		self.angle_wdg.setEnabled(False)
+		self.right_wdg.setEnabled(False)
 
 	def connectUnlock(self):
 		self.COM = self.connection_wdg.serial_COM
-		self.param_wdg.setEnabled(True)
-		self.angle_wdg.setEnabled(True)
+		self.right_wdg.setEnabled(True)
 
 
 class logoWidget(QWidget):

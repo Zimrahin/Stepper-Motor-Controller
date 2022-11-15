@@ -23,7 +23,7 @@ class Window(QMainWindow):
 						}
 		self.setWindowIcon(QtGui.QIcon('img/logo.png'))
 		self.setWindowTitle("Stepper motor controller")
-		# style_string = 
+
 		self.setStyleSheet(f"""
 							QMenuBar {{
 								font: {self.settings_dict['font']['text_size']}pt "{self.settings_dict['font']['family']}";
@@ -171,6 +171,7 @@ if __name__ == '__main__':
 	app.setFont(QFont("Arial", 9))
 		
 	win = Window()
+	# print(win.dumpObjectTree())
 	win.show()
 
 	sys.exit(app.exec_())

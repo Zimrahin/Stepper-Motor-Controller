@@ -70,7 +70,7 @@ class plotWidget(QWidget):
 	
 		self.setMinimumWidth(700)
 
-		self.parent().data_xaxis = self.updatePlot([], 0, 'l', 100)
+		self.updatePlot([], 0, 'l', 100)
 
 	def updatePlot(self, data, angle, direction_char, N_rev):
 		# scale_factor = 360./N_rev
