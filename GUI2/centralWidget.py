@@ -41,7 +41,7 @@ class centralWidget(QWidget):
 		# ->-> Scroll Area
 		self.scroll_area = QScrollArea()
 
-		self.scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+		# self.scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 		self.scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 		self.scroll_area.setWidgetResizable(True)
 		self.scroll_area.setFrameShape(QFrame.NoFrame)
