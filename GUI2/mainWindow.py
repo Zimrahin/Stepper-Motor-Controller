@@ -172,6 +172,7 @@ if __name__ == '__main__':
 		
 	win = Window()
 	# print(win.dumpObjectTree())
+	win.move(350,150)
 	win.show()
 
 	sys.exit(app.exec_())

@@ -67,7 +67,7 @@ class centralWidget(QWidget):
 		
 
 		h_layout = QHBoxLayout()
-		h_layout.addWidget(self.plot_wdg, 5)
+		h_layout.addWidget(self.plot_wdg, 6)
 		h_layout.addLayout(v_layout, 1)
 
 		self.setLayout(h_layout)

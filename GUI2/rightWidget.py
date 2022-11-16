@@ -152,7 +152,7 @@ class rightWidget(QWidget):
 		#---------------------------------------------
 		# Signals and slots
 		self.default_btn.clicked.connect(self.defaultParameters)
-		self.apply_btn.clicked.connect(self.sendParameters)
+		self.apply_btn.clicked.connect(self.applyParameters)
 		self.connect(self.azimuth_res_combo, PySide2.QtCore.SIGNAL("currentIndexChanged(const QString&)"), self.defaultParameters)
 
 		self.move_btn.clicked.connect(self.sendMovement)
@@ -183,10 +183,10 @@ class rightWidget(QWidget):
 		param_fields.addRow('Minimum added delay', self.Tai_spinbox)
 		v_layout.addLayout(param_fields)
 		# Resolution and Acceleration buttons
-		btn_row = QHBoxLayout()
-		btn_row.addWidget(self.default_btn)
-		btn_row.addWidget(self.apply_btn)
-		v_layout.addLayout(btn_row)
+		# btn_row = QHBoxLayout()
+		# btn_row.addWidget(self.default_btn)
+		# btn_row.addWidget(self.apply_btn)
+		# v_layout.addLayout(btn_row)
 
 		# -> Angle SETTINGS
 		angle_fields = QFormLayout()
@@ -205,11 +205,11 @@ class rightWidget(QWidget):
 		v_layout.addLayout(btn_row)
 
 		# -> Title Label ELEVATION
-		empty_vspace = QLabel('')
 		h_layout = QHBoxLayout()
 		h_layout.addWidget(self.elevation_img)
 		h_layout.addWidget(self.elevation_txt)
 		h_layout.addStretch()
+		empty_vspace = QLabel('')
 		v_layout.addWidget(empty_vspace)
 		v_layout.addLayout(h_layout)
 
@@ -234,7 +234,10 @@ class rightWidget(QWidget):
 		btn_row.addWidget(self.reset_e_btn)
 		v_layout.addLayout(btn_row)
 		
-		#DEBUG
+		# -> APPLY AND START
+		empty_vspace = QLabel('')
+		v_layout.addWidget(empty_vspace)
+		v_layout.addWidget(self.apply_btn)
 		v_layout.addWidget(self.start_btn)
 
 
@@ -243,7 +246,6 @@ class rightWidget(QWidget):
 		self._setToolTips()
 
 	#---------------------------------------------		
-
 	def startRoutine(self):
 		self.parent().parent().parent().connection_wdg.send2COM('n4-r1600')
 		while(True):
@@ -253,7 +255,6 @@ class rightWidget(QWidget):
 				continue
 			else:
 				break
-
 
 	#---------------------------------------------
 	def printElevParam(self):
@@ -269,10 +270,9 @@ class rightWidget(QWidget):
 		}
 		return ret_dict
 	
-	def sendParameters(self):
+	def applyParameters(self):
 		out_dict = self.getFieldsValues()
-		out_string = 'p-' + str(out_dict['Nrev']) + '-' + str(out_dict['Pa']) + '-' + str(out_dict['Tas']) + '-' + str(out_dict['Tai'])  + '\n'
-		# self.out_label.setText(out_string)
+		out_string = 'p-' + str(out_dict['Nrev']) + '-' + str(out_dict['Pa']) + '-' + str(out_dict['Tas']) + '-' + str(out_dict['Tai']) + '-' + str(self.elev_res) + '\n'
 		# print(out_string)
 		self.parent().parent().parent().connection_wdg.send2COM(out_string)
 		
@@ -375,7 +375,8 @@ class rightWidget(QWidget):
 		values_list = values_list[0:-5]  #remove last elements
 		float_list = list(map(float,values_list))
 		return angle, direction_char, float_list, mean_time, mean_time_total, values_list
-		  
+
+	#---------------------------------------------	  
 	def colorSpin(self, spin, color='#f86e6c'):
 		spin.setStyleSheet(f'background-color : {color};')
 

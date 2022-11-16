@@ -15,7 +15,7 @@ import numpy as np
 
 
 class figCanvas(FigureCanvas):
-	def __init__(self, parent=None, width=7.5, height=4, dpi=100):
+	def __init__(self, parent=None, width=9, height=4, dpi=100):
 		self.fig = Figure(figsize=(width, height), dpi=dpi, tight_layout=True)
 		self.axes = self.fig.add_subplot(111)
 		super(figCanvas, self).__init__(self.fig)

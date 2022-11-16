@@ -9,13 +9,14 @@
 // #define LED_BUILTIN
 
 // Global variables:
-int N_rev_max = 6400;	// Steps per lap - max value (this value has to be the same as the value set in the motor driver)
-int N_rev_g = 6400;		// Steps por lap - global value that could change according to the resolution value required by the user
+int N_rev_max = 6400;	// Steps per rev - max value (this value has to be the same as the value set in the motor driver)
+int N_rev_g = 6400;		// Steps por rev - global value that could change according to the resolution value required by the user
 bool dir_g = false;		// Direction (defined as a global variable to change it within a function and call it on other function)
 int Pa_g = 0;			// Number of steps used to accelerate
 int Tas_g = 0;			// Initial time between steps
 int Tai_g = 0;			// Final time between steps
 int currentPos_g = 0; 	// Current position (global)
+int N_rev_elev_g = 6400;// Steps per rev - elevation
 
 
 float getSlope(float x1,float y1,float x2,float y2){
@@ -260,19 +261,32 @@ void loop()
 		// If the message has the form 'xYYY', then the motor will move for 'YYY' steps in 'x' direction.
 		// If the message is 'nZZ-xYYYY', then a routine will be executed in which the motor moves 'YYY' in 'x' direction, for ZZ times.
 
+		// Set (c)onnection
+		if (receivedString[0] == 'c') {
+			N_rev_g = getValue(receivedString,'-',1).toInt();
+			Pa_g = getValue(receivedString,'-',2).toInt();
+			Tas_g = getValue(receivedString,'-',3).toInt();
+			Tai_g = getValue(receivedString,'-',4).toInt();
+			N_rev_elev_g = getValue(receivedString,'-',5).toInt();
+			currentPos_g = 0;
+			Serial.println("ack");
+			return;
+		}
+
 		// Reset position:
-		if (receivedString == "reset"){
+		else if (receivedString == "reset"){
 			currentPos_g = 0;
 			Serial.println("ack");
 			return;
 		}
 
 		// Change parameters:
-		if (receivedString[0] == 'p') { //extract letter, 'p' for param changes, p-Nrev-Pa-Tas-Tai
+		else if (receivedString[0] == 'p') { //extract letter, 'p' for param changes, p-Nrev-Pa-Tas-Tai
 			N_rev_g = getValue(receivedString,'-',1).toInt();
 			Pa_g = getValue(receivedString,'-',2).toInt();
 			Tas_g = getValue(receivedString,'-',3).toInt();
 			Tai_g = getValue(receivedString,'-',4).toInt();
+			N_rev_elev_g = getValue(receivedString,'-',5).toInt();
 			Serial.println("ack");
 			return;
 		}
