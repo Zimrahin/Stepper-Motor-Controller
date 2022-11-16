@@ -310,7 +310,7 @@ void loop()
 				movement(moveString);
 				movement(rstString); //move to zero
 				digitalWrite(LED_BUILTIN, LOW); 
-				delay(1000);
+				delay(400);
 				digitalWrite(LED_BUILTIN, HIGH); 
 				// while (1){
 				// 	if(Serial.available()>0){

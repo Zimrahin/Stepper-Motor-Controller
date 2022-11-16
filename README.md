@@ -36,7 +36,6 @@ y extraer las frecuencias procesando el string. Esto no debe hacer nada en un co
 ### Extras
 - [ ] Dejar grafico en decibeles
 - [ ] Guardar datos en tarjeta SD
-- [ ] Migrar proyecto a pyonedark
 
 ### Escritura/Lectura de archivos
 - [ ] Agregar opción de escribir como JSON
