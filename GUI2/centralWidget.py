@@ -1,5 +1,5 @@
 import sys 
-from PySide2.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QScrollArea, QFrame
+from PySide2.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QScrollArea, QFrame, QPushButton
 from PySide2 import QtGui
 from PySide2.QtCore import Qt
 from PySide2.QtGui import QPalette, QColor, QPixmap, QFont
@@ -13,6 +13,7 @@ import ctypes
 myappid = 'StepperMotorController' # arbitrary string
 ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 
+STATUS_BAR_TIMEOUT = 5000
 
 class centralWidget(QWidget):
 	def __init__(self, parent=None):
@@ -25,6 +26,9 @@ class centralWidget(QWidget):
 		self.COM = None
 		# ------------------------------------------------------------
 		# Widgets
+
+		self.apply_btn = QPushButton('Apply')
+		self.start_btn = QPushButton('Start')
 
 		# -> Serial Connection Widget
 		self.connection_wdg = connectionWidget(self)
@@ -55,6 +59,9 @@ class centralWidget(QWidget):
 		# Signals and Slots
 		self.connection_wdg.connect_signal.connect(self.connectUnlock)
 		self.connection_wdg.disconnect_signal.connect(self.disconnectLock)
+
+		self.apply_btn.clicked.connect(self.applyParameters)
+		self.start_btn.clicked.connect(self.startRoutine)
 		# ------------------------------------------------------------
 		# Layout
 		v_layout = QVBoxLayout()
@@ -63,6 +70,9 @@ class centralWidget(QWidget):
 		# v_layout.addWidget(self.right_wdg)
 		v_layout.addWidget(self.scroll_area)
 		# v_layout.addStretch()
+		v_layout.addWidget(self.apply_btn)
+		v_layout.addWidget(self.start_btn)
+
 		v_layout.addWidget(self.logo_wdg)
 		
 
@@ -71,6 +81,30 @@ class centralWidget(QWidget):
 		h_layout.addLayout(v_layout, 1)
 
 		self.setLayout(h_layout)
+
+	def applyParameters(self):
+		out_dict = self.right_wdg.getFieldsValues()
+		out_string = 'p-' + str(out_dict['Nrev']) + '-' + str(out_dict['Pa']) + '-' + str(out_dict['Tas']) + '-' + str(out_dict['Tai']) + '-' + str(self.right_wdg.elev_res) + '\n'
+		print(out_string)
+		self.connection_wdg.send2COM(out_string)
+		
+		response = self.connection_wdg.receiveOnlyCOM()
+		if (response == 'ack'):
+			self.right_wdg.param_dict = out_dict #update necessary for degree->step conversion (called from angleWidget)
+			self.parent().status_bar.showMessage("Parameters set successfully!", STATUS_BAR_TIMEOUT)
+			return True
+		else:
+			raise Exception('Device did not respond')
+
+	def startRoutine(self):
+		self.connection_wdg.send2COM('n4-r1600')
+		while(True):
+			received_string_debug = self.connection_wdg.receiveOnlyCOM()
+			if received_string_debug:
+				print(received_string_debug)
+				continue
+			else:
+				break
 
 	def disconnectLock(self):
 		self.COM = None

@@ -121,15 +121,14 @@ class rightWidget(QWidget):
 
 		# -> Push Buttons
 		self.default_btn = QPushButton('Default')
-		self.apply_btn = QPushButton('Apply')
 		self.move_btn = QPushButton('Move')
 		self.reset_btn = QPushButton('Reset angle')
 
 		self.move_e_btn = QPushButton('Move') # elevation
 		self.reset_e_btn = QPushButton('Reset angle')
 
-		# DEBUG BUTTON
-		self.start_btn = QPushButton('Start')
+		# self.apply_btn = QPushButton('Apply')
+		# self.start_btn = QPushButton('Start')
 
 		#---------------------------------------------
 		# Init routine 
@@ -152,7 +151,6 @@ class rightWidget(QWidget):
 		#---------------------------------------------
 		# Signals and slots
 		self.default_btn.clicked.connect(self.defaultParameters)
-		self.apply_btn.clicked.connect(self.applyParameters)
 		self.connect(self.azimuth_res_combo, PySide2.QtCore.SIGNAL("currentIndexChanged(const QString&)"), self.defaultParameters)
 
 		self.move_btn.clicked.connect(self.sendMovement)
@@ -162,7 +160,8 @@ class rightWidget(QWidget):
 		self.move_e_btn.clicked.connect(self.sendMovementElevation)
 		self.reset_e_btn.clicked.connect(self.sendResetElevation)
 
-		self.start_btn.clicked.connect(self.startRoutine)
+		# self.apply_btn.clicked.connect(self.applyParameters)
+		# self.start_btn.clicked.connect(self.startRoutine)
 
 		#---------------------------------------------
 		# Layout
@@ -237,8 +236,8 @@ class rightWidget(QWidget):
 		# -> APPLY AND START
 		empty_vspace = QLabel('')
 		v_layout.addWidget(empty_vspace)
-		v_layout.addWidget(self.apply_btn)
-		v_layout.addWidget(self.start_btn)
+		# v_layout.addWidget(self.apply_btn)
+		# v_layout.addWidget(self.start_btn)
 
 
 		v_layout.addStretch()
@@ -246,15 +245,15 @@ class rightWidget(QWidget):
 		self._setToolTips()
 
 	#---------------------------------------------		
-	def startRoutine(self):
-		self.parent().parent().parent().connection_wdg.send2COM('n4-r1600')
-		while(True):
-			received_string_debug = self.parent().parent().parent().connection_wdg.receiveOnlyCOM()
-			if received_string_debug:
-				print(received_string_debug)
-				continue
-			else:
-				break
+	# def startRoutine(self):
+	# 	self.parent().parent().parent().connection_wdg.send2COM('n4-r1600')
+	# 	while(True):
+	# 		received_string_debug = self.parent().parent().parent().connection_wdg.receiveOnlyCOM()
+	# 		if received_string_debug:
+	# 			print(received_string_debug)
+	# 			continue
+	# 		else:
+	# 			break
 
 	#---------------------------------------------
 	def printElevParam(self):
@@ -270,19 +269,19 @@ class rightWidget(QWidget):
 		}
 		return ret_dict
 	
-	def applyParameters(self):
-		out_dict = self.getFieldsValues()
-		out_string = 'p-' + str(out_dict['Nrev']) + '-' + str(out_dict['Pa']) + '-' + str(out_dict['Tas']) + '-' + str(out_dict['Tai']) + '-' + str(self.elev_res) + '\n'
-		# print(out_string)
-		self.parent().parent().parent().connection_wdg.send2COM(out_string)
+	# def applyParameters(self):
+	# 	out_dict = self.getFieldsValues()
+	# 	out_string = 'p-' + str(out_dict['Nrev']) + '-' + str(out_dict['Pa']) + '-' + str(out_dict['Tas']) + '-' + str(out_dict['Tai']) + '-' + str(self.elev_res) + '\n'
+	# 	# print(out_string)
+	# 	self.parent().parent().parent().connection_wdg.send2COM(out_string)
 		
-		response = self.parent().parent().parent().connection_wdg.receiveOnlyCOM()
-		if (response == 'ack'):
-			self.param_dict = out_dict #update necessary for degree->step conversion (called from angleWidget)
-			self.parent().parent().parent().parent().status_bar.showMessage("Parameters set successfully!", STATUS_BAR_TIMEOUT)
-			return True
-		else:
-			raise Exception('Device did not respond')
+	# 	response = self.parent().parent().parent().connection_wdg.receiveOnlyCOM()
+	# 	if (response == 'ack'):
+	# 		self.param_dict = out_dict #update necessary for degree->step conversion (called from angleWidget)
+	# 		self.parent().parent().parent().parent().status_bar.showMessage("Parameters set successfully!", STATUS_BAR_TIMEOUT)
+	# 		return True
+	# 	else:
+	# 		raise Exception('Device did not respond')
 
 			
 	#---------------------------------------------
@@ -295,6 +294,7 @@ class rightWidget(QWidget):
 			if listRadioBtn[i].isChecked():
 				# self.out_label.setText(listLetters[i] + str(out_step))
 				self.parent().parent().parent().connection_wdg.send2COM(listLetters[i] + str(out_step))
+				print(listLetters[i] + str(out_step))
 		
 		self.parent().parent().parent().parent().status_bar.showMessage("Moving...", 1000)
 
@@ -415,7 +415,7 @@ class rightWidget(QWidget):
 		self.Tas_spinbox.setToolTip('<b>Maximum delay</b> added to <b>each step</b> \n to decrease rotation speed')
 		self.Tai_spinbox.setToolTip('<b>Minimum delay</b> added to <b>each step</b> \n to decrease rotation speed')
 		self.default_btn.setToolTip('Set optimum empirical parameters to <b>maximise</b> rotation speed while keeping a <b>stable behaviour</b> of stepper motor')
-		self.apply_btn.setToolTip('Send command to set parameters')
+		self.parent().apply_btn.setToolTip('Send command to set parameters')
 
 	#---------------------------------------------
 	def angleBoxConfig(self, box, highest_deg):
