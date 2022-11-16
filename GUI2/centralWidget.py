@@ -62,7 +62,7 @@ class centralWidget(QWidget):
 		v_layout.addWidget(self.connection_wdg)
 		# v_layout.addWidget(self.right_wdg)
 		v_layout.addWidget(self.scroll_area)
-		v_layout.addStretch()
+		# v_layout.addStretch()
 		v_layout.addWidget(self.logo_wdg)
 		
 

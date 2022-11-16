@@ -6,6 +6,7 @@
 #define SETPPIN GPIO_1	//Pin 12 
 #define DIRPIN GPIO_2	//Pin 11
 #define ENAPIN GPIO_3	//Pin 10
+// #define LED_BUILTIN
 
 // Global variables:
 int N_rev_max = 6400;	// Steps per lap - max value (this value has to be the same as the value set in the motor driver)
@@ -16,6 +17,7 @@ int Tas_g = 0;			// Initial time between steps
 int Tai_g = 0;			// Final time between steps
 int currentPos_g = 0; 	// Current position (global)
 
+
 float getSlope(float x1,float y1,float x2,float y2){
 	// Helpful function to calculate a slope
 	return (y2-y1)/(x2-x1);
@@ -25,7 +27,7 @@ float getIntercept(float x1,float y1,float m){
 	return y1-m*x1;
 }
 
-void forward(int N, bool reverse=false, int Pa=Pa_g, int Tas=Tas_g, int Tai=Tai_g, int N_rev=N_rev_g){
+void forward(int N, bool reverse=false, int Pa=Pa_g, int Tas=Tas_g, int Tai=Tai_g, int N_rev=N_rev_g, bool print_flag=true){
 	// Function used to move the motor.
 	// N: Number of steps to move.
 	// reverse: Direction, false is clockwise, true is counterclockwise
@@ -104,8 +106,11 @@ void forward(int N, bool reverse=false, int Pa=Pa_g, int Tas=Tas_g, int Tai=Tai_
 					// Read pin and send the value through serial port (reading/writing process)
 					sensorValue = analogRead(A0);
 					sensorVoltage = sensorValue * (3.110/1023.0);
-					Serial.print(sensorVoltage);
-					Serial.print('-');
+					
+					if (print_flag){
+						Serial.print(sensorVoltage);
+						Serial.print('-');
+					}
         			
 					stop_meas_time = micros();	// Stop reading/writing time
 					stop_time = micros();		// Stop total time
@@ -128,10 +133,12 @@ void forward(int N, bool reverse=false, int Pa=Pa_g, int Tas=Tas_g, int Tai=Tai_
 	total_time = total_time/N;
 
 	// Send time data through serial port
-	Serial.print(total_meas_time);  
-	Serial.print('-');
-  	Serial.print(total_time);  
-	Serial.print('-');
+	if (print_flag){
+		Serial.print(total_meas_time);  
+		Serial.print('-');
+  		Serial.print(total_time);  
+		Serial.print('-');
+	}
 	return;
 }
 
@@ -202,6 +209,29 @@ String getValue(String data, char separator, int index)
   	return found>index ? data.substring(strIndex[0], strIndex[1]) : "";
 }
 
+void movement(String rcvString, int Pa=Pa_g, int Tas=Tas_g, int Tai=Tai_g, int N_rev=N_rev_g, bool print_flag=true){
+	int steps_to_move;	
+	steps_to_move = calculateStep(rcvString, currentPos_g); // Calculate how many steps to move and get direction from string
+	if (steps_to_move == -1){	// If there is an error, do not move
+		steps_to_move = 0;
+	}
+	forward(steps_to_move, dir_g, Pa, Tas, Tai, N_rev, print_flag);	// Move motor
+
+	// These values are sent to the computer through serial port to make the plots:		
+	char real_direction = dir_g ? 'l' : 'r';	// Left or right?
+
+	if (print_flag){
+		Serial.print(currentPos_g);
+		Serial.print('-');		
+		Serial.print(real_direction);
+		Serial.print('-');
+		Serial.print(steps_to_move);
+		Serial.print('-');
+		// End message:
+		Serial.println(); // \n at the end to let know PC all info has been sent
+	}	
+	return;	
+}
 
 void setup() {
 	// Set baud rate:
@@ -210,11 +240,14 @@ void setup() {
 	// Set motor pins mode:
 	pinMode(SETPPIN,OUTPUT);
 	pinMode(DIRPIN,OUTPUT);
+
+	// Set led pin:
+	pinMode(LED_BUILTIN, OUTPUT);
+    digitalWrite(LED_BUILTIN, HIGH); 
 }
 
 void loop() 
-{	
-	int steps_to_move;	
+{		
 	String receivedString = "0";
 	if (Serial.available() > 0) // Listen for incoming message
 	{
@@ -222,9 +255,17 @@ void loop()
 		receivedString.trim(); // remove \n,\r,\0
 
 		// The received messages can have different forms:
-		// If the message is 'p-W-X-Y-Z', then the parameters will be changed according to the 'W-X-Y-Z' values.
-		// If the message is 'reset', then the current position is set to be zero.
+		// If the message is 'reset', then the current position is set to be zero.		
+		// If the message is 'p-W-X-Y-Z', then the parameters will be changed according to the 'W-X-Y-Z' values.		
 		// If the message has the form 'xYYY', then the motor will move for 'YYY' steps in 'x' direction.
+		// If the message is 'nZZ-xYYYY', then a routine will be executed in which the motor moves 'YYY' in 'x' direction, for ZZ times.
+
+		// Reset position:
+		if (receivedString == "reset"){
+			currentPos_g = 0;
+			Serial.println("ack");
+			return;
+		}
 
 		// Change parameters:
 		if (receivedString[0] == 'p') { //extract letter, 'p' for param changes, p-Nrev-Pa-Tas-Tai
@@ -236,32 +277,39 @@ void loop()
 			return;
 		}
 
-		// Reset position:
-		if (receivedString == "reset"){
-			currentPos_g = 0;
-			Serial.println("ack");
-			return;
-		}
-
 		// Move motor:
-		steps_to_move = calculateStep(receivedString, currentPos_g); // Calculate how many steps to move and get direction from string
-		if (steps_to_move == -1){	// If there is an error, do not move
-			steps_to_move = 0;
+		else if (receivedString[0] == 'a' || receivedString[0] == 'r' || receivedString[0] == 'l' ){
+			movement(receivedString);
+			return;
+		}		
+
+		// Routine:
+		else if (receivedString[0] == 'n'){
+
+			String rtnString = getValue(receivedString,'-',0);
+			String moveString = getValue(receivedString,'-',1);
+			String rstString = "a0";
+			
+			int laps = rtnString.substring(1).toInt();
+
+			for (int i = 0; i <= laps; i++){
+				movement(moveString);
+				movement(rstString); //move to zero
+				digitalWrite(LED_BUILTIN, LOW); 
+				delay(1000);
+				digitalWrite(LED_BUILTIN, HIGH); 
+				// while (1){
+				// 	if(Serial.available()>0){
+				// 		ackString = Serial.readString();
+				// 		ackString.trim();
+				// 		if (ackString == "ack"){
+				// 			break;
+				// 		}						
+				// 	}
+				// }
+
+			}
 		}
-		forward(steps_to_move, dir_g, Pa_g, Tas_g, Tai_g, N_rev_g);	// Move motor
-
-		// These values are sent to the computer through serial port to construct the plots:		
-		char real_direction = dir_g ? 'l' : 'r';	// Left or right?
-
-		Serial.print(currentPos_g);
-		Serial.print('-');		
-		Serial.print(real_direction);
-		Serial.print('-');
-		Serial.print(steps_to_move);
-		Serial.print('-');
-		// End message:
-		Serial.println(); // \n at the end to let know PC all info has been sent
 	}
 }
-
 	
