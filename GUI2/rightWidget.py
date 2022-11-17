@@ -31,6 +31,7 @@ TIME_STEP_INCREMENT = 10
 TIME_UNITS = ' \u03BCs'
 
 STATUS_BAR_TIMEOUT = 5000
+ELEV_RES = 200
 
 class rightWidget(QWidget):
 	def __init__(self, parent=None):
@@ -73,9 +74,15 @@ class rightWidget(QWidget):
 		self.Pa_spinbox = QSpinBox()
 		self.Tas_spinbox = QSpinBox()
 		self.Tai_spinbox = QSpinBox()
-		self.angle_spinbox = QDoubleSpinBox()
 
+		self.angle_azim_spinbox = QDoubleSpinBox()
 		self.angle_elev_spinbox = QDoubleSpinBox()
+
+		self.initial_azim_spinbox = QDoubleSpinBox()
+		self.final_azim_spinbox = QDoubleSpinBox()
+		self.initial_elev_spinbox = QDoubleSpinBox()
+		self.final_elev_spinbox = QDoubleSpinBox()
+
 
 		# -> Radio buttons
 		self.a_radio = QRadioButton()
@@ -127,26 +134,33 @@ class rightWidget(QWidget):
 		self.move_e_btn = QPushButton('Move') # elevation
 		self.reset_e_btn = QPushButton('Reset angle')
 
-		# self.apply_btn = QPushButton('Apply')
-		# self.start_btn = QPushButton('Start')
-
 		#---------------------------------------------
 		# Init routine 
-		self.angleBoxConfig(self.angle_spinbox, HIGHEST_DEG)
-		self.angleBoxConfig(self.angle_elev_spinbox, HIGHEST_DEG_ELEV)
+		self.angleBoxConfig(self.angle_azim_spinbox, LOWEST_DEG, HIGHEST_DEG)
+		self.angleBoxConfig(self.angle_elev_spinbox, LOWEST_DEG, HIGHEST_DEG_ELEV)
 		self.a_radio.setChecked(True)
 		self.ae_radio.setChecked(True)
 
 		self.azimuth_res_combo.setCurrentText(self.resolution_list[5])
-		self.elevation_res_combo.setCurrentText(self.resolution_list[5])
+		self.elevation_res_combo.setCurrentText(self.resolution_list[0])
 		self.NBoxConfig(self.Pa_spinbox)
 		self.TimeBoxConfig(self.Tai_spinbox)
 		self.TimeBoxConfig(self.Tas_spinbox)
 
+		self.angleBoxConfig(self.initial_azim_spinbox, 0, 360)
+		self.angleBoxConfig(self.final_azim_spinbox, 0, 360)
+		self.angleBoxConfig(self.initial_elev_spinbox, 0, 360)
+		self.angleBoxConfig(self.final_elev_spinbox, 0, 360)
+
+		self.initial_azim_spinbox.setValue(280)
+		self.final_azim_spinbox.setValue(80)
+		self.initial_elev_spinbox.setValue(358)
+
+
 		#---------------------------------------------
 		# Objects
 		self.param_dict = self.getFieldsValues()
-		self.elev_res = 6400
+		self.elev_res = ELEV_RES
 
 		#---------------------------------------------
 		# Signals and slots
@@ -159,9 +173,6 @@ class rightWidget(QWidget):
 		self.connect(self.elevation_res_combo, PySide2.QtCore.SIGNAL("currentIndexChanged(const QString&)"), self.printElevParam)
 		self.move_e_btn.clicked.connect(self.sendMovementElevation)
 		self.reset_e_btn.clicked.connect(self.sendResetElevation)
-
-		# self.apply_btn.clicked.connect(self.applyParameters)
-		# self.start_btn.clicked.connect(self.startRoutine)
 
 		#---------------------------------------------
 		# Layout
@@ -181,15 +192,10 @@ class rightWidget(QWidget):
 		param_fields.addRow('Maximum added delay', self.Tas_spinbox)
 		param_fields.addRow('Minimum added delay', self.Tai_spinbox)
 		v_layout.addLayout(param_fields)
-		# Resolution and Acceleration buttons
-		# btn_row = QHBoxLayout()
-		# btn_row.addWidget(self.default_btn)
-		# btn_row.addWidget(self.apply_btn)
-		# v_layout.addLayout(btn_row)
 
 		# -> Angle SETTINGS
 		angle_fields = QFormLayout()
-		angle_fields.addRow('Angle', self.angle_spinbox)
+		angle_fields.addRow('Angle', self.angle_azim_spinbox)
 		v_layout.addLayout(angle_fields)
 		# -> Radio buttons (a, l, r)
 		radio_btn_row = QHBoxLayout()
@@ -202,6 +208,16 @@ class rightWidget(QWidget):
 		btn_row.addWidget(self.move_btn)
 		btn_row.addWidget(self.reset_btn)
 		v_layout.addLayout(btn_row)
+
+		# Routine settings AZIMUTH
+		init_final_row = QHBoxLayout()
+		init_form = QFormLayout()
+		init_form.addRow('Initial angle', self.initial_azim_spinbox)
+		init_final_row.addLayout(init_form)
+		final_form = QFormLayout()
+		final_form.addRow('Final angle', self.final_azim_spinbox)
+		init_final_row.addLayout(final_form)
+		v_layout.addLayout(init_final_row)
 
 		# -> Title Label ELEVATION
 		h_layout = QHBoxLayout()
@@ -233,27 +249,20 @@ class rightWidget(QWidget):
 		btn_row.addWidget(self.reset_e_btn)
 		v_layout.addLayout(btn_row)
 		
-		# -> APPLY AND START
-		empty_vspace = QLabel('')
-		v_layout.addWidget(empty_vspace)
-		# v_layout.addWidget(self.apply_btn)
-		# v_layout.addWidget(self.start_btn)
+		# Routine settings ELEVATION
+		init_final_row = QHBoxLayout()
+		init_form = QFormLayout()
+		init_form.addRow('Initial angle', self.initial_elev_spinbox)
+		init_final_row.addLayout(init_form)
+		final_form = QFormLayout()
+		final_form.addRow('Final angle', self.final_elev_spinbox)
+		init_final_row.addLayout(final_form)
+		v_layout.addLayout(init_final_row)
 
 
 		v_layout.addStretch()
 		self.setLayout(v_layout)
 		self._setToolTips()
-
-	#---------------------------------------------		
-	# def startRoutine(self):
-	# 	self.parent().parent().parent().connection_wdg.send2COM('n4-r1600')
-	# 	while(True):
-	# 		received_string_debug = self.parent().parent().parent().connection_wdg.receiveOnlyCOM()
-	# 		if received_string_debug:
-	# 			print(received_string_debug)
-	# 			continue
-	# 		else:
-	# 			break
 
 	#---------------------------------------------
 	def printElevParam(self):
@@ -268,25 +277,9 @@ class rightWidget(QWidget):
 			'Tai':self.Tai_spinbox.value()
 		}
 		return ret_dict
-	
-	# def applyParameters(self):
-	# 	out_dict = self.getFieldsValues()
-	# 	out_string = 'p-' + str(out_dict['Nrev']) + '-' + str(out_dict['Pa']) + '-' + str(out_dict['Tas']) + '-' + str(out_dict['Tai']) + '-' + str(self.elev_res) + '\n'
-	# 	# print(out_string)
-	# 	self.parent().parent().parent().connection_wdg.send2COM(out_string)
-		
-	# 	response = self.parent().parent().parent().connection_wdg.receiveOnlyCOM()
-	# 	if (response == 'ack'):
-	# 		self.param_dict = out_dict #update necessary for degree->step conversion (called from angleWidget)
-	# 		self.parent().parent().parent().parent().status_bar.showMessage("Parameters set successfully!", STATUS_BAR_TIMEOUT)
-	# 		return True
-	# 	else:
-	# 		raise Exception('Device did not respond')
-
-			
 	#---------------------------------------------
 	def sendMovement(self):
-		out_angle = self.angle_spinbox.value()
+		out_angle = self.angle_azim_spinbox.value()
 		out_step = self.angleToStep(out_angle, int(self.param_dict['Nrev']))
 		listLetters = ['a', 'l', 'r']
 		listRadioBtn = [self.a_radio, self.l_radio, self.r_radio]
@@ -296,7 +289,7 @@ class rightWidget(QWidget):
 				self.parent().parent().parent().connection_wdg.send2COM(listLetters[i] + str(out_step))
 				print(listLetters[i] + str(out_step))
 		
-		self.parent().parent().parent().parent().status_bar.showMessage("Moving...", 1000)
+		# self.parent().parent().parent().parent().status_bar.showMessage("Moving...", 1000)
 
 		# READ
 		received_string = self.parent().parent().parent().connection_wdg.receiveOnlyCOM()
@@ -349,15 +342,24 @@ class rightWidget(QWidget):
 	def sendMovementElevation(self):
 		out_angle = self.angle_elev_spinbox.value()
 		out_step = self.angleToStep(out_angle, self.elev_res)
-		listLetters = ['æ', 'u', 'd']
+		listLetters = ['e', 'u', 'd']
 		listRadioBtn = [self.ae_radio, self.u_radio, self.d_radio]
 		for i in range(len(listRadioBtn)):
 			if listRadioBtn[i].isChecked():
-				# self.parent().parent().parent().connection_wdg.send2COM(listLetters[i] + str(out_step))
+				self.parent().parent().parent().connection_wdg.send2COM(listLetters[i] + str(out_step))
 				print(listLetters[i] + str(out_step))
 
+		# READ
+		received_string = self.parent().parent().parent().connection_wdg.receiveOnlyCOM()
+
 	def sendResetElevation(self):
-		print("reset_elev")	
+		self.parent().parent().parent().connection_wdg.send2COM("reset_elev")	
+		response = self.parent().parent().parent().connection_wdg.receiveOnlyCOM()
+		if (response == 'ack'):			
+			self.parent().parent().parent().parent().status_bar.showMessage('Angle reset successfully!', STATUS_BAR_TIMEOUT)
+			return True
+		else:
+			raise Exception('Device did not respond')
 
 	def angleToStep(self, angle, N_rev):
 		step = int(floor(angle * N_rev / 360))
@@ -366,8 +368,8 @@ class rightWidget(QWidget):
 	def unpackData(self, received_string):
 		values_list = received_string.split('-')[0:-1] # there is an empty char at the end 
 		values_list = list(filter(None, values_list)) # delete empty value
-		print(values_list) #debug only
-		print(len(values_list))
+		# print(values_list) #debug only
+		# print(len(values_list))
 		mean_time = values_list[-5] #microseconds
 		mean_time_total = values_list[-4] #microseconds
 		angle = values_list[-3]
@@ -418,8 +420,8 @@ class rightWidget(QWidget):
 		self.parent().apply_btn.setToolTip('Send command to set parameters')
 
 	#---------------------------------------------
-	def angleBoxConfig(self, box, highest_deg):
-		box.setMinimum(LOWEST_DEG)
+	def angleBoxConfig(self, box, lowest_deg, highest_deg):
+		box.setMinimum(lowest_deg)
 		box.setMaximum(highest_deg)
 		box.setSingleStep(STEP_INCREMENT)
 		box.setSuffix(DEG_UNITS)
@@ -437,30 +439,31 @@ class rightWidget(QWidget):
 		box.setSuffix(TIME_UNITS)
 
 	def defaultParameters(self):
+		local_Pa = 4800
 		if self.azimuth_res_combo.currentText() == self.resolution_list[5]:
-			self.Pa_spinbox.setValue(0)
+			self.Pa_spinbox.setValue(local_Pa)
 			self.Tas_spinbox.setValue(0)
 			self.Tai_spinbox.setValue(0)
 		elif self.azimuth_res_combo.currentText() == self.resolution_list[4]:
-			self.Pa_spinbox.setValue(0)
+			self.Pa_spinbox.setValue(local_Pa)
 			self.Tas_spinbox.setValue(0)
 			self.Tai_spinbox.setValue(0)
 		elif self.azimuth_res_combo.currentText() == self.resolution_list[3]:
-			self.Pa_spinbox.setValue(1600)
-			self.Tas_spinbox.setValue(8)
+			self.Pa_spinbox.setValue(local_Pa)
+			self.Tas_spinbox.setValue(12)
 			self.Tai_spinbox.setValue(0)
 		elif self.azimuth_res_combo.currentText() == self.resolution_list[2]:
-			self.Pa_spinbox.setValue(1600)
-			self.Tas_spinbox.setValue(16)
-			self.Tai_spinbox.setValue(8)
-		elif self.azimuth_res_combo.currentText() == self.resolution_list[1]:
-			self.Pa_spinbox.setValue(1600)
-			self.Tas_spinbox.setValue(20)
-			self.Tai_spinbox.setValue(12)
-		elif self.azimuth_res_combo.currentText() == self.resolution_list[0]:
-			self.Pa_spinbox.setValue(1600)
+			self.Pa_spinbox.setValue(local_Pa)
 			self.Tas_spinbox.setValue(22)
-			self.Tai_spinbox.setValue(14)
+			self.Tai_spinbox.setValue(4)
+		elif self.azimuth_res_combo.currentText() == self.resolution_list[1]:
+			self.Pa_spinbox.setValue(local_Pa)
+			self.Tas_spinbox.setValue(22)
+			self.Tai_spinbox.setValue(6)
+		elif self.azimuth_res_combo.currentText() == self.resolution_list[0]:
+			self.Pa_spinbox.setValue(local_Pa)
+			self.Tas_spinbox.setValue(22)
+			self.Tai_spinbox.setValue(9)
 		else:
 			print('if you see this, there is an error (probably)')
 	

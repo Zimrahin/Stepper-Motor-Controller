@@ -97,11 +97,40 @@ class centralWidget(QWidget):
 			raise Exception('Device did not respond')
 
 	def startRoutine(self):
-		self.connection_wdg.send2COM('n4-r1600')
+		# initial and final angles from spinboxes
+		azim_init_angle = self.right_wdg.initial_azim_spinbox.value()
+		azim_final_angle = self.right_wdg.final_azim_spinbox.value()
+		elev_init_angle = self.right_wdg.initial_elev_spinbox.value()
+		elev_final_angle = self.right_wdg.final_elev_spinbox.value()
+
+		# initial and final steps to be sent to Arduino
+		azim_init_step = self.right_wdg.angleToStep(azim_init_angle, int(self.right_wdg.param_dict['Nrev']))
+		azim_final_step = self.right_wdg.angleToStep(azim_final_angle, int(self.right_wdg.param_dict['Nrev']))
+		elev_init_step = self.right_wdg.angleToStep(elev_init_angle, self.right_wdg.elev_res)
+		elev_final_step = self.right_wdg.angleToStep(elev_final_angle, self.right_wdg.elev_res)
+
+		out_string = f'n-a{azim_init_step}-a{azim_final_step}-e{elev_init_step}-e{elev_final_step}'
+
+		print(out_string)
+		self.connection_wdg.send2COM(out_string)
 		while(True):
-			received_string_debug = self.connection_wdg.receiveOnlyCOM()
-			if received_string_debug:
-				print(received_string_debug)
+			received_string = self.connection_wdg.receiveOnlyCOM()
+			if received_string:
+				# print(received_string)
+				angle, direction_char, float_list, mean_time, mean_time_total, values_list = self.right_wdg.unpackData(received_string)
+
+				#PLOT
+				data_xaxis = self.plot_wdg.updatePlot(float_list, int(angle), direction_char, int(self.right_wdg.param_dict['Nrev']))		
+
+				# COMPUTE DATA STATISTICS (this section MUST be after updatePlot)
+				pp, pa = self.right_wdg.computePeakPower(float_list, data_xaxis)
+				mp = self.right_wdg.computeMeanPower(float_list)
+				rpm = self.right_wdg.computeRPM(int(mean_time_total))
+
+				self.plot_wdg.pp_label.setText(f'PP = {pp:.2f} V')
+				self.plot_wdg.pa_label.setText(f'PA = {pa:.2f}º')
+				self.plot_wdg.mp_label.setText(f'MP = {mp:.2f} V')
+				self.plot_wdg.rpm_label.setText(f'RPM = {rpm:.1f}')
 				continue
 			else:
 				break

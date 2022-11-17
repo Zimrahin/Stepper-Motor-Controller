@@ -3,20 +3,27 @@
 // #include "FATFileSystem.h"
 // #include "SDMMCBlockDevice.h"
 
-#define SETPPIN GPIO_1	//Pin 12 
-#define DIRPIN GPIO_2	//Pin 11
-#define ENAPIN GPIO_3	//Pin 10
+// Motor 1 (azimuth)
+#define SETPIN1 GPIO_1	//Pin 12 
+#define DIRPIN1 GPIO_2	//Pin 11
+#define ENAPIN1 GPIO_3	//Pin 10
+// Motor 2 (elevation)
+#define SETPIN2 GPIO_1	//Pin 12
+#define DIRPIN2 GPIO_2	//Pin 11
+#define ENAPIN2 GPIO_3	//Pin 10
+
 // #define LED_BUILTIN
 
 // Global variables:
 int N_rev_max = 6400;	// Steps per rev - max value (this value has to be the same as the value set in the motor driver)
-int N_rev_g = 6400;		// Steps por rev - global value that could change according to the resolution value required by the user
+int N_rev_azim_g = 6400;// Steps por rev - global value that could change according to the resolution value required by the user (Azimuth)
+int N_rev_elev_g = 6400;// Steps per rev - elevation
 bool dir_g = false;		// Direction (defined as a global variable to change it within a function and call it on other function)
 int Pa_g = 0;			// Number of steps used to accelerate
 int Tas_g = 0;			// Initial time between steps
 int Tai_g = 0;			// Final time between steps
-int currentPos_g = 0; 	// Current position (global)
-int N_rev_elev_g = 6400;// Steps per rev - elevation
+int currentPos_azim_g = 0; 	// Current azimuth position (global)
+int currentPos_elev_g = 0; 	// Current elevation position (global)
 
 
 float getSlope(float x1,float y1,float x2,float y2){
@@ -28,7 +35,7 @@ float getIntercept(float x1,float y1,float m){
 	return y1-m*x1;
 }
 
-void forward(int N, bool reverse=false, int Pa=Pa_g, int Tas=Tas_g, int Tai=Tai_g, int N_rev=N_rev_g, bool print_flag=true){
+void forward(int N, String motor_type="motor_azimuth", bool reverse=false, int Pa=Pa_g, int Tas=Tas_g, int Tai=Tai_g, int N_rev=N_rev_azim_g, bool print_flag=true){
 	// Function used to move the motor.
 	// N: Number of steps to move.
 	// reverse: Direction, false is clockwise, true is counterclockwise
@@ -60,8 +67,21 @@ void forward(int N, bool reverse=false, int Pa=Pa_g, int Tas=Tas_g, int Tai=Tai_
 	int read_mod = N_rev_max/N_rev; // Read divider
 
 	// Set pines for motor movement
-	digitalWrite(ENAPIN,LOW);	// Enable pin (low means ready to move)
-	digitalWrite(DIRPIN,reverse?LOW:HIGH); 	// Direction pin, set according to required direction
+	int enable_pin;
+	int dir_pin;
+	int set_pin;
+	if (motor_type == "motor_azimuth"){
+		enable_pin = ENAPIN1;
+		dir_pin = DIRPIN1;
+		set_pin = SETPIN1;
+	}
+	else if (motor_type == "motor_elevation"){
+		enable_pin = ENAPIN2;
+		dir_pin = DIRPIN2;
+		set_pin = SETPIN2;
+	}	
+	digitalWrite(enable_pin,LOW);	// Enable pin (low means ready to move)
+	digitalWrite(dir_pin,reverse?LOW:HIGH); 	// Direction pin, set according to required direction
 	
 	// Calculate acceleration curves:
 	if (N<2*Pa){
@@ -96,7 +116,7 @@ void forward(int N, bool reverse=false, int Pa=Pa_g, int Tas=Tas_g, int Tai=Tai_
 			previousMicros = currentMicros;	// Update time counter
       		
 			// Change pin state from 0 to 1 or 1 to 0 (motor moves on downward edges)
-			digitalWrite(SETPPIN,!digitalRead(SETPPIN));
+			digitalWrite(set_pin,!digitalRead(set_pin));
 			
 			// The motor moves every 1 out of 2 pin changes, so we only have to measure at this times
 			if (n_step%2 == 0){
@@ -127,7 +147,7 @@ void forward(int N, bool reverse=false, int Pa=Pa_g, int Tas=Tas_g, int Tai=Tai_
 		}
 	}  
 	// When movement is finished, disable movement pin
-	digitalWrite(ENAPIN,HIGH);
+	digitalWrite(enable_pin,HIGH);
 
 	// Calculate mean execution times
   	total_meas_time = total_meas_time/N;
@@ -143,7 +163,7 @@ void forward(int N, bool reverse=false, int Pa=Pa_g, int Tas=Tas_g, int Tai=Tai_
 	return;
 }
 
-int calculateStep(String input, int currentPos)
+int calculateStep(String input, int currentPos, int N_rev, String motor_type="motor_azimuth")
 {	
 	// Function to calculate how many steps to move and in which direction, according to the received string.
 
@@ -154,30 +174,43 @@ int calculateStep(String input, int currentPos)
 	// The string's first letter indicates the direction.
 	// There are 3 cases: 'l' to move counterclockwise, 'r' to move clockwise, 
 	// and 'a' to move to an absolute position relative to the initial position.
+
+	if (motor_type == "motor_elevation"){
+		if (direction == 'e'){
+			direction = 'a';
+		}		
+		else if (direction == 'u'){
+			direction = 'r';
+		}
+		else if (direction == 'd'){
+			direction = 'l';
+		}
+	}
+
 	switch (direction)
 	{
 		case 'l': // move to the left, positive, counterclockwise
 			steps_to_move = N_rx;
-			currentPos = (currentPos + N_rx *(N_rev_max/N_rev_g) ) % N_rev_max;
+			currentPos = (currentPos + N_rx *(N_rev_max/N_rev) ) % N_rev_max;
 			dir_g = true;
 			break;
 		case 'r': // move to the right, negative, clockwise
 			steps_to_move = N_rx;
-			currentPos = (N_rev_max + currentPos - N_rx *(N_rev_max/N_rev_g) ) % N_rev_max;
+			currentPos = (N_rev_max + currentPos - N_rx *(N_rev_max/N_rev) ) % N_rev_max;
 			dir_g = false;
 			break;
 		case 'a': // move to an absolute position (shortest path)
-			steps_to_move = N_rx *(N_rev_max/N_rev_g) %N_rev_max - currentPos;
-			steps_to_move = steps_to_move / (N_rev_max/N_rev_g);
-			if (abs(steps_to_move) <= N_rev_g/2) {
+			steps_to_move = N_rx *(N_rev_max/N_rev) %N_rev_max - currentPos;
+			steps_to_move = steps_to_move / (N_rev_max/N_rev);
+			if (abs(steps_to_move) <= N_rev/2) {
 				dir_g = steps_to_move > 0 ? true : false; //left or right?
 				steps_to_move = abs(steps_to_move);
 			}
 			else {
 				dir_g = steps_to_move <= 0 ? true : false; //the other way around
-				steps_to_move = N_rev_g - abs(steps_to_move);
+				steps_to_move = N_rev - abs(steps_to_move);
 			}
-			currentPos = N_rx *(N_rev_max/N_rev_g) %N_rev_max;
+			currentPos = N_rx *(N_rev_max/N_rev) %N_rev_max;
 			break;
 		default:
 			Serial.println("INVALID");
@@ -185,9 +218,14 @@ int calculateStep(String input, int currentPos)
 	}	
 	
 	// Update current position global variable (easier than using array pointers):
-	currentPos_g = currentPos;	
+	if (motor_type == "motor_azimuth"){
+		currentPos_azim_g = currentPos;	
+	}
+	else if (motor_type == "motor_elevation"){
+		currentPos_elev_g = currentPos;	
+	}
 	// The steps_to_move calculated value needs to be scaled according to the required 'virtual' resolution:
-	steps_to_move = steps_to_move*(N_rev_max/N_rev_g);				
+	steps_to_move = steps_to_move*(N_rev_max/N_rev);				
 
 	return steps_to_move;
 }
@@ -210,19 +248,24 @@ String getValue(String data, char separator, int index)
   	return found>index ? data.substring(strIndex[0], strIndex[1]) : "";
 }
 
-void movement(String rcvString, int Pa=Pa_g, int Tas=Tas_g, int Tai=Tai_g, int N_rev=N_rev_g, bool print_flag=true){
-	int steps_to_move;	
-	steps_to_move = calculateStep(rcvString, currentPos_g); // Calculate how many steps to move and get direction from string
+void movement(String rcvString, String motor_type="motor_azimuth", int N_rev=N_rev_azim_g, int Pa=Pa_g, int Tas=Tas_g, int Tai=Tai_g, bool print_flag=true){
+	int steps_to_move;		
+	int currentPos = currentPos_azim_g;
+	if (motor_type == "motor_elevation"){	// Check if the selected motor is the elevation motor, otherwise use default case (azimuth motor)
+		N_rev = N_rev_elev_g;	
+		currentPos = currentPos_elev_g;
+	}
+	steps_to_move = calculateStep(rcvString, currentPos, N_rev, motor_type); // Calculate how many steps to move and get direction from string
 	if (steps_to_move == -1){	// If there is an error, do not move
 		steps_to_move = 0;
 	}
-	forward(steps_to_move, dir_g, Pa, Tas, Tai, N_rev, print_flag);	// Move motor
+	forward(steps_to_move, motor_type, dir_g, Pa, Tas, Tai, N_rev, print_flag);	// Move motor
 
 	// These values are sent to the computer through serial port to make the plots:		
 	char real_direction = dir_g ? 'l' : 'r';	// Left or right?
 
 	if (print_flag){
-		Serial.print(currentPos_g);
+		Serial.print(currentPos_azim_g);
 		Serial.print('-');		
 		Serial.print(real_direction);
 		Serial.print('-');
@@ -238,9 +281,13 @@ void setup() {
 	// Set baud rate:
 	Serial.begin(9600);
 
-	// Set motor pins mode:
-	pinMode(SETPPIN,OUTPUT);
-	pinMode(DIRPIN,OUTPUT);
+	// Set motor 1 pins mode:
+	pinMode(SETPIN1,OUTPUT);
+	pinMode(DIRPIN1,OUTPUT);
+	// Set motor 2 pins mode:
+	pinMode(SETPIN2,OUTPUT);
+	pinMode(DIRPIN2,OUTPUT);
+
 
 	// Set led pin:
 	pinMode(LED_BUILTIN, OUTPUT);
@@ -263,26 +310,33 @@ void loop()
 
 		// Set (c)onnection
 		if (receivedString[0] == 'c') {
-			N_rev_g = getValue(receivedString,'-',1).toInt();
+			N_rev_azim_g = getValue(receivedString,'-',1).toInt();
 			Pa_g = getValue(receivedString,'-',2).toInt();
 			Tas_g = getValue(receivedString,'-',3).toInt();
 			Tai_g = getValue(receivedString,'-',4).toInt();
 			N_rev_elev_g = getValue(receivedString,'-',5).toInt();
-			currentPos_g = 0;
+			currentPos_azim_g = 0;
+			currentPos_elev_g = 0;
 			Serial.println("ack");
 			return;
 		}
 
 		// Reset position:
 		else if (receivedString == "reset"){
-			currentPos_g = 0;
+			currentPos_azim_g = 0;
 			Serial.println("ack");
 			return;
 		}
+		else if (receivedString == "reset_elev"){
+			currentPos_elev_g = 0;
+			Serial.println("ack");
+			return;
+		}
+		
 
 		// Change parameters:
-		else if (receivedString[0] == 'p') { //extract letter, 'p' for param changes, p-Nrev-Pa-Tas-Tai
-			N_rev_g = getValue(receivedString,'-',1).toInt();
+		else if (receivedString[0] == 'p') { //extract letter, 'p' for param changes, p-NrevAz-Pa-Tas-Tai-NrevEl
+			N_rev_azim_g = getValue(receivedString,'-',1).toInt();
 			Pa_g = getValue(receivedString,'-',2).toInt();
 			Tas_g = getValue(receivedString,'-',3).toInt();
 			Tai_g = getValue(receivedString,'-',4).toInt();
@@ -291,38 +345,60 @@ void loop()
 			return;
 		}
 
-		// Move motor:
+		// Move azimuth motor:
 		else if (receivedString[0] == 'a' || receivedString[0] == 'r' || receivedString[0] == 'l' ){
 			movement(receivedString);
 			return;
 		}		
 
+		// Move elevation motor:
+		else if (receivedString[0] == 'e' || receivedString[0] == 'u' || receivedString[0] == 'd' ){
+			movement(receivedString,"motor_elevation");
+			return;
+		}	
+
 		// Routine:
 		else if (receivedString[0] == 'n'){
 
-			String rtnString = getValue(receivedString,'-',0);
-			String moveString = getValue(receivedString,'-',1);
-			String rstString = "a0";
+			// Unpack command:
+			String azimString_init = getValue(receivedString,'-',1);
+			String azimString_end = getValue(receivedString,'-',2);
+			String elevString_init = getValue(receivedString,'-',3);
+			String elevString_end = getValue(receivedString,'-',4);
+			String rstString = "a0";			
 			
-			int laps = rtnString.substring(1).toInt();
+			// Calculate steps and linspace for loop:
+			int elev_init = elevString_init.substring(1).toInt(); //extract number
+			int elev_end = elevString_end.substring(1).toInt(); //extract number
+			int steps = (N_rev_elev_g + (elev_end - elev_init)%N_rev_elev_g)%N_rev_elev_g;
+			
+			// Initialize motor positions:
+			movement(azimString_init);
+			movement(elevString_init,"motor_elevation");
 
-			for (int i = 0; i <= laps; i++){
-				movement(moveString);
-				movement(rstString); //move to zero
-				digitalWrite(LED_BUILTIN, LOW); 
-				delay(400);
-				digitalWrite(LED_BUILTIN, HIGH); 
-				// while (1){
-				// 	if(Serial.available()>0){
-				// 		ackString = Serial.readString();
-				// 		ackString.trim();
-				// 		if (ackString == "ack"){
-				// 			break;
-				// 		}						
-				// 	}
-				// }
+			// Loop:
+			String movString_elev;
+			int movInt_elev;
+			for(int i = 0; i < steps; i++){
+				movement(azimString_end);
+				movement(azimString_init);
 
-			}
+				movInt_elev = (elev_init + i)%N_rev_elev_g;
+				// Aquí había un error (suma de String e int, quizás por esto no funcionaban los movimientos en elevación. Revisar)
+				// movString_elev = "e" + movInt_elev;
+				// Solución con casteo (?) (no probado aún)
+				movString_elev = 'e' + String(movInt_elev);
+
+
+				digitalWrite(LED_BUILTIN, LOW);
+				// movement(movString_elev,"motor_elevation");
+				// Serial.print(movString_elev);
+				// delay(2000);
+				digitalWrite(LED_BUILTIN, HIGH); 	
+
+				// Solo por ahora: (ya que estamos simulando 2 motores con uno solo)
+				// movement(azimString_init);
+			}				
 		}
 	}
 }

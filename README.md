@@ -7,16 +7,18 @@ synthesizer max2871
 
 ------------------------------------------------------------------------
 ### In Progress
+- [x] Elegir rango de grados de elevación (Ej: desde: -30º, hasta: 30º)
+- [x] Start debe enviar el mensaje con la información de elevación y azimuth elegidas (para elevación se debe transformar lacantidad de veces según la *resolución escogiada* y *la cantidad de grados a moverse*)
 
-- [ ] Start debe enviar el mensaje con la información de elevación y azimuth elegidas (para elevación se debe transformar lacantidad de veces según la *resolución escogiada* y *la cantidad de grados a moverse*)
+- [x] Agregar logica de segundo motor en codigo arduino (DIRPIN2)
+- [x] Incorporar funcionalidad de movimientos en elevación (e, u, d), una vez que esté incorporada la funcionalidad de movement con el dirpin seteado
+
 - [ ] La rutina debe plotear para cada angulo de elevación
 
-- [ ] Textbox con las frecuencias a utilizar (Ej, [200, 500, 1000             ])
-- [ ] Elegir rango de grados de elevación (Ej: desde: -30º, hasta: 30º) Esto es mas complicado porque los angulos del motor steper son relativos, pero por mientras hay que dejar lista la caja sin funcionalidad en la GUI
-y extraer las frecuencias procesando el string. Esto no debe hacer nada en un comienzo, quizás solo imprimir las frecuencias añadidas
 - [ ] Agregar tooltips para nuevos widgets
+- [ ] Escribir informe técnico y manual de usuario agregado en Help (dentro de la GUI)
 
-- [ ] Agregar logica de segundo motor en codigo arduino (DIRPIN2)
+
 ------------------------------------------------------------------------
 #### DONE
 - [x] Dejar tooltips en un método para no desordenar la función principal
@@ -36,6 +38,7 @@ y extraer las frecuencias procesando el string. Esto no debe hacer nada en un co
 ### Extras
 - [ ] Dejar grafico en decibeles
 - [ ] Guardar datos en tarjeta SD
+- [ ] Textbox con las frecuencias a utilizar (Ej, [200, 500, 1000             ])
 
 ### Escritura/Lectura de archivos
 - [ ] Agregar opción de escribir como JSON
