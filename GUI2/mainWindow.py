@@ -1,9 +1,9 @@
 import sys
 import time
 from PySide2 import QtGui
-from PySide2.QtCore import Qt
+from PySide2.QtCore import Qt, QUrl
 from PySide2.QtWidgets import QApplication, QLabel, QMainWindow, QMenuBar, QMenu, QAction, QFileDialog, QMessageBox
-from PySide2.QtGui import QPalette, QColor, QFont
+from PySide2.QtGui import QPalette, QColor, QFont, QDesktopServices
 
 from centralWidget import centralWidget
 
@@ -121,7 +121,9 @@ class Window(QMainWindow):
 			self.file_name = file_name
 
 	def helpContent(self):
-		self.status_bar.showMessage("Help > Help Content clicked", STATUS_BAR_TIMEOUT)
+		# self.status_bar.showMessage("Help > Help Content clicked", STATUS_BAR_TIMEOUT)
+		link = 'https://github.com/Zimrahin/Stepper-Motor-Controller/blob/main/Progress_Report_CCTVal_ENG.pdf'
+		QDesktopServices.openUrl(QUrl(link))
 
 	def about(self):
 		# self.status_bar.showMessage("Help > About clicked", STATUS_BAR_TIMEOUT)

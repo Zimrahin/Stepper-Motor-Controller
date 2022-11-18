@@ -8,9 +8,9 @@ synthesizer max2871
 ------------------------------------------------------------------------
 ### In Progress
 
-
-- [ ] Agregar tooltips para nuevos widgets
-- [ ] Escribir informe técnico y manual de usuario agregado en Help (dentro de la GUI)
+- [x] Agregar tooltips para nuevos widgets
+- [x] Agregar about y help content
+- [ ] Escribir informe técnico
 
 ------------------------------------------------------------------------
 #### DONE
