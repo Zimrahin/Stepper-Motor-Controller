@@ -289,8 +289,6 @@ class rightWidget(QWidget):
 				self.parent().parent().parent().connection_wdg.send2COM(listLetters[i] + str(out_step))
 				print(listLetters[i] + str(out_step))
 		
-		# self.parent().parent().parent().parent().status_bar.showMessage("Moving...", 1000)
-
 		# READ
 		received_string = self.parent().parent().parent().connection_wdg.receiveOnlyCOM()
 		angle, direction_char, float_list, mean_time, mean_time_total, values_list = self.unpackData(received_string)
@@ -329,6 +327,7 @@ class rightWidget(QWidget):
 		self.parent().parent().parent().plot_wdg.pa_label.setText(f'PA = {pa:.2f}º')
 		self.parent().parent().parent().plot_wdg.mp_label.setText(f'MP = {mp:.2f} V')
 		self.parent().parent().parent().plot_wdg.rpm_label.setText(f'RPM = {rpm:.1f}')
+
 
 	def sendReset(self):
 		self.parent().parent().parent().connection_wdg.send2COM("reset")	

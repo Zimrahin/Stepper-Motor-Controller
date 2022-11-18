@@ -37,7 +37,7 @@ class plotWidget(QWidget):
 		self.pa_label.setAlignment(Qt.AlignCenter)
 		self.mp_label.setAlignment(Qt.AlignCenter)
 		self.rpm_label.setAlignment(Qt.AlignCenter)
-		style_label_string = 'QLabel { color : #FFFFFF; font: 16pt "Segoe UI"}'
+		style_label_string = 'QLabel { color : #ffffff; font: 16pt "Segoe UI"}'
 		self.pp_label.setStyleSheet(style_label_string)
 		self.pa_label.setStyleSheet(style_label_string)
 		self.mp_label.setStyleSheet(style_label_string)
@@ -100,14 +100,13 @@ class plotWidget(QWidget):
 		self.canvas_wdg.axes.tick_params(axis='x', colors='#ffffff')
 		self.canvas_wdg.axes.tick_params(axis='y', colors='#ffffff')
 		for spine in self.canvas_wdg.axes.spines.values():
-			spine.set_edgecolor('white')
+			spine.set_edgecolor('#0ccfb9')
 		self.canvas_wdg.axes.spines
-		self.canvas_wdg.axes.tick_params(axis='y', colors='#ffffff')
-		self.canvas_wdg.fig.set_facecolor('#353535')
+		self.canvas_wdg.fig.set_facecolor('#2c3136')
 		self.canvas_wdg.axes.set_facecolor('#191919')
 		self.canvas_wdg.axes.set_xlabel('Degrees (\u00b0)')
 		self.canvas_wdg.axes.figure.gca().set_ylim(0, 3.2)
-		self.canvas_wdg.axes.grid(color = '#353535', linewidth = 1)
+		self.canvas_wdg.axes.grid(color = '#2c3136', linewidth = 1)
 		self.canvas_wdg.draw()
 
 		return data_xaxis

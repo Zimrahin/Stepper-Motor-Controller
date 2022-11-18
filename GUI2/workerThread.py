@@ -2,7 +2,7 @@ import sys
 
 from PySide2.QtCore import QObject, QThread, Signal
 
-class workerThread(QObject):
+class workerThreadPlotUpdate(QObject):
 	finished = Signal()
 	progress = Signal(int)
 
