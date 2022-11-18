@@ -2,7 +2,7 @@ import sys
 import time
 from PySide2 import QtGui
 from PySide2.QtCore import Qt
-from PySide2.QtWidgets import QApplication, QLabel, QMainWindow, QMenuBar, QMenu, QToolBar, QAction, QFileDialog
+from PySide2.QtWidgets import QApplication, QLabel, QMainWindow, QMenuBar, QMenu, QAction, QFileDialog, QMessageBox
 from PySide2.QtGui import QPalette, QColor, QFont
 
 from centralWidget import centralWidget
@@ -22,7 +22,7 @@ class Window(QMainWindow):
 							}
 						}
 		self.setWindowIcon(QtGui.QIcon('img/logo.png'))
-		self.setWindowTitle("Stepper motor controller")
+		self.setWindowTitle("Stepper Motor Controller")
 
 		self.setStyleSheet(f"""
 							QMenuBar {{
@@ -30,13 +30,13 @@ class Window(QMainWindow):
 								background-color: #191919; 
 								color: white; 
 								border: black solid 1px
-                           	}}
+						   	}}
 							QStatusBar {{
 								font: {self.settings_dict['font']['text_size']}pt "{self.settings_dict['font']['family']}";
 								background-color: #191919; 
 								color: white; 
 								border: black solid 1px
-                           	}}
+						   	}}
 							QLabel {{
 								font: {self.settings_dict['font']['text_size']}pt "{self.settings_dict['font']['family']}";
 							}}
@@ -57,7 +57,7 @@ class Window(QMainWindow):
 								background-color: #1f2126; 
 								color: white; 
 								border: black solid 1px
-                           	}}
+						   	}}
 						   	""")
 
 
@@ -72,7 +72,8 @@ class Window(QMainWindow):
 
 		# Status Bar
 		self.status_bar = self.statusBar()
-		self.permanent_message = QLabel('Version 2.11.18')
+		self._version = '2.11.18'
+		self.permanent_message = QLabel(f'Version {self._version}')
 		self.permanent_message.setStyleSheet('color : #888888')
 		self.permanent_message.setAlignment(Qt.AlignRight)
 		self.status_bar.addPermanentWidget(self.permanent_message)
@@ -92,7 +93,7 @@ class Window(QMainWindow):
 		menu_bar.addMenu(helpMenu)
 
 		#Actions
-		fileMenu.addAction(self.newAction)
+		# fileMenu.addAction(self.newAction)
 		fileMenu.addAction(self.saveAction)
 		fileMenu.addAction(self.exitAction)
 
@@ -100,8 +101,8 @@ class Window(QMainWindow):
 		helpMenu.addAction(self.aboutAction)
 
 	def _createActions(self):
-		self.newAction = QAction("&New", self)
-		self.saveAction = QAction("&Save", self)
+		# self.newAction = QAction("&New", self)
+		self.saveAction = QAction("&New Save File", self)
 		self.exitAction = QAction("&Exit", self)
 
 		self.helpContentAction = QAction("&Help Content", self)
@@ -123,11 +124,15 @@ class Window(QMainWindow):
 		self.status_bar.showMessage("Help > Help Content clicked", STATUS_BAR_TIMEOUT)
 
 	def about(self):
-		self.status_bar.showMessage("Help > About clicked", STATUS_BAR_TIMEOUT)
+		# self.status_bar.showMessage("Help > About clicked", STATUS_BAR_TIMEOUT)
+		description = 'A simple Graphical User interface made to communicate with a microcontroller via a serial port to control the azimuth and elevation positions of an antenna and plot the power measured at each position.'
+		authors = 'Diego Badillo\n\tSebastián San Martín'
+		text =	f"{description}\n\nBy:\t{authors}\nVersion:\t{self._version}\nMade with:\tPySide2"
+		informationBox(text, 'Stepper Motor Controller', 'Stepper Motor Controller').exec_()
 	
 	def _connectActions(self):
 		# Connect File actions
-		self.newAction.triggered.connect(self.newFile)
+		# self.newAction.triggered.connect(self.newFile)
 		self.saveAction.triggered.connect(self.saveFile)
 		self.exitAction.triggered.connect(self.close)
 
@@ -135,6 +140,15 @@ class Window(QMainWindow):
 		self.helpContentAction.triggered.connect(self.helpContent)
 		self.aboutAction.triggered.connect(self.about)
 
+class informationBox(QMessageBox):
+	def __init__(self, info: str, title: str, subtitle: str, parent=None):
+		super().__init__(parent)
+		self.setWindowIcon(QtGui.QIcon('img/logo.png'))
+		self.setIcon(QMessageBox.Information)
+		self.setText('<b>'+subtitle+'</b>')
+		self.setInformativeText(info)
+		self.setWindowTitle(title)
+		self.setMinimumWidth(1000)
 
 def darkMode():
 	# Dark Theme
