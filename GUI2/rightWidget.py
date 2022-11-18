@@ -128,11 +128,11 @@ class rightWidget(QWidget):
 
 		# -> Push Buttons
 		self.default_btn = QPushButton('Default')
-		self.move_btn = QPushButton('Move')
-		self.reset_btn = QPushButton('Reset angle')
+		self.move_azim_btn = QPushButton('Move')
+		self.reset_azim_btn = QPushButton('Reset angle')
 
-		self.move_e_btn = QPushButton('Move') # elevation
-		self.reset_e_btn = QPushButton('Reset angle')
+		self.move_elev_btn = QPushButton('Move') # elevation
+		self.reset_elev_btn = QPushButton('Reset angle')
 
 		#---------------------------------------------
 		# Init routine 
@@ -167,12 +167,12 @@ class rightWidget(QWidget):
 		self.default_btn.clicked.connect(self.defaultParameters)
 		self.connect(self.azimuth_res_combo, PySide2.QtCore.SIGNAL("currentIndexChanged(const QString&)"), self.defaultParameters)
 
-		self.move_btn.clicked.connect(self.sendMovement)
-		self.reset_btn.clicked.connect(self.sendReset)
+		self.move_azim_btn.clicked.connect(self.sendMovement)
+		self.reset_azim_btn.clicked.connect(self.sendReset)
 
 		self.connect(self.elevation_res_combo, PySide2.QtCore.SIGNAL("currentIndexChanged(const QString&)"), self.printElevParam)
-		self.move_e_btn.clicked.connect(self.sendMovementElevation)
-		self.reset_e_btn.clicked.connect(self.sendResetElevation)
+		self.move_elev_btn.clicked.connect(self.sendMovementElevation)
+		self.reset_elev_btn.clicked.connect(self.sendResetElevation)
 
 		#---------------------------------------------
 		# Layout
@@ -205,8 +205,8 @@ class rightWidget(QWidget):
 		v_layout.addLayout(radio_btn_row)
 		# -> Bottom buttons
 		btn_row = QHBoxLayout()
-		btn_row.addWidget(self.move_btn)
-		btn_row.addWidget(self.reset_btn)
+		btn_row.addWidget(self.move_azim_btn)
+		btn_row.addWidget(self.reset_azim_btn)
 		v_layout.addLayout(btn_row)
 
 		# Routine settings AZIMUTH
@@ -245,8 +245,8 @@ class rightWidget(QWidget):
 		v_layout.addLayout(radio_btn_row)
 		# # -> Bottom buttons
 		btn_row = QHBoxLayout()
-		btn_row.addWidget(self.move_e_btn)
-		btn_row.addWidget(self.reset_e_btn)
+		btn_row.addWidget(self.move_elev_btn)
+		btn_row.addWidget(self.reset_elev_btn)
 		v_layout.addLayout(btn_row)
 		
 		# Routine settings ELEVATION
@@ -405,19 +405,34 @@ class rightWidget(QWidget):
 			return 0
 	#---------------------------------------------
 	def _setToolTips(self):
-		self.a_radio.setToolTip('Move to an <b>absolute</b> angle')
+		self.a_radio.setToolTip('Move to an <b>absolute</b> angle in azimuth')
 		self.l_radio.setToolTip('Move <b>counterclockwise</b>')
 		self.r_radio.setToolTip('Move <b>clockwise</b>')
-		self.move_btn.setToolTip('Rotate stepper motor')
-		self.reset_btn.setToolTip('Set current position as initial angle')
+		self.move_azim_btn.setToolTip('Rotate <b>azimuth</b> stepper motor')
+		self.reset_azim_btn.setToolTip('Set current <b>azimuth</b> position as initial <b>azimuth</b> angle')
 
-		self.azimuth_res_combo.setToolTip('Angular resolution')
+		# self.azimuth_res_combo.setToolTip('Angular resolution')
 		self.Pa_spinbox.setToolTip('Number of steps <b>between \nminimum</b> added delay and <b>\nmaximum</b> added delay')
 		self.Tas_spinbox.setToolTip('<b>Maximum delay</b> added to <b>each step</b> \n to decrease rotation speed')
 		self.Tai_spinbox.setToolTip('<b>Minimum delay</b> added to <b>each step</b> \n to decrease rotation speed')
 		self.default_btn.setToolTip('Set optimum empirical parameters to <b>maximise</b> rotation speed while keeping a <b>stable behaviour</b> of stepper motor')
-		self.parent().apply_btn.setToolTip('Send command to set parameters')
 
+		self.ae_radio.setToolTip('Move to an <b>absolute</b> angle in elevation')
+		self.u_radio.setToolTip('Move <b>upwards</b>')
+		self.d_radio.setToolTip('Move <b>downwards</b>')
+		self.move_elev_btn.setToolTip('Rotate <b>elevation</b> stepper motor')
+		self.reset_elev_btn.setToolTip('Set current <b>elevation</b> position as initial <b>elevation</b> angle')
+
+		self.parent().apply_btn.setToolTip('<b>Send command</b> to set parameters')
+		self.parent().start_btn.setToolTip('Start <b>routine</b>')
+
+		self.initial_azim_spinbox.setToolTip('<b>Routine: </b>Set <b>initial</b> azimuth angle')
+		self.final_azim_spinbox.setToolTip('<b>Routine: </b>Set <b>final</b> azimuth angle')
+		self.initial_elev_spinbox.setToolTip('<b>Routine: </b>Set <b>initial</b> elevation angle')
+		self.final_elev_spinbox.setToolTip('<b>Routine: </b>Set <b>final</b> elevation angle')
+
+		self.angle_azim_spinbox.setToolTip('Set a <b>movement</b> azimuth angle')
+		self.angle_elev_spinbox.setToolTip('Set a <b>movement</b> elevation angle')
 	#---------------------------------------------
 	def angleBoxConfig(self, box, lowest_deg, highest_deg):
 		box.setMinimum(lowest_deg)

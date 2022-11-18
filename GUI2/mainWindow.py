@@ -54,7 +54,7 @@ class Window(QMainWindow):
 							}}
 							QToolTip {{
 								font: {self.settings_dict['font']['title_size']}pt "{self.settings_dict['font']['family']}";
-								background-color: #252525; 
+								background-color: #1f2126; 
 								color: white; 
 								border: black solid 1px
                            	}}

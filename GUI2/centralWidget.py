@@ -32,7 +32,7 @@ class centralWidget(QWidget):
 
 		self.apply_btn = QPushButton('Apply')
 		self.start_btn = QPushButton('Start')
-		self.start_btn.setStyleSheet("background-color : '#054d45';")
+		self.start_btn.setStyleSheet("QPushButton{background-color : '#054d45';}")
 
 		# -> Serial Connection Widget
 		self.connection_wdg = connectionWidget(self)
