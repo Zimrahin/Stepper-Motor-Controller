@@ -7,17 +7,10 @@ synthesizer max2871
 
 ------------------------------------------------------------------------
 ### In Progress
-- [x] Elegir rango de grados de elevación (Ej: desde: -30º, hasta: 30º)
-- [x] Start debe enviar el mensaje con la información de elevación y azimuth elegidas (para elevación se debe transformar lacantidad de veces según la *resolución escogiada* y *la cantidad de grados a moverse*)
 
-- [x] Agregar logica de segundo motor en codigo arduino (DIRPIN2)
-- [x] Incorporar funcionalidad de movimientos en elevación (e, u, d), una vez que esté incorporada la funcionalidad de movement con el dirpin seteado
-
-- [ ] La rutina debe plotear para cada angulo de elevación
 
 - [ ] Agregar tooltips para nuevos widgets
 - [ ] Escribir informe técnico y manual de usuario agregado en Help (dentro de la GUI)
-
 
 ------------------------------------------------------------------------
 #### DONE
@@ -34,6 +27,13 @@ synthesizer max2871
     - [x] se debe corregir el connect (para que tarde menos)
     - [x] Apply y Start deben ir fuera de la scroll bar
 
+- [x] Elegir rango de grados de elevación (Ej: desde: -30º, hasta: 30º)
+- [x] Start debe enviar el mensaje con la información de elevación y azimuth elegidas (para elevación se debe transformar lacantidad de veces según la *resolución escogiada* y *la cantidad de grados a moverse*)
+
+- [x] Agregar logica de segundo motor en codigo arduino (DIRPIN2)
+- [x] Incorporar funcionalidad de movimientos en elevación (e, u, d), una vez que esté incorporada la funcionalidad de movement con el dirpin seteado
+- [x] La rutina debe plotear para cada angulo de elevación
+    - Esto no esta funcionando. Es posible que sea porque el plot tarda demasiado, y para entonces ya se tiene la siguiente lectura del puerto serial. Solución: threads? CON THREADS FUNCIONA
 ------------------------------------------------------------------------
 ### Extras
 - [ ] Dejar grafico en decibeles

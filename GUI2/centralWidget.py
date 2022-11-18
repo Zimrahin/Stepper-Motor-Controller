@@ -1,12 +1,15 @@
 import sys 
 from PySide2.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QScrollArea, QFrame, QPushButton
 from PySide2 import QtGui
-from PySide2.QtCore import Qt
+from PySide2.QtCore import Qt, QThread
 from PySide2.QtGui import QPalette, QColor, QPixmap, QFont
 
 from connectionWidget import connectionWidget
 from rightWidget import rightWidget
 from plotWidget import plotWidget
+from workerThread import workerThread
+
+import time
 
 # https://stackoverflow.com/questions/1551605/how-to-set-applications-taskbar-icon-in-windows-7/1552105#1552105
 import ctypes
@@ -113,27 +116,28 @@ class centralWidget(QWidget):
 
 		print(out_string)
 		self.connection_wdg.send2COM(out_string)
-		while(True):
-			received_string = self.connection_wdg.receiveOnlyCOM()
-			if received_string:
-				# print(received_string)
-				angle, direction_char, float_list, mean_time, mean_time_total, values_list = self.right_wdg.unpackData(received_string)
+		self.longUpdatePlotRoutine()
+		# while(True):
+		# 	received_string = self.connection_wdg.receiveOnlyCOM()
+		# 	if received_string:
+		# 		# print(received_string)
+		# 		angle, direction_char, float_list, _, mean_time_total, _ = self.right_wdg.unpackData(received_string)
+		# 		print(direction_char, mean_time_total)
+		# 		#PLOT
+		# 		data_xaxis = self.plot_wdg.updatePlot(float_list, int(angle), direction_char, int(self.right_wdg.param_dict['Nrev']))		
 
-				#PLOT
-				data_xaxis = self.plot_wdg.updatePlot(float_list, int(angle), direction_char, int(self.right_wdg.param_dict['Nrev']))		
+		# 		# COMPUTE DATA STATISTICS (this section MUST be after updatePlot)
+		# 		pp, pa = self.right_wdg.computePeakPower(float_list, data_xaxis)
+		# 		mp = self.right_wdg.computeMeanPower(float_list)
+		# 		rpm = self.right_wdg.computeRPM(int(mean_time_total))
 
-				# COMPUTE DATA STATISTICS (this section MUST be after updatePlot)
-				pp, pa = self.right_wdg.computePeakPower(float_list, data_xaxis)
-				mp = self.right_wdg.computeMeanPower(float_list)
-				rpm = self.right_wdg.computeRPM(int(mean_time_total))
-
-				self.plot_wdg.pp_label.setText(f'PP = {pp:.2f} V')
-				self.plot_wdg.pa_label.setText(f'PA = {pa:.2f}º')
-				self.plot_wdg.mp_label.setText(f'MP = {mp:.2f} V')
-				self.plot_wdg.rpm_label.setText(f'RPM = {rpm:.1f}')
-				continue
-			else:
-				break
+		# 		self.plot_wdg.pp_label.setText(f'PP = {pp:.2f} V')
+		# 		self.plot_wdg.pa_label.setText(f'PA = {pa:.2f}º')
+		# 		self.plot_wdg.mp_label.setText(f'MP = {mp:.2f} V')
+		# 		self.plot_wdg.rpm_label.setText(f'RPM = {rpm:.1f}')
+		# 		continue
+		# 	else:
+		# 		break
 
 	def disconnectLock(self):
 		self.COM = None
@@ -142,6 +146,36 @@ class centralWidget(QWidget):
 	def connectUnlock(self):
 		self.COM = self.connection_wdg.serial_COM
 		self.right_wdg.setEnabled(True)
+
+	def longUpdatePlotRoutine(self):
+		# Create QThread object
+		self.thread = QThread()
+		# Create a worker object
+		self.worker = workerThread(self.connection_wdg, self.plot_wdg, self.right_wdg)
+		# Move worker to the thread
+		self.worker.moveToThread(self.thread)
+		# Connect signals and slots
+		self.thread.started.connect(self.worker.run)
+		self.worker.finished.connect(self.thread.quit)
+		self.worker.finished.connect(self.worker.deleteLater)
+		self.thread.finished.connect(self.thread.deleteLater)
+		# self.worker.progress.connect(self.reportProgress) # useful por a progress bar
+		# Start the thread
+		self.thread.start()
+
+
+		# Lock right widget and start, apply buttons
+		self.right_wdg.setEnabled(False)
+		self.start_btn.setEnabled(False)
+		self.apply_btn.setEnabled(False)
+		self.connection_wdg.setEnabled(False)
+
+		# Unlock right widget and start, apply buttons
+		self.thread.finished.connect(lambda: self.right_wdg.setEnabled(True))
+		self.thread.finished.connect(lambda: self.start_btn.setEnabled(True))
+		self.thread.finished.connect(lambda: self.apply_btn.setEnabled(True))
+		self.thread.finished.connect(lambda: self.connection_wdg.setEnabled(True))
+
 
 
 class logoWidget(QWidget):
