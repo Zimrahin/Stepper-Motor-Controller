@@ -89,8 +89,11 @@ class centralWidget(QWidget):
 		self.setLayout(h_layout)
 
 	def applyParameters(self):
+		Pa_elev = str(self.right_wdg.elev_accel_params['Pa'])
+		Tas_elev = str(self.right_wdg.elev_accel_params['Tas'])
+		Tai_elev = str(self.right_wdg.elev_accel_params['Tai'])
 		out_dict = self.right_wdg.getFieldsValues()
-		out_string = 'p-' + str(out_dict['Nrev']) + '-' + str(out_dict['Pa']) + '-' + str(out_dict['Tas']) + '-' + str(out_dict['Tai']) + '-' + str(self.right_wdg.elev_res) + '\n'
+		out_string = 'p-' + str(out_dict['Nrev']) + '-' + str(out_dict['Pa']) + '-' + str(out_dict['Tas']) + '-' + str(out_dict['Tai']) + '-' + str(self.right_wdg.elev_res) + '-' + Pa_elev + '-' + Tas_elev + '-' + Tai_elev + '\n'
 		print(out_string)
 		self.connection_wdg.send2COM(out_string)
 		

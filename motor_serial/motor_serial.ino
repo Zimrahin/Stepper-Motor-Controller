@@ -25,6 +25,11 @@ int Tai_g = 0;			// Final time between steps
 int currentPos_azim_g = 0; 	// Current azimuth position (global)
 int currentPos_elev_g = 0; 	// Current elevation position (global)
 
+// Default acceleration parameters for elevation (for 200 step/rev)
+int Pa_g_elev = 4800;
+int Tas_g_elev = 22;
+int Tai_g_elev = 12;
+
 
 float getSlope(float x1,float y1,float x2,float y2){
 	// Helpful function to calculate a slope
@@ -254,6 +259,9 @@ void movement(String rcvString, String motor_type="motor_azimuth", int N_rev=N_r
 	if (motor_type == "motor_elevation"){	// Check if the selected motor is the elevation motor, otherwise use default case (azimuth motor)
 		N_rev = N_rev_elev_g;	
 		currentPos = currentPos_elev_g;
+		Pa = Pa_g_elev;
+		Tas = Tas_g_elev;
+		Tai = Tai_g_elev;
 	}
 	steps_to_move = calculateStep(rcvString, currentPos, N_rev, motor_type); // Calculate how many steps to move and get direction from string
 	if (steps_to_move == -1){	// If there is an error, do not move
@@ -315,6 +323,9 @@ void loop()
 			Tas_g = getValue(receivedString,'-',3).toInt();
 			Tai_g = getValue(receivedString,'-',4).toInt();
 			N_rev_elev_g = getValue(receivedString,'-',5).toInt();
+			Pa_g_elev = getValue(receivedString,'-',6).toInt();
+			Tas_g_elev = getValue(receivedString,'-',7).toInt();
+			Tai_g_elev = getValue(receivedString,'-',8).toInt();
 			currentPos_azim_g = 0;
 			currentPos_elev_g = 0;
 			Serial.println("ack");
@@ -341,6 +352,9 @@ void loop()
 			Tas_g = getValue(receivedString,'-',3).toInt();
 			Tai_g = getValue(receivedString,'-',4).toInt();
 			N_rev_elev_g = getValue(receivedString,'-',5).toInt();
+			Pa_g_elev = getValue(receivedString,'-',6).toInt();
+			Tas_g_elev = getValue(receivedString,'-',7).toInt();
+			Tai_g_elev = getValue(receivedString,'-',8).toInt();
 			Serial.println("ack");
 			return;
 		}

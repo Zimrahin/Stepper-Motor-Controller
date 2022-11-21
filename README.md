@@ -8,9 +8,9 @@ synthesizer max2871
 ------------------------------------------------------------------------
 ### In Progress
 
-- [x] Agregar tooltips para nuevos widgets
-- [x] Agregar about y help content
-- [ ] Escribir informe técnico
+- [x] Escribir informe técnico
+- [x] Agregar parametros de aceleración a movimientos de elevación de forma independiente, pero sin posibilidad de cambiarlos desde la GUI
+- [ ] Agregar escritura en CSV para rutina
 
 ------------------------------------------------------------------------
 #### DONE
@@ -34,6 +34,8 @@ synthesizer max2871
 - [x] Incorporar funcionalidad de movimientos en elevación (e, u, d), una vez que esté incorporada la funcionalidad de movement con el dirpin seteado
 - [x] La rutina debe plotear para cada angulo de elevación
     - Esto no esta funcionando. Es posible que sea porque el plot tarda demasiado, y para entonces ya se tiene la siguiente lectura del puerto serial. Solución: threads? CON THREADS FUNCIONA
+- [x] Agregar tooltips para nuevos widgets
+- [x] Agregar about y help content
 ------------------------------------------------------------------------
 ### Extras
 - [ ] Dejar grafico en decibeles

@@ -12,7 +12,7 @@ import time
 # Default values
 CONNECTION_STATUS_LABEL = '{}'
 SERIAL_TIMEOUT = 1.0 # second (wait for Arduino response)
-INIT_CMD = b'c-6400-0-0-0-200\n' #b: format, send this message to Arduino and receive acknowledge 
+INIT_CMD = b'c-6400-0-0-0-200-4800-22-12\n' #b: format, send this message to Arduino and receive acknowledge 
 BAUDRATE = 9600
 
 class connectionWidget(QWidget):
