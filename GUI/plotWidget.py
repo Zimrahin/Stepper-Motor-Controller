@@ -1,8 +1,9 @@
 import sys
-from PySide2 import QtGui
 from PySide2.QtWidgets import QWidget, QVBoxLayout, QApplication, QHBoxLayout, QLabel
 from PySide2.QtCore import  Qt
-from PySide2.QtGui import QPalette, QColor, QFont
+
+from darkPalette import darkPalette
+
 
 import matplotlib
 matplotlib.use('Qt5Agg')
@@ -110,35 +111,11 @@ class plotWidget(QWidget):
 
 		return data_xaxis
 
-def darkMode():
-    # Dark Theme
-    # Adapted from https://github.com/pyqt/examples/tree/_/src/09%20Qt%20dark%20theme
-    palette = QPalette()
-    palette.setColor(QPalette.Window, QColor(53, 53, 53))
-    palette.setColor(QPalette.WindowText, Qt.white)
-    palette.setColor(QPalette.Base, QColor(25, 25, 25))
-    palette.setColor(QPalette.AlternateBase, QColor(53, 53, 53))
-    palette.setColor(QPalette.ToolTipBase, Qt.black)
-    palette.setColor(QPalette.ToolTipText, Qt.white)
-    palette.setColor(QPalette.Text, Qt.white)
-    palette.setColor(QPalette.Button, QColor(53, 53, 53))
-    palette.setColor(QPalette.ButtonText, Qt.white)
-    palette.setColor(QPalette.BrightText, Qt.red)
-    palette.setColor(QPalette.Link, QColor(42, 130, 218))
-    palette.setColor(QPalette.Highlight, QColor(42, 130, 218))
-    palette.setColor(QPalette.HighlightedText, Qt.black)
-    palette.setColor(QPalette.Disabled, QPalette.Base, QColor(49, 49, 49))
-    palette.setColor(QPalette.Disabled, QPalette.Text, QColor(90, 90, 90))
-    palette.setColor(QPalette.Disabled, QPalette.Button, QColor(42, 42, 42))
-    palette.setColor(QPalette.Disabled, QPalette.ButtonText, QColor(90, 90, 90))
-    palette.setColor(QPalette.Disabled, QPalette.Window, QColor(49, 49, 49))
-    palette.setColor(QPalette.Disabled, QPalette.WindowText, QColor(90, 90, 90))
-    return palette
 
 if __name__ == '__main__':
 	app = QApplication(sys.argv)
 	app.setStyle('fusion') 
-	palette = darkMode()
+	palette = darkPalette()
 	app.setPalette(palette)
 	
 	main = plotWidget()

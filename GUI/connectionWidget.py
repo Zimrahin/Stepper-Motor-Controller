@@ -124,16 +124,6 @@ class connectionWidget(QWidget):
 			return True
 		else:
 			raise Exception('Device did not respond')
-		# if (response != 'ack'):
-		# 	raise Exception('Device did not respond')
-		# self.serial_COM.write(b'reset')
-		# time.sleep(0.10)
-		# response = self.serial_COM.readline() # Change to receive mode, Arduino sends \n to terminate
-		# response = str(response,'utf-8').rstrip()
-		# if (response == 'ack'):
-		# 	return True
-		# else:
-		# 	raise Exception('Device did not respond')
 
 	def send2COM(self, string):
 		self.serial_COM.write(string.encode())

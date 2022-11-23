@@ -10,19 +10,19 @@ synthesizer max2871
 - [x] Solucionar problema de que en la rutina se mueve siempre al camino más corto (a veces se requiere u camino más largo)
 - [x] Limitar elevación a -30 , 60 (negativos)
 - [x] Agregar posibilidad de moverse en direcciones positivas
-
-- [ ] Agregar darkMode como una paleta global que se Importe
+- [x] Agregar darkMode como una paleta global que se Importe
+------------------------------------------------------------
 - [ ] Agregar thread a movimientos independientes de motor (r500, a300, etc)
 - [ ] Ordenamiento general del código de GUI:
-        - [ ] Definir números "hardcoded" en un JSON, que se abra en un settings.py como una clase (read only por mientras)
-
+        - [ ] Definir números "hardcoded" en un JSON, que se abra en un config.py como una clase (read only por mientras)
+- [ ] Agregar exception error box
+--------------------------------------------------------------
 - [ ] Revisar movimiento de elevación (qué pasa si se deja seteado otro pin de salida de la portenta? podríamos dejarlo así por mientras y simplemente no mover el motor en elevción (para no perder información de la posicion acimut global))
 - [ ] Corregir bug de conversión angle-step. Al hacer la aproximación, a la larga se desfasa (l300, r301, l300, r301, ...)
 - [ ] Arreglar prints (solo debe imprimir en los movimientos l-algo)
     - [ ] Agregar un 'ack' al final de la rutina en el ardunio para aviarle al python que el proceso termino. El ack triggerea un break en el while, de lo contrario solo se resetea el timeout ocn un continue
     - [ ] Agregar que e arduino no impprima datos en  estos movimientos, y por lo tanto agregar parametrso aceleracion
-
-- [ ] Agregar exception error box
+-------------------------------------------------------------
 - [ ] Agregar escritura en CSV para rutina
 - [ ] Agregar 'Open File' para plotear
 - [ ] Guardar parámetros de rutina en archivos  y agregar "open routine settings"

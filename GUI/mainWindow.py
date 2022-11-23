@@ -1,13 +1,12 @@
 import sys
 import time
-import os
 from PySide2 import QtGui
-import PySide2.QtCore
 from PySide2.QtCore import Qt, QUrl
 from PySide2.QtWidgets import QApplication, QLabel, QMainWindow, QMenuBar, QMenu, QAction, QFileDialog, QMessageBox
-from PySide2.QtGui import QPalette, QColor, QFont, QDesktopServices
+from PySide2.QtGui import QDesktopServices
 
 from centralWidget import centralWidget
+from darkPalette import darkPalette
 
 STATUS_BAR_TIMEOUT = 5000
 
@@ -95,7 +94,6 @@ class Window(QMainWindow):
 		menu_bar.addMenu(helpMenu)
 
 		#Actions
-		# fileMenu.addAction(self.newAction)
 		fileMenu.addAction(self.saveAction)
 		fileMenu.addAction(self.exitAction)
 
@@ -103,15 +101,11 @@ class Window(QMainWindow):
 		helpMenu.addAction(self.aboutAction)
 
 	def _createActions(self):
-		# self.newAction = QAction("&New", self)
 		self.saveAction = QAction("&New Save File", self)
 		self.exitAction = QAction("&Exit", self)
 
 		self.helpContentAction = QAction("&Help Content", self)
 		self.aboutAction = QAction("&About", self)
-
-	def newFile(self):
-		self.status_bar.showMessage("File > New clicked", STATUS_BAR_TIMEOUT)
 
 	def saveFile(self):
 		options = QFileDialog.Options()
@@ -154,36 +148,6 @@ class informationBox(QMessageBox):
 		self.setWindowTitle(title)
 		self.setMinimumWidth(1000)
 
-def darkMode():
-	# Dark Theme
-	# Adapted from https://github.com/pyqt/examples/tree/_/src/09%20Qt%20dark%20theme
-	palette = QPalette()
-	color1 = QColor(44, 49, 54)
-	color2 = QColor(21, 23, 26)
-	color3 = QColor(90, 90, 90)
-	color4 = QColor(40, 43, 48)
-	palette.setColor(QPalette.Window, color1)
-	palette.setColor(QPalette.WindowText, Qt.white)
-	palette.setColor(QPalette.Base, color2)
-	palette.setColor(QPalette.AlternateBase, color1)
-	palette.setColor(QPalette.ToolTipBase, Qt.black)
-	palette.setColor(QPalette.ToolTipText, QColor(255, 255, 255))
-	palette.setColor(QPalette.Text, Qt.white)
-	palette.setColor(QPalette.Button, color1)
-	palette.setColor(QPalette.ButtonText, Qt.white)
-	palette.setColor(QPalette.BrightText, Qt.red)
-	palette.setColor(QPalette.Link, '#0ccfb9')
-	palette.setColor(QPalette.Highlight, '#0ccfb9')
-	palette.setColor(QPalette.HighlightedText, Qt.black)
-	palette.setColor(QPalette.Disabled, QPalette.Base, color4)
-	palette.setColor(QPalette.Disabled, QPalette.Text, color3)
-	palette.setColor(QPalette.Disabled, QPalette.Button, QColor(33, 36, 41))
-	palette.setColor(QPalette.Disabled, QPalette.ButtonText, color3)
-	palette.setColor(QPalette.Disabled, QPalette.Window, color4)
-	palette.setColor(QPalette.Disabled, QPalette.WindowText, color3)
-	return palette
-
-
 # PySide2.QtWidgets.QApplication.setAttribute(PySide2.QtCore.Qt.AA_EnableHighDpiScaling, True)
 if __name__ == '__main__':
 	# os.environ["QT_AUTO_SCREEN_SCALE_FACTOR"] = "2"
@@ -191,7 +155,7 @@ if __name__ == '__main__':
 	# app.setAttribute(PySide2.QtCore.Qt.AA_EnableHighDpiScaling)
 	# if os.name == 'nt': # New Technology GUI (Windows)
 	app.setStyle('fusion') 
-	palette = darkMode()
+	palette = darkPalette()
 	app.setPalette(palette)
 
 	win = Window()

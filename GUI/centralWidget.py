@@ -2,7 +2,7 @@ import sys
 from PySide2.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QScrollArea, QFrame, QPushButton
 from PySide2 import QtGui
 from PySide2.QtCore import Qt, QThread
-from PySide2.QtGui import QPalette, QColor, QPixmap, QFont
+from PySide2.QtGui import QPixmap
 
 from connectionWidget import connectionWidget
 from rightWidget import rightWidget
@@ -183,8 +183,6 @@ class centralWidget(QWidget):
 		self.apply_btn.setEnabled(True)
 
 
-
-
 class logoWidget(QWidget):
 	def __init__(self, parent=None):
 		super().__init__(parent)
@@ -204,41 +202,11 @@ class logoWidget(QWidget):
 		self.setLayout(layout)
 
 
-
-def darkMode():
-	# Dark Theme
-	# Adapted from https://github.com/pyqt/examples/tree/_/src/09%20Qt%20dark%20theme
-	palette = QPalette()
-	palette.setColor(QPalette.Window, QColor(53, 53, 53))
-	palette.setColor(QPalette.WindowText, Qt.white)
-	palette.setColor(QPalette.Base, QColor(25, 25, 25))
-	palette.setColor(QPalette.AlternateBase, QColor(53, 53, 53))
-	palette.setColor(QPalette.ToolTipBase, Qt.black)
-	palette.setColor(QPalette.ToolTipText, QColor(255, 255, 255))
-	palette.setColor(QPalette.Text, Qt.white)
-	palette.setColor(QPalette.Button, QColor(53, 53, 53))
-	palette.setColor(QPalette.ButtonText, Qt.white)
-	palette.setColor(QPalette.BrightText, Qt.red)
-	palette.setColor(QPalette.Link, QColor(42, 130, 218))
-	palette.setColor(QPalette.Highlight, QColor(42, 130, 218))
-	palette.setColor(QPalette.HighlightedText, Qt.black)
-	palette.setColor(QPalette.Disabled, QPalette.Base, QColor(49, 49, 49))
-	palette.setColor(QPalette.Disabled, QPalette.Text, QColor(90, 90, 90))
-	palette.setColor(QPalette.Disabled, QPalette.Button, QColor(42, 42, 42))
-	palette.setColor(QPalette.Disabled, QPalette.ButtonText, QColor(90, 90, 90))
-	palette.setColor(QPalette.Disabled, QPalette.Window, QColor(49, 49, 49))
-	palette.setColor(QPalette.Disabled, QPalette.WindowText, QColor(90, 90, 90))
-	return palette
-
-
 if __name__ == '__main__':
 	app = QApplication([])
 	# if os.name == 'nt': # New Technology GUI (Windows)
 	app.setStyle('fusion') 
-	palette = darkMode()
-	app.setPalette(palette)
-	app.setFont(QFont("Arial", 9))
-		
+
 	widget = centralWidget()
 	widget.show()
 
