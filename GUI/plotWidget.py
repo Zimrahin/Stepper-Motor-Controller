@@ -6,7 +6,6 @@ from PySide2.QtGui import QPalette, QColor, QFont
 
 import matplotlib
 matplotlib.use('Qt5Agg')
-# matplotlib.rcParams['backend.qt5']='PySide'
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 from matplotlib.figure import Figure
@@ -15,7 +14,7 @@ import numpy as np
 
 
 class figCanvas(FigureCanvas):
-	def __init__(self, parent=None, width=7.5, height=4, dpi=100):
+	def __init__(self, parent=None, width=9, height=4, dpi=100):
 		self.fig = Figure(figsize=(width, height), dpi=dpi, tight_layout=True)
 		self.axes = self.fig.add_subplot(111)
 		super(figCanvas, self).__init__(self.fig)
@@ -37,12 +36,12 @@ class plotWidget(QWidget):
 		self.pa_label.setAlignment(Qt.AlignCenter)
 		self.mp_label.setAlignment(Qt.AlignCenter)
 		self.rpm_label.setAlignment(Qt.AlignCenter)
-		style_label_string = 'QLabel { color : #FFFFFF; font: 75 14pt "Verdana"}'
+		style_label_string = 'QLabel { color : #ffffff; font: 16pt "Segoe UI"}'
 		self.pp_label.setStyleSheet(style_label_string)
 		self.pa_label.setStyleSheet(style_label_string)
 		self.mp_label.setStyleSheet(style_label_string)
 		self.rpm_label.setStyleSheet(style_label_string)
-		label_max_height = 18
+		label_max_height = 28
 		self.pp_label.setMaximumHeight(label_max_height)
 		self.pa_label.setMaximumHeight(label_max_height)
 		self.mp_label.setMaximumHeight(label_max_height)
@@ -70,7 +69,7 @@ class plotWidget(QWidget):
 	
 		self.setMinimumWidth(700)
 
-		self.parent().data_xaxis = self.updatePlot([], 0, 'l', 100)
+		self.updatePlot([], 0, 'l', 100)
 
 	def updatePlot(self, data, angle, direction_char, N_rev):
 		# scale_factor = 360./N_rev
@@ -83,13 +82,13 @@ class plotWidget(QWidget):
 			self.canvas_wdg.axes.plot( 
 				data_xaxis, 
 				data, 
-				color='lime')
+				color='#00FFFF')
 		else: # negative
 			data_xaxis = np.linspace((angle + len(data) *plot_scale_factor)*angle_scale_factor, angle*angle_scale_factor, len(data))
 			self.canvas_wdg.axes.plot( 
 				data_xaxis, 
 				data, 
-				color='lime')
+				color='#00FFFF')
 			self.canvas_wdg.axes.invert_xaxis()
 
 		# self.canvas_wdg.axes.plot(data, color='lime', linewidth=2)
@@ -100,14 +99,13 @@ class plotWidget(QWidget):
 		self.canvas_wdg.axes.tick_params(axis='x', colors='#ffffff')
 		self.canvas_wdg.axes.tick_params(axis='y', colors='#ffffff')
 		for spine in self.canvas_wdg.axes.spines.values():
-			spine.set_edgecolor('white')
+			spine.set_edgecolor('#0ccfb9')
 		self.canvas_wdg.axes.spines
-		self.canvas_wdg.axes.tick_params(axis='y', colors='#ffffff')
-		self.canvas_wdg.fig.set_facecolor('#353535')
+		self.canvas_wdg.fig.set_facecolor('#2c3136')
 		self.canvas_wdg.axes.set_facecolor('#191919')
 		self.canvas_wdg.axes.set_xlabel('Degrees (\u00b0)')
 		self.canvas_wdg.axes.figure.gca().set_ylim(0, 3.2)
-		self.canvas_wdg.axes.grid(color = '#353535', linewidth = 1)
+		self.canvas_wdg.axes.grid(color = '#2c3136', linewidth = 1)
 		self.canvas_wdg.draw()
 
 		return data_xaxis

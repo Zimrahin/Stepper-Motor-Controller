@@ -1,11 +1,9 @@
 import sys
 import time
-import os
 from PySide2 import QtGui
-import PySide2.QtCore
-from PySide2.QtCore import Qt, QUrl
-from PySide2.QtWidgets import QApplication, QLabel, QMainWindow, QMenuBar, QMenu, QAction, QFileDialog, QMessageBox
-from PySide2.QtGui import QPalette, QColor, QFont, QDesktopServices
+from PySide2.QtCore import Qt
+from PySide2.QtWidgets import QApplication, QLabel, QMainWindow, QMenuBar, QMenu, QToolBar, QAction, QFileDialog
+from PySide2.QtGui import QPalette, QColor, QFont
 
 from centralWidget import centralWidget
 
@@ -20,25 +18,25 @@ class Window(QMainWindow):
 							{
 							"family" : "Segoe UI",
 							"title_size" : 11,
-							"text_size" : 9
+							"text_size" : 10
 							}
 						}
 		self.setWindowIcon(QtGui.QIcon('img/logo.png'))
-		self.setWindowTitle("Stepper Motor Controller")
-
+		self.setWindowTitle("Stepper motor controller")
+		# style_string = 
 		self.setStyleSheet(f"""
 							QMenuBar {{
 								font: {self.settings_dict['font']['text_size']}pt "{self.settings_dict['font']['family']}";
 								background-color: #191919; 
 								color: white; 
 								border: black solid 1px
-						   	}}
+                           	}}
 							QStatusBar {{
 								font: {self.settings_dict['font']['text_size']}pt "{self.settings_dict['font']['family']}";
 								background-color: #191919; 
 								color: white; 
 								border: black solid 1px
-						   	}}
+                           	}}
 							QLabel {{
 								font: {self.settings_dict['font']['text_size']}pt "{self.settings_dict['font']['family']}";
 							}}
@@ -56,10 +54,10 @@ class Window(QMainWindow):
 							}}
 							QToolTip {{
 								font: {self.settings_dict['font']['title_size']}pt "{self.settings_dict['font']['family']}";
-								background-color: #1f2126; 
+								background-color: #252525; 
 								color: white; 
 								border: black solid 1px
-						   	}}
+                           	}}
 						   	""")
 
 
@@ -74,9 +72,7 @@ class Window(QMainWindow):
 
 		# Status Bar
 		self.status_bar = self.statusBar()
-		self._version = '2.11.18'
-		self.permanent_message = QLabel(f'Version {self._version}')
-		self.permanent_message.setStyleSheet('color : #888888')
+		self.permanent_message = QLabel('Version 1.11.11')
 		self.permanent_message.setAlignment(Qt.AlignRight)
 		self.status_bar.addPermanentWidget(self.permanent_message)
 
@@ -95,7 +91,7 @@ class Window(QMainWindow):
 		menu_bar.addMenu(helpMenu)
 
 		#Actions
-		# fileMenu.addAction(self.newAction)
+		fileMenu.addAction(self.newAction)
 		fileMenu.addAction(self.saveAction)
 		fileMenu.addAction(self.exitAction)
 
@@ -103,8 +99,8 @@ class Window(QMainWindow):
 		helpMenu.addAction(self.aboutAction)
 
 	def _createActions(self):
-		# self.newAction = QAction("&New", self)
-		self.saveAction = QAction("&New Save File", self)
+		self.newAction = QAction("&New", self)
+		self.saveAction = QAction("&Save", self)
 		self.exitAction = QAction("&Exit", self)
 
 		self.helpContentAction = QAction("&Help Content", self)
@@ -123,20 +119,14 @@ class Window(QMainWindow):
 			self.file_name = file_name
 
 	def helpContent(self):
-		# self.status_bar.showMessage("Help > Help Content clicked", STATUS_BAR_TIMEOUT)
-		link = 'https://github.com/Zimrahin/Stepper-Motor-Controller/blob/main/Progress_Report_CCTVal_ENG.pdf'
-		QDesktopServices.openUrl(QUrl(link))
+		self.status_bar.showMessage("Help > Help Content clicked", STATUS_BAR_TIMEOUT)
 
 	def about(self):
-		# self.status_bar.showMessage("Help > About clicked", STATUS_BAR_TIMEOUT)
-		description = 'A simple Graphical User interface made to communicate with a microcontroller via a serial port to control the azimuth and elevation positions of an antenna and plot the power measured at each position.'
-		authors = 'Diego Badillo\n\tSebastián San Martín'
-		text =	f"{description}\n\nBy:\t{authors}\nVersion:\t{self._version}\nMade with:\tPySide2"
-		informationBox(text, 'Stepper Motor Controller', 'Stepper Motor Controller').exec_()
+		self.status_bar.showMessage("Help > About clicked", STATUS_BAR_TIMEOUT)
 	
 	def _connectActions(self):
 		# Connect File actions
-		# self.newAction.triggered.connect(self.newFile)
+		self.newAction.triggered.connect(self.newFile)
 		self.saveAction.triggered.connect(self.saveFile)
 		self.exitAction.triggered.connect(self.close)
 
@@ -144,59 +134,42 @@ class Window(QMainWindow):
 		self.helpContentAction.triggered.connect(self.helpContent)
 		self.aboutAction.triggered.connect(self.about)
 
-class informationBox(QMessageBox):
-	def __init__(self, info: str, title: str, subtitle: str, parent=None):
-		super().__init__(parent)
-		self.setWindowIcon(QtGui.QIcon('img/logo.png'))
-		self.setIcon(QMessageBox.Information)
-		self.setText('<b>'+subtitle+'</b>')
-		self.setInformativeText(info)
-		self.setWindowTitle(title)
-		self.setMinimumWidth(1000)
 
 def darkMode():
 	# Dark Theme
 	# Adapted from https://github.com/pyqt/examples/tree/_/src/09%20Qt%20dark%20theme
 	palette = QPalette()
-	color1 = QColor(44, 49, 54)
-	color2 = QColor(21, 23, 26)
-	color3 = QColor(90, 90, 90)
-	color4 = QColor(40, 43, 48)
-	palette.setColor(QPalette.Window, color1)
+	palette.setColor(QPalette.Window, QColor(53, 53, 53))
 	palette.setColor(QPalette.WindowText, Qt.white)
-	palette.setColor(QPalette.Base, color2)
-	palette.setColor(QPalette.AlternateBase, color1)
+	palette.setColor(QPalette.Base, QColor(25, 25, 25))
+	palette.setColor(QPalette.AlternateBase, QColor(53, 53, 53))
 	palette.setColor(QPalette.ToolTipBase, Qt.black)
 	palette.setColor(QPalette.ToolTipText, QColor(255, 255, 255))
 	palette.setColor(QPalette.Text, Qt.white)
-	palette.setColor(QPalette.Button, color1)
+	palette.setColor(QPalette.Button, QColor(53, 53, 53))
 	palette.setColor(QPalette.ButtonText, Qt.white)
 	palette.setColor(QPalette.BrightText, Qt.red)
-	palette.setColor(QPalette.Link, '#0ccfb9')
-	palette.setColor(QPalette.Highlight, '#0ccfb9')
+	palette.setColor(QPalette.Link, QColor(42, 130, 218))
+	palette.setColor(QPalette.Highlight, QColor(42, 130, 218))
 	palette.setColor(QPalette.HighlightedText, Qt.black)
-	palette.setColor(QPalette.Disabled, QPalette.Base, color4)
-	palette.setColor(QPalette.Disabled, QPalette.Text, color3)
-	palette.setColor(QPalette.Disabled, QPalette.Button, QColor(33, 36, 41))
-	palette.setColor(QPalette.Disabled, QPalette.ButtonText, color3)
-	palette.setColor(QPalette.Disabled, QPalette.Window, color4)
-	palette.setColor(QPalette.Disabled, QPalette.WindowText, color3)
+	palette.setColor(QPalette.Disabled, QPalette.Base, QColor(49, 49, 49))
+	palette.setColor(QPalette.Disabled, QPalette.Text, QColor(90, 90, 90))
+	palette.setColor(QPalette.Disabled, QPalette.Button, QColor(42, 42, 42))
+	palette.setColor(QPalette.Disabled, QPalette.ButtonText, QColor(90, 90, 90))
+	palette.setColor(QPalette.Disabled, QPalette.Window, QColor(49, 49, 49))
+	palette.setColor(QPalette.Disabled, QPalette.WindowText, QColor(90, 90, 90))
 	return palette
 
 
-# PySide2.QtWidgets.QApplication.setAttribute(PySide2.QtCore.Qt.AA_EnableHighDpiScaling, True)
 if __name__ == '__main__':
-	# os.environ["QT_AUTO_SCREEN_SCALE_FACTOR"] = "2"
 	app = QApplication([])
-	# app.setAttribute(PySide2.QtCore.Qt.AA_EnableHighDpiScaling)
 	# if os.name == 'nt': # New Technology GUI (Windows)
 	app.setStyle('fusion') 
 	palette = darkMode()
 	app.setPalette(palette)
-
+	app.setFont(QFont("Arial", 9))
+		
 	win = Window()
-	# print(win.dumpObjectTree())
-	win.move(350,150)
 	win.show()
 
 	sys.exit(app.exec_())

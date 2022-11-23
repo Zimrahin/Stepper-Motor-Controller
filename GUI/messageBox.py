@@ -19,12 +19,12 @@ class warningBox(QMessageBox):
         self.setWindowTitle('Warning!')
 
 class informationBox(QMessageBox):
-    def __init__(self, info, title, subtitle, parent=None):
+    def __init__(self, info, parent=None):
         super().__init__(parent)
         self.setIcon(QMessageBox.Information)
-        self.setText('<b>'+subtitle+'</b>')
+        self.setText('<b>Information:</b>')
         self.setInformativeText(info)
-        self.setWindowTitle(title)
+        self.setWindowTitle('Information')
 
 class receivedSuccessBox(QMessageBox):
     def __init__(self, info, parent=None):

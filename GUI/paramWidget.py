@@ -1,7 +1,8 @@
 import sys
 from PySide2.QtWidgets import QWidget, QPushButton, QApplication, QHBoxLayout, QFormLayout, QVBoxLayout, QSpinBox, QComboBox, QLabel
+from PySide2.QtGui import QIcon, QPixmap
 import PySide2.QtCore
-from messageBox import receivedSuccessBox
+from PySide2.QtCore import Qt
 
 # Constants for operation
 # -> Pa parameters: steps
@@ -22,8 +23,20 @@ class paramWidget(QWidget):
 	def __init__(self, parent=None):
 		super().__init__(parent)
 
+		self.font_dict = {
+					"family" : "Segoe UI",
+					"title_size" : 14
+					}
 
 		# Widgets
+		# -> Labels
+		self.azimuth_txt = QLabel('<b>Azimuth Settings</b>')
+		self.azimuth_txt.setStyleSheet(f"font : {self.font_dict['title_size']}pt '{self.font_dict['family']}';")
+		self.azimuth_img = QLabel()
+		self.img = QPixmap('img/azimuth.png')
+		self.img = self.img.scaled(250, 40, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+		self.azimuth_img.setPixmap(self.img)
+
 		# -> Combo boxes
 		self.Nrev_combo = QComboBox()
 		self.Nrev_list = ['1.8 degree/step','0.9 degree/step','0.45 degree/step','0.225 degree/step','0.1125 degree/step','0.05625 degree/step']
@@ -33,13 +46,6 @@ class paramWidget(QWidget):
 		self.Pa_spinbox = QSpinBox()
 		self.Tas_spinbox = QSpinBox()
 		self.Tai_spinbox = QSpinBox()
-
-		# -> Output text
-		# self.out_label = QLabel("")
-
-		# -> Radio buttons
-		# self.degree_radio = QRadioButton('Degree')
-		# self.step_radio = QRadioButton('Step')
 
 		# -> Bottom buttons
 		self.default_btn = QPushButton('Default')
@@ -62,6 +68,13 @@ class paramWidget(QWidget):
 		# Layout
 		v_layout = QVBoxLayout()
 
+		# -> Title Label
+		h_layout = QHBoxLayout()
+		h_layout.addWidget(self.azimuth_img)
+		h_layout.addWidget(self.azimuth_txt)
+		h_layout.addStretch()
+		v_layout.addLayout(h_layout)
+
 		# -> Boxes
 		param_fields = QFormLayout()
 		param_fields.addRow('Azimuth resolution', self.Nrev_combo)
@@ -78,20 +91,12 @@ class paramWidget(QWidget):
 		self.default_btn.setToolTip('Set optimum empirical parameters to <b>maximise</b> rotation speed while keeping a <b>stable behaviour</b> of stepper motor')
 		self.apply_btn.setToolTip('Send command to set parameters')
 
-		# # -> Radio buttons
-		# radio_btn_row = QHBoxLayout()
-		# radio_btn_row.addWidget(self.degree_radio)
-		# radio_btn_row.addWidget(self.step_radio)
-		# v_layout.addLayout(radio_btn_row)
-
 		# -> Bottom buttons
 		btn_row = QHBoxLayout()
 		btn_row.addWidget(self.default_btn)
 		btn_row.addWidget(self.apply_btn)
 		v_layout.addLayout(btn_row)
 
-		# -> Output text label widget
-		# v_layout.addWidget(self.out_label)
 
 		# -> Final layout
 		self.setLayout(v_layout)
@@ -140,28 +145,28 @@ class paramWidget(QWidget):
 	def resetParameters(self):
 		if self.Nrev_combo.currentText() == self.Nrev_list[5]:
 			self.Pa_spinbox.setValue(0)
-			self.Tai_spinbox.setValue(0)
 			self.Tas_spinbox.setValue(0)
+			self.Tai_spinbox.setValue(0)
 		elif self.Nrev_combo.currentText() == self.Nrev_list[4]:
 			self.Pa_spinbox.setValue(0)
-			self.Tai_spinbox.setValue(0)
 			self.Tas_spinbox.setValue(0)
+			self.Tai_spinbox.setValue(0)
 		elif self.Nrev_combo.currentText() == self.Nrev_list[3]:
 			self.Pa_spinbox.setValue(800)
-			self.Tai_spinbox.setValue(0)
 			self.Tas_spinbox.setValue(8)
+			self.Tai_spinbox.setValue(0)
 		elif self.Nrev_combo.currentText() == self.Nrev_list[2]:
 			self.Pa_spinbox.setValue(800)
-			self.Tai_spinbox.setValue(8)
 			self.Tas_spinbox.setValue(16)
+			self.Tai_spinbox.setValue(8)
 		elif self.Nrev_combo.currentText() == self.Nrev_list[1]:
 			self.Pa_spinbox.setValue(800)
-			self.Tai_spinbox.setValue(12)
 			self.Tas_spinbox.setValue(20)
+			self.Tai_spinbox.setValue(12)
 		elif self.Nrev_combo.currentText() == self.Nrev_list[0]:
 			self.Pa_spinbox.setValue(800)
-			self.Tai_spinbox.setValue(14)
 			self.Tas_spinbox.setValue(22)
+			self.Tai_spinbox.setValue(14)
 		else:
 			print('if you see this, there is an error (probably)')
 			  
