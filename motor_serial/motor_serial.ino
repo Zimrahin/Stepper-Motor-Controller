@@ -387,15 +387,15 @@ void loop()
 			int steps = (N_rev_elev_g + (elev_end - elev_init)%N_rev_elev_g)%N_rev_elev_g;
 			
 			// Initialize motor positions:
-			movement(azimString_init);
-			movement(elevString_init,"motor_elevation");
+			movement(azimString_init); // no debería imprimir nada (y agregar params de aceleracion)
+			movement(elevString_init,"motor_elevation"); // no debería imprimir nada (y agregar params de aceleracion)
 
 			// Loop:
 			String movString_elev;
 			int movInt_elev;
 			for(int i = 0; i < steps; i++){
 				movement(azimString_end);
-				movement(azimString_init);
+				movement(azimString_init); // no debería imprimir nada (y agregar params de aceleracion)
 
 				movInt_elev = (elev_init + i)%N_rev_elev_g;
 				// Aquí había un error (suma de String e int, quizás por esto no funcionaban los movimientos en elevación. Revisar)

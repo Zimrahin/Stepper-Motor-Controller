@@ -42,7 +42,7 @@ class plotWidget(QWidget):
 		self.pa_label.setStyleSheet(style_label_string)
 		self.mp_label.setStyleSheet(style_label_string)
 		self.rpm_label.setStyleSheet(style_label_string)
-		label_max_height = 23
+		label_max_height = 28
 		self.pp_label.setMaximumHeight(label_max_height)
 		self.pa_label.setMaximumHeight(label_max_height)
 		self.mp_label.setMaximumHeight(label_max_height)

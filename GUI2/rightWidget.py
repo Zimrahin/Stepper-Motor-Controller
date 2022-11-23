@@ -152,14 +152,16 @@ class rightWidget(QWidget):
 		self.TimeBoxConfig(self.Tai_spinbox)
 		self.TimeBoxConfig(self.Tas_spinbox)
 
-		self.angleBoxConfig(self.initial_azim_spinbox, 0, 360)
-		self.angleBoxConfig(self.final_azim_spinbox, 0, 360)
-		self.angleBoxConfig(self.initial_elev_spinbox, 0, 360)
-		self.angleBoxConfig(self.final_elev_spinbox, 0, 360)
+		self.angleBoxConfig(self.initial_azim_spinbox, -180, 180)
+		self.angleBoxConfig(self.final_azim_spinbox, -180, 180)
 
-		self.initial_azim_spinbox.setValue(280)
-		self.final_azim_spinbox.setValue(80)
-		self.initial_elev_spinbox.setValue(358)
+		self.angleBoxConfig(self.initial_elev_spinbox, -30, 60)
+		self.angleBoxConfig(self.final_elev_spinbox, -30, 60)
+
+		self.initial_azim_spinbox.setValue(-100)
+		self.final_azim_spinbox.setValue(100)
+		self.initial_elev_spinbox.setValue(-30)
+		self.final_elev_spinbox.setValue(-26)
 
 
 		#---------------------------------------------

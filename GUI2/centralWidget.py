@@ -10,6 +10,7 @@ from plotWidget import plotWidget
 from workerThread import workerThreadPlotUpdate
 
 import time
+from messageBox import errorBox
 
 # https://stackoverflow.com/questions/1551605/how-to-set-applications-taskbar-icon-in-windows-7/1552105#1552105
 import ctypes
@@ -53,7 +54,7 @@ class centralWidget(QWidget):
 		self.scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 		self.scroll_area.setWidgetResizable(True)
 		self.scroll_area.setFrameShape(QFrame.NoFrame)
-		self.scroll_area.setMinimumWidth(360)
+		self.scroll_area.setMinimumWidth(360) 
 		self.scroll_area.setWidget(self.right_wdg)
 
 		# ------------------------------------------------------------
@@ -83,7 +84,7 @@ class centralWidget(QWidget):
 		
 
 		h_layout = QHBoxLayout()
-		h_layout.addWidget(self.plot_wdg, 6)
+		h_layout.addWidget(self.plot_wdg, 5)
 		h_layout.addLayout(v_layout, 1)
 
 		self.setLayout(h_layout)
@@ -109,16 +110,33 @@ class centralWidget(QWidget):
 		# initial and final angles from spinboxes
 		azim_init_angle = self.right_wdg.initial_azim_spinbox.value()
 		azim_final_angle = self.right_wdg.final_azim_spinbox.value()
+		azim_diff_angle = azim_final_angle - azim_init_angle
+
 		elev_init_angle = self.right_wdg.initial_elev_spinbox.value()
 		elev_final_angle = self.right_wdg.final_elev_spinbox.value()
+		
+		if azim_init_angle < 0:
+			azim_init_angle += 360
+		if azim_final_angle < 0:
+			azim_final_angle += 360
+		if elev_init_angle < 0:
+			elev_init_angle += 360
+		if elev_final_angle < 0:
+			elev_final_angle += 360
+
+		if azim_diff_angle < 0:
+			raise Exception('Final angle must be greater than initial angle')
+			# dir character can be changed in this case
+
 
 		# initial and final steps to be sent to Arduino
 		azim_init_step = self.right_wdg.angleToStep(azim_init_angle, int(self.right_wdg.param_dict['Nrev']))
-		azim_final_step = self.right_wdg.angleToStep(azim_final_angle, int(self.right_wdg.param_dict['Nrev']))
+		azim_diff_step = self.right_wdg.angleToStep(azim_diff_angle, int(self.right_wdg.param_dict['Nrev']))
+
 		elev_init_step = self.right_wdg.angleToStep(elev_init_angle, self.right_wdg.elev_res)
 		elev_final_step = self.right_wdg.angleToStep(elev_final_angle, self.right_wdg.elev_res)
 
-		out_string = f'n-a{azim_init_step}-a{azim_final_step}-e{elev_init_step}-e{elev_final_step}'
+		out_string = f'n-a{azim_init_step}-l{azim_diff_step}-e{elev_init_step}-e{elev_final_step}'
 
 		print(out_string)
 		self.connection_wdg.send2COM(out_string)

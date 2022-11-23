@@ -1,6 +1,8 @@
 import sys
 import time
+import os
 from PySide2 import QtGui
+import PySide2.QtCore
 from PySide2.QtCore import Qt, QUrl
 from PySide2.QtWidgets import QApplication, QLabel, QMainWindow, QMenuBar, QMenu, QAction, QFileDialog, QMessageBox
 from PySide2.QtGui import QPalette, QColor, QFont, QDesktopServices
@@ -182,14 +184,16 @@ def darkMode():
 	return palette
 
 
+# PySide2.QtWidgets.QApplication.setAttribute(PySide2.QtCore.Qt.AA_EnableHighDpiScaling, True)
 if __name__ == '__main__':
+	# os.environ["QT_AUTO_SCREEN_SCALE_FACTOR"] = "2"
 	app = QApplication([])
+	# app.setAttribute(PySide2.QtCore.Qt.AA_EnableHighDpiScaling)
 	# if os.name == 'nt': # New Technology GUI (Windows)
 	app.setStyle('fusion') 
 	palette = darkMode()
 	app.setPalette(palette)
-	app.setFont(QFont("Arial", 9))
-		
+
 	win = Window()
 	# print(win.dumpObjectTree())
 	win.move(350,150)

@@ -7,11 +7,21 @@ synthesizer max2871
 
 ------------------------------------------------------------------------
 ### In Progress
+- [x] Solucionar escalamiento con distintas pantallas
+    *Problema de windows scaling, no vale la pena meterse aquí*
 
-- [x] Escribir informe técnico
-- [x] Agregar parametros de aceleración a movimientos de elevación de forma independiente, pero sin posibilidad de cambiarlos desde la GUI
+- [x] Solucionar problema de que en la rutina se mueve siempre al camino más corto (a veces se requiere u camino más largo)
+- [x] Limitar elevación a -30 , 60 (negativos)
+- [ ] Arreglar prints (solo debe imprimir en los movimientos l-algo)
+    - [ ] Agregar un 'ack' al final de la rutina en el ardunio para aviarle al python que el proceso termino. El ack triggerea un break en el while, de lo contrario solo se resetea el timeout ocn un continue
+    - [ ] Agregar que e arduino no impprima datos en  estos movimientos, y por lo tanto agregar parametrso aceleracion
+
+- [ ] Agregar exception error box
 - [ ] Agregar escritura en CSV para rutina
+- [ ] Agregar 'Open File' para plotear
+- [ ] Guardar parámetros de rutina en archivos  y agregar "open routine settings"
 
+- [ ] botón antena 'sync antennas' (?)
 ------------------------------------------------------------------------
 #### DONE
 - [x] Dejar tooltips en un método para no desordenar la función principal
@@ -36,6 +46,8 @@ synthesizer max2871
     - Esto no esta funcionando. Es posible que sea porque el plot tarda demasiado, y para entonces ya se tiene la siguiente lectura del puerto serial. Solución: threads? CON THREADS FUNCIONA
 - [x] Agregar tooltips para nuevos widgets
 - [x] Agregar about y help content
+- [x] Escribir informe técnico
+- [x] Agregar parametros de aceleración a movimientos de elevación de forma independiente, pero sin posibilidad de cambiarlos desde la GUI
 ------------------------------------------------------------------------
 ### Extras
 - [ ] Dejar grafico en decibeles
