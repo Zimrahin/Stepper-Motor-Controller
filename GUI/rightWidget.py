@@ -1,5 +1,4 @@
 import sys
-import time
 from PySide2.QtWidgets import QWidget, QPushButton, QApplication, QHBoxLayout, QFormLayout, QVBoxLayout, QRadioButton, QDoubleSpinBox, QSpinBox, QComboBox, QLabel, QButtonGroup
 from PySide2.QtCore import QSize, Qt, QThread
 from PySide2.QtGui import QIcon, QPixmap
@@ -36,9 +35,11 @@ STATUS_BAR_TIMEOUT = 5000
 ELEV_RES = 200
 
 class rightWidget(QWidget):
-	def __init__(self, parent=None):
+	def __init__(self, central_wdg, main_wdw, parent=None):
 		super().__init__(parent)
-
+		self.central_wdg = central_wdg
+		self.main_wdw = main_wdw
+		#---------------------------------------------
 		self.font_dict = {
 					"family" : "Segoe UI",
 					"title_size" : 14
@@ -295,7 +296,7 @@ class rightWidget(QWidget):
 		for i in range(len(listRadioBtn)):
 			if listRadioBtn[i].isChecked():
 				# self.out_label.setText(listLetters[i] + str(out_step))
-				self.parent().parent().parent().connection_wdg.send2COM(listLetters[i] + str(out_step))
+				self.central_wdg.connection_wdg.send2COM(listLetters[i] + str(out_step))
 				print(listLetters[i] + str(out_step))
 		
 		# Start MOVEMENT
@@ -304,7 +305,7 @@ class rightWidget(QWidget):
 	def movementRoutine(self):
 		# Thread
 		self.mov_thread = QThread()
-		self.mov_worker = movementThread(self, self.parent().parent().parent(), self.parent().parent().parent().parent())
+		self.mov_worker = movementThread(self, self.central_wdg, self.main_wdw)
 		self.mov_worker.moveToThread(self.mov_thread)
 		# Signals
 		self.mov_thread.started.connect(self.mov_worker.run)
@@ -315,21 +316,21 @@ class rightWidget(QWidget):
 
 		# Lock right widget and start, apply buttons
 		self.setEnabled(False)
-		self.parent().parent().parent().start_btn.setEnabled(False)
-		self.parent().parent().parent().apply_btn.setEnabled(False)
-		self.parent().parent().parent().connection_wdg.setEnabled(False)
+		self.central_wdg.start_btn.setEnabled(False)
+		self.central_wdg.apply_btn.setEnabled(False)
+		self.central_wdg.connection_wdg.setEnabled(False)
 
 		# Unlock right widget and start, apply buttons
 		self.mov_thread.finished.connect(lambda: self.setEnabled(True))
-		self.mov_thread.finished.connect(lambda: self.parent().parent().parent().start_btn.setEnabled(True))
-		self.mov_thread.finished.connect(lambda: self.parent().parent().parent().apply_btn.setEnabled(True))
-		self.mov_thread.finished.connect(lambda: self.parent().parent().parent().connection_wdg.setEnabled(True))
+		self.mov_thread.finished.connect(lambda: self.central_wdg.start_btn.setEnabled(True))
+		self.mov_thread.finished.connect(lambda: self.central_wdg.apply_btn.setEnabled(True))
+		self.mov_thread.finished.connect(lambda: self.central_wdg.connection_wdg.setEnabled(True))
 
 	def sendReset(self):
-		self.parent().parent().parent().connection_wdg.send2COM("reset")	
-		response = self.parent().parent().parent().connection_wdg.receiveOnlyCOM()
+		self.central_wdg.connection_wdg.send2COM("reset")	
+		response = self.central_wdg.connection_wdg.receiveOnlyCOM()
 		if (response == 'ack'):			
-			self.parent().parent().parent().parent().status_bar.showMessage('Angle reset successfully!', STATUS_BAR_TIMEOUT)
+			self.main_wdw.status_bar.showMessage('Angle reset successfully!', STATUS_BAR_TIMEOUT)
 			return True
 		else:
 			raise Exception('Device did not respond')
@@ -341,17 +342,18 @@ class rightWidget(QWidget):
 		listRadioBtn = [self.ae_radio, self.u_radio, self.d_radio]
 		for i in range(len(listRadioBtn)):
 			if listRadioBtn[i].isChecked():
-				self.parent().parent().parent().connection_wdg.send2COM(listLetters[i] + str(out_step))
+				self.central_wdg.connection_wdg.send2COM(listLetters[i] + str(out_step))
 				print(listLetters[i] + str(out_step))
 
 		# READ
-		received_string = self.parent().parent().parent().connection_wdg.receiveOnlyCOM()
+		received_string = self.central_wdg.connection_wdg.receiveOnlyCOM()
+		# CORREGIR ESTO, POR AHORA SE ESTÁ LEYENDO PERO SIN HACER NADA CON ESTO
 
 	def sendResetElevation(self):
-		self.parent().parent().parent().connection_wdg.send2COM("reset_elev")	
-		response = self.parent().parent().parent().connection_wdg.receiveOnlyCOM()
+		self.central_wdg.connection_wdg.send2COM("reset_elev")	
+		response = self.central_wdg.connection_wdg.receiveOnlyCOM()
 		if (response == 'ack'):			
-			self.parent().parent().parent().parent().status_bar.showMessage('Angle reset successfully!', STATUS_BAR_TIMEOUT)
+			self.main_wdw.status_bar.showMessage('Angle reset successfully!', STATUS_BAR_TIMEOUT)
 			return True
 		else:
 			raise Exception('Device did not respond')
@@ -419,8 +421,8 @@ class rightWidget(QWidget):
 		self.move_elev_btn.setToolTip('Rotate <b>elevation</b> stepper motor')
 		self.reset_elev_btn.setToolTip('Set current <b>elevation</b> position as initial <b>elevation</b> angle')
 
-		self.parent().apply_btn.setToolTip('<b>Send command</b> to set parameters')
-		self.parent().start_btn.setToolTip('Start <b>routine</b>')
+		self.central_wdg.apply_btn.setToolTip('<b>Send command</b> to set parameters')
+		self.central_wdg.start_btn.setToolTip('Start <b>routine</b>')
 
 		self.initial_azim_spinbox.setToolTip('<b>Routine: </b>Set <b>initial</b> azimuth angle')
 		self.final_azim_spinbox.setToolTip('<b>Routine: </b>Set <b>final</b> azimuth angle')

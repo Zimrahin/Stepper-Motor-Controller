@@ -20,8 +20,9 @@ ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 STATUS_BAR_TIMEOUT = 5000
 
 class centralWidget(QWidget):
-	def __init__(self, parent=None):
+	def __init__(self, main_wdw, parent=None):
 		super().__init__(parent)
+		self.main_wdw = main_wdw
 
 		self.setWindowIcon(QtGui.QIcon('img/logo.png'))
 		self.setWindowTitle("Stepper motor controller")
@@ -45,7 +46,7 @@ class centralWidget(QWidget):
 		self.logo_wdg = logoWidget(self)
 
 		# -> Right Scroll Widget
-		self.right_wdg = rightWidget(self)
+		self.right_wdg = rightWidget(self, self.main_wdw, self)
 		
 		# ->-> Scroll Area
 		self.scroll_area = QScrollArea()
@@ -101,7 +102,7 @@ class centralWidget(QWidget):
 		response = self.connection_wdg.receiveOnlyCOM()
 		if (response == 'ack'):
 			self.right_wdg.param_dict = out_dict #update necessary for degree->step conversion (called from angleWidget)
-			self.parent().status_bar.showMessage("Parameters set successfully!", STATUS_BAR_TIMEOUT)
+			self.main_wdw.status_bar.showMessage("Parameters set successfully!", STATUS_BAR_TIMEOUT)
 			return True
 		else:
 			raise Exception('Device did not respond')

@@ -68,7 +68,7 @@ class Window(QMainWindow):
 
 		# Widgets
 		# -> Central Widget
-		self.central_wdg = centralWidget(self)
+		self.central_wdg = centralWidget(self, self)
 		self.setCentralWidget(self.central_wdg)
 
 		# Status Bar
