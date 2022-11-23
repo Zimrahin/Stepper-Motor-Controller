@@ -64,8 +64,8 @@ class centralWidget(QWidget):
 		self.apply_btn.setEnabled(False)
 
 		# Signals and Slots
-		self.connection_wdg.connect_signal.connect(self.connectUnlock)
-		self.connection_wdg.disconnect_signal.connect(self.disconnectLock)
+		self.connection_wdg.connect_signal.connect(lambda: self.connectUnlock(True))
+		self.connection_wdg.disconnect_signal.connect(lambda: self.connectUnlock(False))
 
 		self.apply_btn.clicked.connect(self.applyParameters)
 		self.start_btn.clicked.connect(self.startRoutine)
@@ -144,19 +144,19 @@ class centralWidget(QWidget):
 
 	def longUpdatePlotRoutine(self):
 		# Create QThread object
-		self.thread = QThread()
+		self.routine_thread = QThread()
 		# Create a worker object
-		self.worker = workerThreadPlotUpdate(self.connection_wdg, self.plot_wdg, self.right_wdg)
+		self.routine_worker = workerThreadPlotUpdate(self.connection_wdg, self.plot_wdg, self.right_wdg)
 		# Move worker to the thread
-		self.worker.moveToThread(self.thread)
+		self.routine_worker.moveToThread(self.routine_thread)
 		# Connect signals and slots
-		self.thread.started.connect(self.worker.run)
-		self.worker.finished.connect(self.thread.quit)
-		self.worker.finished.connect(self.worker.deleteLater)
-		self.thread.finished.connect(self.thread.deleteLater)
+		self.routine_thread.started.connect(self.routine_worker.run)
+		self.routine_worker.finished.connect(self.routine_thread.quit)
+		self.routine_worker.finished.connect(self.routine_worker.deleteLater)
+		self.routine_thread.finished.connect(self.routine_thread.deleteLater)
 		# self.worker.progress.connect(self.reportProgress) # useful por a progress bar
 		# Start the thread
-		self.thread.start()
+		self.routine_thread.start()
 
 		# Lock right widget and start, apply buttons
 		self.right_wdg.setEnabled(False)
@@ -165,22 +165,16 @@ class centralWidget(QWidget):
 		self.connection_wdg.setEnabled(False)
 
 		# Unlock right widget and start, apply buttons
-		self.thread.finished.connect(lambda: self.right_wdg.setEnabled(True))
-		self.thread.finished.connect(lambda: self.start_btn.setEnabled(True))
-		self.thread.finished.connect(lambda: self.apply_btn.setEnabled(True))
-		self.thread.finished.connect(lambda: self.connection_wdg.setEnabled(True))
+		self.routine_thread.finished.connect(lambda: self.right_wdg.setEnabled(True))
+		self.routine_thread.finished.connect(lambda: self.start_btn.setEnabled(True))
+		self.routine_thread.finished.connect(lambda: self.apply_btn.setEnabled(True))
+		self.routine_thread.finished.connect(lambda: self.connection_wdg.setEnabled(True))
 
-	def disconnectLock(self):
-		self.COM = None
-		self.right_wdg.setEnabled(False)
-		self.start_btn.setEnabled(False)
-		self.apply_btn.setEnabled(False)
-
-	def connectUnlock(self):
-		self.COM = self.connection_wdg.serial_COM
-		self.right_wdg.setEnabled(True)
-		self.start_btn.setEnabled(True)
-		self.apply_btn.setEnabled(True)
+	def connectUnlock(self, flag: bool):
+		self.COM = self.connection_wdg.serial_COM if flag else None
+		self.right_wdg.setEnabled(flag)
+		self.start_btn.setEnabled(flag)
+		self.apply_btn.setEnabled(flag)
 
 
 class logoWidget(QWidget):

@@ -304,7 +304,7 @@ class rightWidget(QWidget):
 	def movementRoutine(self):
 		# Thread
 		self.mov_thread = QThread()
-		self.mov_worker = movementThread(self)
+		self.mov_worker = movementThread(self, self.parent().parent().parent(), self.parent().parent().parent().parent())
 		self.mov_worker.moveToThread(self.mov_thread)
 		# Signals
 		self.mov_thread.started.connect(self.mov_worker.run)

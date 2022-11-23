@@ -13,11 +13,11 @@ synthesizer max2871
 - [x] Agregar darkMode como una paleta global que se Importe
 ------------------------------------------------------------
 - [x] Agregar thread a movimientos independientes de motor (r500, a300, etc)
+- [x] Cambiar nombre a 'thread' en routine thread (centralWidget)
 - [ ] Cambiar llamados de parent().parent()... por inicializaciones y nombres especificos
-- [ ] Cambiar nombre a 'thread' en routine thread (centralWidget)
+---------------------------------------------------------------------
 - [ ] Agregar thread a movimientos ELEVATION
 - [ ] Agregar label "moving azimuth..." o "moving elevation..." en status bar
----------------------------------------------------------------------
 - [ ] Ordenamiento general del código de GUI:
         - [ ] Definir números "hardcoded" en un JSON, que se abra en un config.py como una clase (read only por mientras)
 - [ ] Agregar exception error box
