@@ -158,8 +158,8 @@ class rightWidget(QWidget):
 		self.angleBoxConfig(self.initial_elev_spinbox, -30, 60)
 		self.angleBoxConfig(self.final_elev_spinbox, -30, 60)
 
-		self.initial_azim_spinbox.setValue(-100)
-		self.final_azim_spinbox.setValue(100)
+		self.initial_azim_spinbox.setValue(-80)
+		self.final_azim_spinbox.setValue(80)
 		self.initial_elev_spinbox.setValue(-30)
 		self.final_elev_spinbox.setValue(-26)
 

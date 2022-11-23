@@ -345,7 +345,7 @@ void loop()
 		}
 		
 
-		// Change parameters:
+		// Change (p)arameters:
 		else if (receivedString[0] == 'p') { //extract letter, 'p' for param changes, p-NrevAz-Pa-Tas-Tai-NrevEl
 			N_rev_azim_g = getValue(receivedString,'-',1).toInt();
 			Pa_g = getValue(receivedString,'-',2).toInt();
@@ -371,24 +371,24 @@ void loop()
 			return;
 		}	
 
-		// Routine:
+		// Routi(n)e:
 		else if (receivedString[0] == 'n'){
-
+			// String: n-aIII-(l/r)FFF-eIII-eFFF
 			// Unpack command:
 			String azimString_init = getValue(receivedString,'-',1);
 			String azimString_end = getValue(receivedString,'-',2);
 			String elevString_init = getValue(receivedString,'-',3);
 			String elevString_end = getValue(receivedString,'-',4);
-			String rstString = "a0";			
+			// String rstString = "a0";			
 			
 			// Calculate steps and linspace for loop:
-			int elev_init = elevString_init.substring(1).toInt(); //extract number
-			int elev_end = elevString_end.substring(1).toInt(); //extract number
+			int elev_init = elevString_init.substring(1).toInt(); 	//extract number
+			int elev_end = elevString_end.substring(1).toInt(); 	//extract number
 			int steps = (N_rev_elev_g + (elev_end - elev_init)%N_rev_elev_g)%N_rev_elev_g;
 			
 			// Initialize motor positions:
 			movement(azimString_init); // no debería imprimir nada (y agregar params de aceleracion)
-			movement(elevString_init,"motor_elevation"); // no debería imprimir nada (y agregar params de aceleracion)
+			movement(elevString_init,"motor_elevation"); // no debería imprimir nada NI MOVERSE (y agregar params de aceleracion)
 
 			// Loop:
 			String movString_elev;
@@ -398,7 +398,7 @@ void loop()
 				movement(azimString_init); // no debería imprimir nada (y agregar params de aceleracion)
 
 				movInt_elev = (elev_init + i)%N_rev_elev_g;
-				// Aquí había un error (suma de String e int, quizás por esto no funcionaban los movimientos en elevación. Revisar)
+				// Aquí había un error (suma de String e int Revisar)
 				// movString_elev = "e" + movInt_elev;
 				// Solución con casteo (?) (no probado aún)
 				movString_elev = 'e' + String(movInt_elev);

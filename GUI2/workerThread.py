@@ -1,6 +1,4 @@
-import sys
-
-from PySide2.QtCore import QObject, QThread, Signal
+from PySide2.QtCore import QObject, Signal
 
 class workerThreadPlotUpdate(QObject):
 	finished = Signal()

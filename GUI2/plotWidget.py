@@ -6,7 +6,6 @@ from PySide2.QtGui import QPalette, QColor, QFont
 
 import matplotlib
 matplotlib.use('Qt5Agg')
-# matplotlib.rcParams['backend.qt5']='PySide'
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 from matplotlib.figure import Figure

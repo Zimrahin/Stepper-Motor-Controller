@@ -2,9 +2,6 @@
 -------
 ## TO DO
 synthesizer max2871
-
-### IMPORTANTE:
-
 ------------------------------------------------------------------------
 ### In Progress
 - [x] Solucionar escalamiento con distintas pantallas
@@ -12,6 +9,15 @@ synthesizer max2871
 
 - [x] Solucionar problema de que en la rutina se mueve siempre al camino más corto (a veces se requiere u camino más largo)
 - [x] Limitar elevación a -30 , 60 (negativos)
+- [x] Agregar posibilidad de moverse en direcciones positivas
+
+- [ ] Agregar darkMode como una paleta global que se Importe
+- [ ] Agregar thread a movimientos independientes de motor (r500, a300, etc)
+- [ ] Ordenamiento general del código de GUI:
+        - [ ] Definir números "hardcoded" en un JSON, que se abra en un settings.py como una clase (read only por mientras)
+
+- [ ] Revisar movimiento de elevación (qué pasa si se deja seteado otro pin de salida de la portenta? podríamos dejarlo así por mientras y simplemente no mover el motor en elevción (para no perder información de la posicion acimut global))
+- [ ] Corregir bug de conversión angle-step. Al hacer la aproximación, a la larga se desfasa (l300, r301, l300, r301, ...)
 - [ ] Arreglar prints (solo debe imprimir en los movimientos l-algo)
     - [ ] Agregar un 'ack' al final de la rutina en el ardunio para aviarle al python que el proceso termino. El ack triggerea un break en el while, de lo contrario solo se resetea el timeout ocn un continue
     - [ ] Agregar que e arduino no impprima datos en  estos movimientos, y por lo tanto agregar parametrso aceleracion
@@ -21,7 +27,7 @@ synthesizer max2871
 - [ ] Agregar 'Open File' para plotear
 - [ ] Guardar parámetros de rutina en archivos  y agregar "open routine settings"
 
-- [ ] botón antena 'sync antennas' (?)
+
 ------------------------------------------------------------------------
 #### DONE
 - [x] Dejar tooltips en un método para no desordenar la función principal
@@ -53,6 +59,7 @@ synthesizer max2871
 - [ ] Dejar grafico en decibeles
 - [ ] Guardar datos en tarjeta SD
 - [ ] Textbox con las frecuencias a utilizar (Ej, [200, 500, 1000             ])
+- [ ] botón antena 'sync antennas' (?)
 
 ### Escritura/Lectura de archivos
 - [ ] Agregar opción de escribir como JSON

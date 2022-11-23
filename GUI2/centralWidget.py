@@ -54,7 +54,7 @@ class centralWidget(QWidget):
 		self.scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 		self.scroll_area.setWidgetResizable(True)
 		self.scroll_area.setFrameShape(QFrame.NoFrame)
-		self.scroll_area.setMinimumWidth(360) 
+		self.scroll_area.setMinimumWidth(370) 
 		self.scroll_area.setWidget(self.right_wdg)
 
 		# ------------------------------------------------------------
@@ -124,10 +124,8 @@ class centralWidget(QWidget):
 		if elev_final_angle < 0:
 			elev_final_angle += 360
 
-		if azim_diff_angle < 0:
-			raise Exception('Final angle must be greater than initial angle')
-			# dir character can be changed in this case
-
+		dir_char = 'l' if azim_diff_angle > 0 else 'r'
+		azim_diff_angle = abs(azim_diff_angle)
 
 		# initial and final steps to be sent to Arduino
 		azim_init_step = self.right_wdg.angleToStep(azim_init_angle, int(self.right_wdg.param_dict['Nrev']))
@@ -136,24 +134,13 @@ class centralWidget(QWidget):
 		elev_init_step = self.right_wdg.angleToStep(elev_init_angle, self.right_wdg.elev_res)
 		elev_final_step = self.right_wdg.angleToStep(elev_final_angle, self.right_wdg.elev_res)
 
-		out_string = f'n-a{azim_init_step}-l{azim_diff_step}-e{elev_init_step}-e{elev_final_step}'
+		out_string = f'n-a{azim_init_step}-{dir_char}{azim_diff_step}-e{elev_init_step}-e{elev_final_step}'
 
 		print(out_string)
 		self.connection_wdg.send2COM(out_string)
+
 		# Start LOOOOOOONG routine 
 		self.longUpdatePlotRoutine()
-
-	def disconnectLock(self):
-		self.COM = None
-		self.right_wdg.setEnabled(False)
-		self.start_btn.setEnabled(False)
-		self.apply_btn.setEnabled(False)
-
-	def connectUnlock(self):
-		self.COM = self.connection_wdg.serial_COM
-		self.right_wdg.setEnabled(True)
-		self.start_btn.setEnabled(True)
-		self.apply_btn.setEnabled(True)
 
 	def longUpdatePlotRoutine(self):
 		# Create QThread object
@@ -171,7 +158,6 @@ class centralWidget(QWidget):
 		# Start the thread
 		self.thread.start()
 
-
 		# Lock right widget and start, apply buttons
 		self.right_wdg.setEnabled(False)
 		self.start_btn.setEnabled(False)
@@ -183,6 +169,19 @@ class centralWidget(QWidget):
 		self.thread.finished.connect(lambda: self.start_btn.setEnabled(True))
 		self.thread.finished.connect(lambda: self.apply_btn.setEnabled(True))
 		self.thread.finished.connect(lambda: self.connection_wdg.setEnabled(True))
+
+	def disconnectLock(self):
+		self.COM = None
+		self.right_wdg.setEnabled(False)
+		self.start_btn.setEnabled(False)
+		self.apply_btn.setEnabled(False)
+
+	def connectUnlock(self):
+		self.COM = self.connection_wdg.serial_COM
+		self.right_wdg.setEnabled(True)
+		self.start_btn.setEnabled(True)
+		self.apply_btn.setEnabled(True)
+
 
 
 
