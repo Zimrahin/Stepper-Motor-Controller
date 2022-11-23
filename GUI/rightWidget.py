@@ -1,12 +1,14 @@
 import sys
 import time
 from PySide2.QtWidgets import QWidget, QPushButton, QApplication, QHBoxLayout, QFormLayout, QVBoxLayout, QRadioButton, QDoubleSpinBox, QSpinBox, QComboBox, QLabel, QButtonGroup
-from PySide2.QtCore import QSize, Qt
+from PySide2.QtCore import QSize, Qt, QThread
 from PySide2.QtGui import QIcon, QPixmap
 import PySide2.QtCore
 from math import floor
 
 import numpy as np
+
+from movementThread import movementThread
 
 # Constants for operation
 # -> Angle parameters: degree
@@ -296,45 +298,32 @@ class rightWidget(QWidget):
 				self.parent().parent().parent().connection_wdg.send2COM(listLetters[i] + str(out_step))
 				print(listLetters[i] + str(out_step))
 		
-		# READ
-		received_string = self.parent().parent().parent().connection_wdg.receiveOnlyCOM()
-		angle, direction_char, float_list, mean_time, mean_time_total, values_list = self.unpackData(received_string)
+		# Start MOVEMENT
+		self.movementRoutine()
+	
+	def movementRoutine(self):
+		# Thread
+		self.mov_thread = QThread()
+		self.mov_worker = movementThread(self)
+		self.mov_worker.moveToThread(self.mov_thread)
+		# Signals
+		self.mov_thread.started.connect(self.mov_worker.run)
+		self.mov_worker.finished.connect(self.mov_thread.quit)
+		self.mov_worker.finished.connect(self.mov_worker.deleteLater)
+		self.mov_thread.finished.connect(self.mov_thread.deleteLater)
+		self.mov_thread.start()
 
-		# SAVE CSV
-		if self.parent().parent().parent().parent().file_name_flag: # mainWindow
-			log_time = time.strftime("%H:%M:%S", time.localtime()) #hh:mm:ss
-			log_date = time.strftime("%d %B %Y", time.localtime()) #dd monthName year
-			# write into CSV file
-			log_text = ''
-			for n in range(len(values_list)):
-				if n < len(values_list) - 1:
-					log_text += values_list[n] + ','
-				else:
-					log_text += values_list[n]
+		# Lock right widget and start, apply buttons
+		self.setEnabled(False)
+		self.parent().parent().parent().start_btn.setEnabled(False)
+		self.parent().parent().parent().apply_btn.setEnabled(False)
+		self.parent().parent().parent().connection_wdg.setEnabled(False)
 
-			dir_string = 'clockwise' if direction_char == 'r' else 'counterclockwise'
-			header = 	log_date + ',' + log_time + ',' + \
-						mean_time + 'us,' +  mean_time_total + 'us,' + \
-						str(int(angle)*360./6400) + 'º,' + dir_string + ',' + \
-						str(self.parent().parent().parent().param_wdg.param_dict['Nrev']) + ' step/rev'
-			log_text =  header + ',' + log_text + '\n'
-
-			with open(self.parent().parent().parent().parent().file_name,'a') as csvFile:
-				csvFile.write(log_text)
-
-		# PLOT
-		data_xaxis = self.parent().parent().parent().plot_wdg.updatePlot(float_list, int(angle), direction_char, int(self.param_dict['Nrev']))		
-
-		# COMPUTE DATA STATISTICS (this section MUST be after updatePlot)
-		pp, pa = self.computePeakPower(float_list, data_xaxis)
-		mp = self.computeMeanPower(float_list)
-		rpm = self.computeRPM(int(mean_time_total))
-
-		self.parent().parent().parent().plot_wdg.pp_label.setText(f'PP = {pp:.2f} V')
-		self.parent().parent().parent().plot_wdg.pa_label.setText(f'PA = {pa:.2f}º')
-		self.parent().parent().parent().plot_wdg.mp_label.setText(f'MP = {mp:.2f} V')
-		self.parent().parent().parent().plot_wdg.rpm_label.setText(f'RPM = {rpm:.1f}')
-
+		# Unlock right widget and start, apply buttons
+		self.mov_thread.finished.connect(lambda: self.setEnabled(True))
+		self.mov_thread.finished.connect(lambda: self.parent().parent().parent().start_btn.setEnabled(True))
+		self.mov_thread.finished.connect(lambda: self.parent().parent().parent().apply_btn.setEnabled(True))
+		self.mov_thread.finished.connect(lambda: self.parent().parent().parent().connection_wdg.setEnabled(True))
 
 	def sendReset(self):
 		self.parent().parent().parent().connection_wdg.send2COM("reset")	

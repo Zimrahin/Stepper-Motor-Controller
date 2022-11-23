@@ -7,7 +7,7 @@ from PySide2.QtGui import QPixmap
 from connectionWidget import connectionWidget
 from rightWidget import rightWidget
 from plotWidget import plotWidget
-from workerThread import workerThreadPlotUpdate
+from routineThread import workerThreadPlotUpdate
 
 import time
 from messageBox import errorBox
