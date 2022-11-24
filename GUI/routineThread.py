@@ -22,7 +22,7 @@ class workerThreadPlotUpdate(QObject):
 				# print(float_list)
 				print(len(float_list), direction_char, mean_time_total)
 				#PLOT
-				data_xaxis = self.plot_wdg.updatePlot(float_list, int(angle), direction_char, int(self.right_wdg.param_dict['Nrev']))		
+				data_xaxis = self.plot_wdg.updatePlot(float_list, int(angle), direction_char, int(self.right_wdg.azim_params['Nrev']))		
 
 				# COMPUTE DATA STATISTICS (this section MUST be after updatePlot)
 				pp, pa = self.right_wdg.computePeakPower(float_list, data_xaxis)

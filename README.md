@@ -6,11 +6,18 @@ synthesizer max2871
 ### In Progress
 ---------------------------------------------------------------------
 - [ ] Ordenamiento general del código de GUI:
-    - [ ] Definir números "hardcoded" en un JSON, que se abra en un config.py como una clase (read only por mientras)
+    - [x] mainWindow.py
+    - [x] centralWidget.py
+    - [ ] rightWidget.py
+    - [ ] connectionWidget.py
+    - [ ] movementThread.py
+    - [ ] routineThread.py
+    - [ ] plotWidget.py
     --------------------------------------------------------------
 - [ ] Separar ino file en funciones (según internet basta con separar en .ino mientras estén en la misma carpeta)
 - [ ] Arreglar escritura CSV
 - [ ] Agregar escritura en CSV para rutina
+- [ ] Asegurarse que todos los raise Exception funcionen con una ventana pop-up
 
 
 -------------------------------------------------------------

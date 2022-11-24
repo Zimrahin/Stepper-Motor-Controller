@@ -11,9 +11,42 @@
 		"title_size" : 11,
 		"text_size" : 9
 	},
-	"startup_location": [
-		350,
-		150
-	],
-	"scroll_area_min_width": 370
+	"startup_location" : [350, 150],
+	"scroll_area_min_width" : 370,
+	"plot_right_ratio" : [5, 1],
+	"CCTVal_logo_size" : [250, 100],
+	"azim_angle_spin" : {
+		"step"		: 10,
+		"lowest" 	: 0,
+		"highest"	: 14400,
+		"decimals"		: 2,
+		"units"		: "º",
+		"routine"		: {
+			"lowest"	: -180,
+			"highest"	: 180
+		}
+	},
+	"elev_angle_spin" : {
+		"step"		: 10,
+		"lowest" 	: 0,
+		"highest"	: 360,
+		"decimals"	: 2,
+		"units"		: "º",
+		"routine"	: {
+			"lowest"	: -30,
+			"highest"	: 60
+		}
+	},
+	"delay_spin" : {
+		"step"		: 10,
+		"lowest" 	: 0,
+		"highest"	: 100,
+		"units"		: " \u03BCs"
+	},
+	"Pa_spin" : {
+		"step"		: 100,
+		"lowest" 	: 0,
+		"highest"	: 12800,
+		"units"		: " step"
+	}
 }

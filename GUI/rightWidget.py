@@ -9,29 +9,13 @@ import numpy as np
 
 from movementThread import movementThread
 
-# Constants for operation
-# -> Angle parameters: degree
-LOWEST_DEG = 0 
-HIGHEST_DEG = 360*40  # 40 revs
-HIGHEST_DEG_ELEV = 360
-STEP_INCREMENT = 10
-USE_DECIMALS = 2
-DEG_UNITS = 'º' 
-
 
 # -> Pa parameters: steps
 LOWEST_PA = 0 
 HIGHEST_PA = 10000
-STEP_INCREMENT = 10
+STEP_INCREMENT = 100
 PA_UNITS = ' step'
 
-# -> Time parameters: microseconds
-MIN_TIME_STEP = 0 # us
-MAX_TIME_STEP = 2000 # us
-TIME_STEP_INCREMENT = 10
-TIME_UNITS = ' \u03BCs'
-
-STATUS_BAR_TIMEOUT = 5000
 ELEV_RES = 200
 
 class rightWidget(QWidget):
@@ -39,6 +23,7 @@ class rightWidget(QWidget):
 		super().__init__(parent)
 		self.central_wdg = central_wdg
 		self.main_wdw = main_wdw
+		self.config = main_wdw.config
 		#---------------------------------------------
 		self.font_dict = {
 					"family" : "Segoe UI",
@@ -115,17 +100,17 @@ class rightWidget(QWidget):
 		self.r_radio.setFixedSize(90,60)
 
 
-		self.ae_radio = QRadioButton() #
+		self.e_radio = QRadioButton() 
 		self.u_radio = QRadioButton()
 		self.d_radio = QRadioButton()
 		self.elevation_button_group = QButtonGroup()
-		self.elevation_button_group.addButton(self.ae_radio, 0)
+		self.elevation_button_group.addButton(self.e_radio, 0)
 		self.elevation_button_group.addButton(self.u_radio, 1)
 		self.elevation_button_group.addButton(self.d_radio, 2)
 
-		self.ae_radio.setIcon(QIcon('img/protractor.png'))
-		self.ae_radio.setIconSize(QSize(90,60))
-		self.ae_radio.setFixedSize(90,60)
+		self.e_radio.setIcon(QIcon('img/protractor.png'))
+		self.e_radio.setIconSize(QSize(90,60))
+		self.e_radio.setFixedSize(90,60)
 
 		self.u_radio.setIcon(QIcon('img/up.png'))
 		self.u_radio.setIconSize(QSize(90,60))
@@ -145,22 +130,29 @@ class rightWidget(QWidget):
 
 		#---------------------------------------------
 		# Init routine 
-		self.angleBoxConfig(self.angle_azim_spinbox, LOWEST_DEG, HIGHEST_DEG)
-		self.angleBoxConfig(self.angle_elev_spinbox, LOWEST_DEG, HIGHEST_DEG_ELEV)
+		self._spinBoxConfig(self.angle_azim_spinbox, self.config.dict['azim_angle_spin']['lowest'], self.config.dict['azim_angle_spin']['highest'], self.config.dict['azim_angle_spin']['step'], self.config.dict['azim_angle_spin']['units'])
+
+		self._spinBoxConfig(self.angle_elev_spinbox, self.config.dict['elev_angle_spin']['lowest'], self.config.dict['elev_angle_spin']['highest'], self.config.dict['elev_angle_spin']['step'], self.config.dict['elev_angle_spin']['units'])
+
 		self.a_radio.setChecked(True)
-		self.ae_radio.setChecked(True)
+		self.e_radio.setChecked(True)
 
 		self.azimuth_res_combo.setCurrentText(self.resolution_list[5])
 		self.elevation_res_combo.setCurrentText(self.resolution_list[0])
-		self.NBoxConfig(self.Pa_spinbox)
-		self.TimeBoxConfig(self.Tai_spinbox)
-		self.TimeBoxConfig(self.Tas_spinbox)
+		
+		self._spinBoxConfig(self.Pa_spinbox, self.config.dict['Pa_spin']['lowest'], self.config.dict['Pa_spin']['highest'], self.config.dict['Pa_spin']['step'], self.config.dict['Pa_spin']['units'])
 
-		self.angleBoxConfig(self.initial_azim_spinbox, -180, 180)
-		self.angleBoxConfig(self.final_azim_spinbox, -180, 180)
+		self._spinBoxConfig(self.Tai_spinbox, self.config.dict['delay_spin']['lowest'], self.config.dict['delay_spin']['highest'], self.config.dict['delay_spin']['step'], self.config.dict['delay_spin']['units'])
 
-		self.angleBoxConfig(self.initial_elev_spinbox, -30, 60)
-		self.angleBoxConfig(self.final_elev_spinbox, -30, 60)
+		self._spinBoxConfig(self.Tas_spinbox, self.config.dict['delay_spin']['lowest'], self.config.dict['delay_spin']['highest'], self.config.dict['delay_spin']['step'], self.config.dict['delay_spin']['units'])
+
+		self._spinBoxConfig(self.initial_azim_spinbox, self.config.dict['azim_angle_spin']['routine']['lowest'], self.config.dict['azim_angle_spin']['routine']['highest'], self.config.dict['azim_angle_spin']['step'], self.config.dict['azim_angle_spin']['units'])
+
+		self._spinBoxConfig(self.final_azim_spinbox, self.config.dict['azim_angle_spin']['routine']['lowest'], self.config.dict['azim_angle_spin']['routine']['highest'], self.config.dict['azim_angle_spin']['step'], self.config.dict['azim_angle_spin']['units'])
+
+		self._spinBoxConfig(self.initial_elev_spinbox, self.config.dict['elev_angle_spin']['routine']['lowest'], self.config.dict['elev_angle_spin']['routine']['highest'], self.config.dict['elev_angle_spin']['step'], self.config.dict['elev_angle_spin']['units'])
+
+		self._spinBoxConfig(self.final_elev_spinbox, self.config.dict['elev_angle_spin']['routine']['lowest'], self.config.dict['elev_angle_spin']['routine']['highest'], self.config.dict['elev_angle_spin']['step'], self.config.dict['elev_angle_spin']['units'])
 
 		self.initial_azim_spinbox.setValue(-80)
 		self.final_azim_spinbox.setValue(80)
@@ -172,7 +164,7 @@ class rightWidget(QWidget):
 
 		#---------------------------------------------
 		# Objects
-		self.param_dict = self.getFieldsValues()
+		self.azim_params = self.getFieldsValues()
 
 		#---------------------------------------------
 		# Signals and slots
@@ -251,7 +243,7 @@ class rightWidget(QWidget):
 		v_layout.addLayout(angle_fields)
 		# -> Radio buttons (a, l, r)
 		radio_btn_row = QHBoxLayout()
-		radio_btn_row.addWidget(self.ae_radio)
+		radio_btn_row.addWidget(self.e_radio)
 		radio_btn_row.addWidget(self.u_radio)
 		radio_btn_row.addWidget(self.d_radio)
 		v_layout.addLayout(radio_btn_row)
@@ -288,7 +280,7 @@ class rightWidget(QWidget):
 	#---------------------------------------------
 	def sendMovementAzimuth(self):
 		out_angle = self.angle_azim_spinbox.value()
-		out_step = self.angleToStep(out_angle, int(self.param_dict['Nrev']))
+		out_step = self.angleToStep(out_angle, int(self.azim_params['Nrev']))
 		listLetters = ['a', 'l', 'r']
 		listRadioBtn = [self.a_radio, self.l_radio, self.r_radio]
 		for i in range(len(listRadioBtn)):
@@ -328,7 +320,7 @@ class rightWidget(QWidget):
 		self.central_wdg.connection_wdg.send2COM("reset_azim")	
 		response = self.central_wdg.connection_wdg.receiveOnlyCOM()
 		if (response == 'ack'):			
-			self.main_wdw.status_bar.showMessage('Angle reset successfully!', STATUS_BAR_TIMEOUT)
+			self.main_wdw.status_bar.showMessage('Angle reset successfully!', self.config.dict['status_bar_timeout'])
 			return True
 		else:
 			raise Exception('Device did not respond')
@@ -337,7 +329,7 @@ class rightWidget(QWidget):
 		out_angle = self.angle_elev_spinbox.value()
 		out_step = self.angleToStep(out_angle, self.elev_params['Nrev'])
 		listLetters = ['e', 'u', 'd']
-		listRadioBtn = [self.ae_radio, self.u_radio, self.d_radio]
+		listRadioBtn = [self.e_radio, self.u_radio, self.d_radio]
 		for i in range(len(listRadioBtn)):
 			if listRadioBtn[i].isChecked():
 				self.central_wdg.connection_wdg.send2COM(listLetters[i] + str(out_step))
@@ -347,7 +339,7 @@ class rightWidget(QWidget):
 		self.central_wdg.connection_wdg.send2COM("reset_elev")	
 		response = self.central_wdg.connection_wdg.receiveOnlyCOM()
 		if (response == 'ack'):			
-			self.main_wdw.status_bar.showMessage('Angle reset successfully!', STATUS_BAR_TIMEOUT)
+			self.main_wdw.status_bar.showMessage('Angle reset successfully!', self.config.dict['status_bar_timeout'])
 			return True
 		else:
 			raise Exception('Device did not respond')
@@ -409,7 +401,7 @@ class rightWidget(QWidget):
 		self.Tai_spinbox.setToolTip('<b>Minimum delay</b> added to <b>each step</b> \n to decrease rotation speed')
 		self.default_btn.setToolTip('Set optimum empirical parameters to <b>maximise</b> rotation speed while keeping a <b>stable behaviour</b> of stepper motor')
 
-		self.ae_radio.setToolTip('Move to an <b>absolute</b> angle in elevation')
+		self.e_radio.setToolTip('Move to an <b>absolute</b> angle in elevation')
 		self.u_radio.setToolTip('Move <b>upwards</b>')
 		self.d_radio.setToolTip('Move <b>downwards</b>')
 		self.move_elev_btn.setToolTip('Rotate <b>elevation</b> stepper motor')
@@ -426,23 +418,11 @@ class rightWidget(QWidget):
 		self.angle_azim_spinbox.setToolTip('Set a <b>movement</b> azimuth angle')
 		self.angle_elev_spinbox.setToolTip('Set a <b>movement</b> elevation angle')
 	#---------------------------------------------
-	def angleBoxConfig(self, box, lowest_deg, highest_deg):
-		box.setMinimum(lowest_deg)
-		box.setMaximum(highest_deg)
-		box.setSingleStep(STEP_INCREMENT)
-		box.setSuffix(DEG_UNITS)
-
-	def NBoxConfig(self, box):
-		box.setMinimum(LOWEST_PA)
-		box.setMaximum(HIGHEST_PA)
-		box.setSingleStep(STEP_INCREMENT)
-		box.setSuffix(PA_UNITS)
-
-	def TimeBoxConfig(self,box):
-		box.setMinimum(MIN_TIME_STEP)
-		box.setMaximum(MAX_TIME_STEP)
-		box.setSingleStep(TIME_STEP_INCREMENT)
-		box.setSuffix(TIME_UNITS)
+	def _spinBoxConfig(self, box, lowest, highest, step, units):
+		box.setMinimum(lowest)
+		box.setMaximum(highest)
+		box.setSingleStep(step)
+		box.setSuffix(units)
 
 	def defaultParametersAzim(self):
 		local_Pa = 4800

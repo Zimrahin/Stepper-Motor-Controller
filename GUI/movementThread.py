@@ -34,14 +34,14 @@ class movementThread(QObject):
 					header = 	log_date + ',' + log_time + ',' + \
 								mean_time + 'us,' +  mean_time_total + 'us,' + \
 								str(int(angle)*360./6400) + 'º,' + dir_string + ',' + \
-								str(self.right_wdg.param_dict['Nrev']) + ' step/rev'
+								str(self.right_wdg.azim_params['Nrev']) + ' step/rev'
 					log_text =  header + ',' + log_text + '\n'
 
 					with open(self.main_wdw.file_name,'a') as csvFile:
 						csvFile.write(log_text)
 
 				# PLOT
-				data_xaxis = self.central_wdg.plot_wdg.updatePlot(float_list, int(angle), direction_char, int(self.right_wdg.param_dict['Nrev']))		
+				data_xaxis = self.central_wdg.plot_wdg.updatePlot(float_list, int(angle), direction_char, int(self.right_wdg.azim_params['Nrev']))		
 
 				# COMPUTE DATA STATISTICS (this section MUST be after updatePlot)
 				pp, pa = self.right_wdg.computePeakPower(float_list, data_xaxis)

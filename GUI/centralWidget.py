@@ -35,7 +35,7 @@ class centralWidget(QWidget):
 		self.plot_wdg = plotWidget(self)
 
 		# -> Logo Widget
-		self.logo_wdg = logoWidget(self)
+		self.logo_wdg = logoWidget(self.main_wdw, self)
 
 		# -> Right Scroll Widget
 		self.right_wdg = rightWidget(self, self.main_wdw, self)
@@ -74,8 +74,8 @@ class centralWidget(QWidget):
 		v_layout.addWidget(self.logo_wdg)
 		
 		h_layout = QHBoxLayout()
-		h_layout.addWidget(self.plot_wdg, 5)
-		h_layout.addLayout(v_layout, 1)
+		h_layout.addWidget(self.plot_wdg, self.config.dict['plot_right_ratio'][0])
+		h_layout.addLayout(v_layout, self.config.dict['plot_right_ratio'][1])
 
 		self.setLayout(h_layout)
 
@@ -91,7 +91,7 @@ class centralWidget(QWidget):
 		
 		response = self.connection_wdg.receiveOnlyCOM()
 		if (response == 'ack'):
-			self.right_wdg.param_dict = out_dict #update necessary for degree->step conversion (called from angleWidget)
+			self.right_wdg.azim_params = out_dict #update necessary for degree->step conversion (called from angleWidget)
 			self.main_wdw.status_bar.showMessage("Parameters set successfully!", self.config.dict['status_bar_timeout'])
 			return True
 		else:
@@ -106,6 +106,7 @@ class centralWidget(QWidget):
 		elev_init_angle = self.right_wdg.initial_elev_spinbox.value()
 		elev_final_angle = self.right_wdg.final_elev_spinbox.value()
 		
+		# Negative cases
 		if azim_init_angle < 0:
 			azim_init_angle += 360
 		if azim_final_angle < 0:
@@ -119,8 +120,8 @@ class centralWidget(QWidget):
 		azim_diff_angle = abs(azim_diff_angle)
 
 		# initial and final steps to be sent to Arduino
-		azim_init_step = self.right_wdg.angleToStep(azim_init_angle, int(self.right_wdg.param_dict['Nrev']))
-		azim_diff_step = self.right_wdg.angleToStep(azim_diff_angle, int(self.right_wdg.param_dict['Nrev']))
+		azim_init_step = self.right_wdg.angleToStep(azim_init_angle, self.right_wdg.azim_params['Nrev'])
+		azim_diff_step = self.right_wdg.angleToStep(azim_diff_angle, self.right_wdg.azim_params['Nrev'])
 
 		elev_init_step = self.right_wdg.angleToStep(elev_init_angle, self.right_wdg.elev_params['Nrev'])
 		elev_final_step = self.right_wdg.angleToStep(elev_final_angle, self.right_wdg.elev_params['Nrev'])
@@ -130,7 +131,7 @@ class centralWidget(QWidget):
 		print(out_string)
 		self.connection_wdg.send2COM(out_string)
 
-		# Start LOOOOOOONG routine 
+		# Start LONG routine 
 		self.longUpdatePlotRoutine()
 
 	def longUpdatePlotRoutine(self):
@@ -169,15 +170,13 @@ class centralWidget(QWidget):
 
 
 class logoWidget(QWidget):
-	def __init__(self, parent=None):
+	def __init__(self, main_wdw, parent=None):
 		super().__init__(parent)
-
+		self.main_wdw = main_wdw
 		self.logo_wdg = QLabel()
 		self.img = QPixmap('img/logo2.png')
-		self.img = self.img.scaled(250, 100, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+		self.img = self.img.scaled(self.main_wdw.config.dict['CCTVal_logo_size'][0], self.main_wdw.config.dict['CCTVal_logo_size'][1], Qt.KeepAspectRatio, Qt.SmoothTransformation)
 		self.logo_wdg.setPixmap(self.img)
-		# self.setMaximumHeight(100)
-		# self.setMaximumWidth(354)
 
 		# Layout
 		layout = QHBoxLayout()
@@ -189,7 +188,6 @@ class logoWidget(QWidget):
 
 if __name__ == '__main__':
 	app = QApplication([])
-	# if os.name == 'nt': # New Technology GUI (Windows)
 	app.setStyle('fusion') 
 
 	widget = centralWidget()
