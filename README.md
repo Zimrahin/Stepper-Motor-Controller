@@ -17,14 +17,13 @@ synthesizer max2871
 - [x] Cambiar llamados de parent().parent()... por inicializaciones y nombres especificos
 ---------------------------------------------------------------------
 - [ ] Agregar thread a movimientos ELEVATION
-    - [ ] Corregir que se imprima algo en movimientos de elevación (en la GUI se captura y no se hace nada con la info)
-- [ ] Agregar label "moving azimuth..." o "moving elevation..." en status bar
+
 - [ ] Ordenamiento general del código de GUI:
         - [ ] Definir números "hardcoded" en un JSON, que se abra en un config.py como una clase (read only por mientras)
 - [ ] Agregar exception error box
 --------------------------------------------------------------
-- [ ] Revisar movimiento de elevación (qué pasa si se deja seteado otro pin de salida de la portenta? podríamos dejarlo así por mientras y simplemente no mover el motor en elevción (para no perder información de la posicion acimut global))
-- [ ] Corregir bug de conversión angle-step. Al hacer la aproximación, a la larga se desfasa (l300, r301, l300, r301, ...)
+- setear maximo de -30 a 60
+- [ ] Corregir que se imprima algo en movimientos de elevación (en la GUI se captura y no se hace nada con la info)
 - [ ] Arreglar prints (solo debe imprimir en los movimientos l-algo)
     - [ ] Agregar un 'ack' al final de la rutina en el ardunio para aviarle al python que el proceso termino. El ack triggerea un break en el while, de lo contrario solo se resetea el timeout ocn un continue
     - [ ] Agregar que e arduino no impprima datos en  estos movimientos, y por lo tanto agregar parametrso aceleracion

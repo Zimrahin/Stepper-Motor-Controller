@@ -327,7 +327,7 @@ class rightWidget(QWidget):
 		self.mov_thread.finished.connect(lambda: self.central_wdg.connection_wdg.setEnabled(True))
 
 	def sendReset(self):
-		self.central_wdg.connection_wdg.send2COM("reset")	
+		self.central_wdg.connection_wdg.send2COM("reset_azim")	
 		response = self.central_wdg.connection_wdg.receiveOnlyCOM()
 		if (response == 'ack'):			
 			self.main_wdw.status_bar.showMessage('Angle reset successfully!', STATUS_BAR_TIMEOUT)
@@ -344,10 +344,6 @@ class rightWidget(QWidget):
 			if listRadioBtn[i].isChecked():
 				self.central_wdg.connection_wdg.send2COM(listLetters[i] + str(out_step))
 				print(listLetters[i] + str(out_step))
-
-		# READ
-		received_string = self.central_wdg.connection_wdg.receiveOnlyCOM()
-		# CORREGIR ESTO, POR AHORA SE ESTÁ LEYENDO PERO SIN HACER NADA CON ESTO
 
 	def sendResetElevation(self):
 		self.central_wdg.connection_wdg.send2COM("reset_elev")	
@@ -484,28 +480,28 @@ class rightWidget(QWidget):
 		local_Pa = 4800
 		if self.elevation_res_combo.currentText() == self.resolution_list[5]:
 			self.elev_accel_params['Pa'] = local_Pa
-			self.elev_accel_params['Tas'] = 0
-			self.elev_accel_params['Tai'] = 0
+			self.elev_accel_params['Tas'] = 10
+			self.elev_accel_params['Tai'] = 2
 		elif self.elevation_res_combo.currentText() == self.resolution_list[4]:
 			self.elev_accel_params['Pa'] = local_Pa
-			self.elev_accel_params['Tas'] = 0
-			self.elev_accel_params['Tai'] = 0
+			self.elev_accel_params['Tas'] = 20
+			self.elev_accel_params['Tai'] = 4
 		elif self.elevation_res_combo.currentText() == self.resolution_list[3]:
 			self.elev_accel_params['Pa'] = local_Pa
-			self.elev_accel_params['Tas'] = 12
-			self.elev_accel_params['Tai'] = 0
+			self.elev_accel_params['Tas'] = 40
+			self.elev_accel_params['Tai'] = 8
 		elif self.elevation_res_combo.currentText() == self.resolution_list[2]:
 			self.elev_accel_params['Pa'] = local_Pa
-			self.elev_accel_params['Tas'] = 22
-			self.elev_accel_params['Tai'] = 4
+			self.elev_accel_params['Tas'] = 40
+			self.elev_accel_params['Tai'] = 8
 		elif self.elevation_res_combo.currentText() == self.resolution_list[1]:
 			self.elev_accel_params['Pa'] = local_Pa
-			self.elev_accel_params['Tas'] = 22
-			self.elev_accel_params['Tai'] = 6
+			self.elev_accel_params['Tas'] = 40
+			self.elev_accel_params['Tai'] = 8
 		elif self.elevation_res_combo.currentText() == self.resolution_list[0]:
 			self.elev_accel_params['Pa'] = local_Pa
-			self.elev_accel_params['Tas'] = 22
-			self.elev_accel_params['Tai'] = 12
+			self.elev_accel_params['Tas'] = 40
+			self.elev_accel_params['Tai'] = 8
 		else:
 			print('if you see this, there is an error (probably) ELEVATION')
 	

@@ -19,9 +19,9 @@ int N_rev_max = 6400;	// Steps per rev - max value (this value has to be the sam
 int N_rev_azim_g = 6400;// Steps por rev - global value that could change according to the resolution value required by the user (Azimuth)
 int N_rev_elev_g = 6400;// Steps per rev - elevation
 bool dir_g = false;		// Direction (defined as a global variable to change it within a function and call it on other function)
-int Pa_g = 0;			// Number of steps used to accelerate
-int Tas_g = 0;			// Initial time between steps
-int Tai_g = 0;			// Final time between steps
+int Pa_g_azim = 0;			// Number of steps used to accelerate
+int Tas_g_azim = 0;			// Initial time between steps
+int Tai_g_azim = 0;			// Final time between steps
 int currentPos_azim_g = 0; 	// Current azimuth position (global)
 int currentPos_elev_g = 0; 	// Current elevation position (global)
 
@@ -40,7 +40,7 @@ float getIntercept(float x1,float y1,float m){
 	return y1-m*x1;
 }
 
-void forward(int N, String motor_type="motor_azimuth", bool reverse=false, int Pa=Pa_g, int Tas=Tas_g, int Tai=Tai_g, int N_rev=N_rev_azim_g, bool print_flag=true){
+void forward(int N, String motor_type="motor_azimuth", bool reverse=false, int Pa=Pa_g_azim, int Tas=Tas_g_azim, int Tai=Tai_g_azim, int N_rev=N_rev_azim_g, bool print_flag=true){
 	// Function used to move the motor.
 	// N: Number of steps to move.
 	// reverse: Direction, false is clockwise, true is counterclockwise
@@ -253,7 +253,7 @@ String getValue(String data, char separator, int index)
   	return found>index ? data.substring(strIndex[0], strIndex[1]) : "";
 }
 
-void movement(String rcvString, String motor_type="motor_azimuth", int N_rev=N_rev_azim_g, int Pa=Pa_g, int Tas=Tas_g, int Tai=Tai_g, bool print_flag=true){
+void movement(String rcvString, String motor_type="motor_azimuth", bool print_flag=true, int N_rev=N_rev_azim_g, int Pa=Pa_g_azim, int Tas=Tas_g_azim, int Tai=Tai_g_azim){
 	int steps_to_move;		
 	int currentPos = currentPos_azim_g;
 	if (motor_type == "motor_elevation"){	// Check if the selected motor is the elevation motor, otherwise use default case (azimuth motor)
@@ -319,9 +319,9 @@ void loop()
 		// Set (c)onnection
 		if (receivedString[0] == 'c') {
 			N_rev_azim_g = getValue(receivedString,'-',1).toInt();
-			Pa_g = getValue(receivedString,'-',2).toInt();
-			Tas_g = getValue(receivedString,'-',3).toInt();
-			Tai_g = getValue(receivedString,'-',4).toInt();
+			Pa_g_azim = getValue(receivedString,'-',2).toInt();
+			Tas_g_azim = getValue(receivedString,'-',3).toInt();
+			Tai_g_azim = getValue(receivedString,'-',4).toInt();
 			N_rev_elev_g = getValue(receivedString,'-',5).toInt();
 			Pa_g_elev = getValue(receivedString,'-',6).toInt();
 			Tas_g_elev = getValue(receivedString,'-',7).toInt();
@@ -333,7 +333,7 @@ void loop()
 		}
 
 		// Reset position:
-		else if (receivedString == "reset"){
+		else if (receivedString == "reset_azim"){
 			currentPos_azim_g = 0;
 			Serial.println("ack");
 			return;
@@ -348,9 +348,9 @@ void loop()
 		// Change (p)arameters:
 		else if (receivedString[0] == 'p') { //extract letter, 'p' for param changes, p-NrevAz-Pa-Tas-Tai-NrevEl
 			N_rev_azim_g = getValue(receivedString,'-',1).toInt();
-			Pa_g = getValue(receivedString,'-',2).toInt();
-			Tas_g = getValue(receivedString,'-',3).toInt();
-			Tai_g = getValue(receivedString,'-',4).toInt();
+			Pa_g_azim = getValue(receivedString,'-',2).toInt();
+			Tas_g_azim = getValue(receivedString,'-',3).toInt();
+			Tai_g_azim = getValue(receivedString,'-',4).toInt();
 			N_rev_elev_g = getValue(receivedString,'-',5).toInt();
 			Pa_g_elev = getValue(receivedString,'-',6).toInt();
 			Tas_g_elev = getValue(receivedString,'-',7).toInt();
@@ -367,7 +367,7 @@ void loop()
 
 		// Move elevation motor:
 		else if (receivedString[0] == 'e' || receivedString[0] == 'u' || receivedString[0] == 'd' ){
-			movement(receivedString,"motor_elevation");
+			movement(receivedString,"motor_elevation",false);
 			return;
 		}	
 
@@ -412,7 +412,8 @@ void loop()
 
 				// Solo por ahora: (ya que estamos simulando 2 motores con uno solo)
 				// movement(azimString_init);
-			}				
+			}
+			// print ACK				
 		}
 	}
 }
