@@ -19,7 +19,8 @@ class workerThreadPlotUpdate(QObject):
 					break
 				# print(received_string)
 				angle, direction_char, float_list, _, mean_time_total, _ = self.right_wdg.unpackData(received_string)
-				print(direction_char, mean_time_total)
+				print(float_list)
+				print(len(float_list), direction_char, mean_time_total)
 				#PLOT
 				data_xaxis = self.plot_wdg.updatePlot(float_list, int(angle), direction_char, int(self.right_wdg.param_dict['Nrev']))		
 

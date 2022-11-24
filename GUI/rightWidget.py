@@ -164,7 +164,9 @@ class rightWidget(QWidget):
 		self.initial_azim_spinbox.setValue(-80)
 		self.final_azim_spinbox.setValue(80)
 		self.initial_elev_spinbox.setValue(-30)
-		self.final_elev_spinbox.setValue(-26)
+		self.final_elev_spinbox.setValue(-20)
+
+		self.defaultParametersAzim()
 
 
 		#---------------------------------------------
@@ -174,8 +176,8 @@ class rightWidget(QWidget):
 
 		#---------------------------------------------
 		# Signals and slots
-		self.default_btn.clicked.connect(self.defaultParameters)
-		self.connect(self.azimuth_res_combo, PySide2.QtCore.SIGNAL("currentIndexChanged(const QString&)"), self.defaultParameters)
+		self.default_btn.clicked.connect(self.defaultParametersAzim)
+		self.connect(self.azimuth_res_combo, PySide2.QtCore.SIGNAL("currentIndexChanged(const QString&)"), self.defaultParametersAzim)
 
 		self.move_azim_btn.clicked.connect(self.sendMovement)
 		self.reset_azim_btn.clicked.connect(self.sendReset)
@@ -446,15 +448,15 @@ class rightWidget(QWidget):
 		box.setSingleStep(TIME_STEP_INCREMENT)
 		box.setSuffix(TIME_UNITS)
 
-	def defaultParameters(self):
+	def defaultParametersAzim(self):
 		local_Pa = 4800
 		if self.azimuth_res_combo.currentText() == self.resolution_list[5]:
 			self.Pa_spinbox.setValue(local_Pa)
-			self.Tas_spinbox.setValue(10)
+			self.Tas_spinbox.setValue(40)
 			self.Tai_spinbox.setValue(2)
 		elif self.azimuth_res_combo.currentText() == self.resolution_list[4]:
 			self.Pa_spinbox.setValue(local_Pa)
-			self.Tas_spinbox.setValue(20)
+			self.Tas_spinbox.setValue(40)
 			self.Tai_spinbox.setValue(4)
 		elif self.azimuth_res_combo.currentText() == self.resolution_list[3]:
 			self.Pa_spinbox.setValue(local_Pa)
@@ -480,11 +482,11 @@ class rightWidget(QWidget):
 		local_Pa = 4800
 		if self.elevation_res_combo.currentText() == self.resolution_list[5]:
 			self.elev_accel_params['Pa'] = local_Pa
-			self.elev_accel_params['Tas'] = 10
+			self.elev_accel_params['Tas'] = 40
 			self.elev_accel_params['Tai'] = 2
 		elif self.elevation_res_combo.currentText() == self.resolution_list[4]:
 			self.elev_accel_params['Pa'] = local_Pa
-			self.elev_accel_params['Tas'] = 20
+			self.elev_accel_params['Tas'] = 40
 			self.elev_accel_params['Tai'] = 4
 		elif self.elevation_res_combo.currentText() == self.resolution_list[3]:
 			self.elev_accel_params['Pa'] = local_Pa

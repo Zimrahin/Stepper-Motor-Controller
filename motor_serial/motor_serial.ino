@@ -40,7 +40,7 @@ float getIntercept(float x1,float y1,float m){
 	return y1-m*x1;
 }
 
-void forward(int N, String motor_type="motor_azimuth", bool reverse=false, int Pa=Pa_g_azim, int Tas=Tas_g_azim, int Tai=Tai_g_azim, int N_rev=N_rev_azim_g, bool print_flag=true){
+void forward(int N, String motor_type, float* array, int N_measurements, bool reverse=false, int Pa=Pa_g_azim, int Tas=Tas_g_azim, int Tai=Tai_g_azim, int N_rev=N_rev_azim_g, bool print_flag=true) {
 	// Function used to move the motor.
 	// N: Number of steps to move.
 	// reverse: Direction, false is clockwise, true is counterclockwise
@@ -70,6 +70,7 @@ void forward(int N, String motor_type="motor_azimuth", bool reverse=false, int P
 	// Variables used to measure the pin only at 1 out of every X motor movements, according to the required resolution
 	int read_cnt = 0;	// Read counter
 	int read_mod = N_rev_max/N_rev; // Read divider
+	int array_cnt = 0;
 
 	// Set pines for motor movement
 	int enable_pin;
@@ -134,8 +135,10 @@ void forward(int N, String motor_type="motor_azimuth", bool reverse=false, int P
 					sensorVoltage = sensorValue * (3.110/1023.0);
 					
 					if (print_flag){
-						Serial.print(sensorVoltage);
-						Serial.print('-');
+						// Serial.print(sensorVoltage);
+						// Serial.print('-');
+						array[array_cnt] = sensorVoltage;
+						array_cnt = array_cnt + 1;
 					}
         			
 					stop_meas_time = micros();	// Stop reading/writing time
@@ -159,7 +162,11 @@ void forward(int N, String motor_type="motor_azimuth", bool reverse=false, int P
 	total_time = total_time/N;
 
 	// Send time data through serial port
-	if (print_flag){
+	if (print_flag) {
+		for (int i = 0; i < N_measurements; i++){
+			Serial.print(array[i]);
+			Serial.print('-');
+		}
 		Serial.print(total_meas_time);  
 		Serial.print('-');
   		Serial.print(total_time);  
@@ -256,6 +263,10 @@ String getValue(String data, char separator, int index)
 void movement(String rcvString, String motor_type="motor_azimuth", bool print_flag=true, int N_rev=N_rev_azim_g, int Pa=Pa_g_azim, int Tas=Tas_g_azim, int Tai=Tai_g_azim){
 	int steps_to_move;		
 	int currentPos = currentPos_azim_g;
+	// variables for malloc()
+	int N_measurements = rcvString.substring(1).toInt();
+	float* data_array = NULL;
+
 	if (motor_type == "motor_elevation"){	// Check if the selected motor is the elevation motor, otherwise use default case (azimuth motor)
 		N_rev = N_rev_elev_g;	
 		currentPos = currentPos_elev_g;
@@ -263,11 +274,15 @@ void movement(String rcvString, String motor_type="motor_azimuth", bool print_fl
 		Tas = Tas_g_elev;
 		Tai = Tai_g_elev;
 	}
+	else {
+		data_array = (float*) malloc(sizeof(float) * N_measurements);
+	}
+	
 	steps_to_move = calculateStep(rcvString, currentPos, N_rev, motor_type); // Calculate how many steps to move and get direction from string
 	if (steps_to_move == -1){	// If there is an error, do not move
 		steps_to_move = 0;
 	}
-	forward(steps_to_move, motor_type, dir_g, Pa, Tas, Tai, N_rev, print_flag);	// Move motor
+	forward(steps_to_move, motor_type, data_array, N_measurements, dir_g, Pa, Tas, Tai, N_rev, print_flag);	// Move motor
 
 	// These values are sent to the computer through serial port to make the plots:		
 	char real_direction = dir_g ? 'l' : 'r';	// Left or right?
@@ -282,6 +297,7 @@ void movement(String rcvString, String motor_type="motor_azimuth", bool print_fl
 		// End message:
 		Serial.println(); // \n at the end to let know PC all info has been sent
 	}	
+	free(data_array);
 	return;	
 }
 
