@@ -15,6 +15,8 @@ class workerThreadPlotUpdate(QObject):
 		while(True):
 			received_string = self.connection_wdg.receiveOnlyCOM()
 			if received_string:
+				if received_string == 'ack':
+					break
 				# print(received_string)
 				angle, direction_char, float_list, _, mean_time_total, _ = self.right_wdg.unpackData(received_string)
 				print(direction_char, mean_time_total)
@@ -30,7 +32,6 @@ class workerThreadPlotUpdate(QObject):
 				self.plot_wdg.pa_label.setText(f'PA = {pa:.2f}º')
 				self.plot_wdg.mp_label.setText(f'MP = {mp:.2f} V')
 				self.plot_wdg.rpm_label.setText(f'RPM = {rpm:.1f}')
-				continue
 			else:
-				break
+				continue
 		self.finished.emit()

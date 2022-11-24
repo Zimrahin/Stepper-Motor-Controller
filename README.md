@@ -23,10 +23,11 @@ synthesizer max2871
 - [ ] Agregar exception error box
 --------------------------------------------------------------
 - setear maximo de -30 a 60
-- [ ] Corregir que se imprima algo en movimientos de elevación (en la GUI se captura y no se hace nada con la info)
-- [ ] Arreglar prints (solo debe imprimir en los movimientos l-algo)
-    - [ ] Agregar un 'ack' al final de la rutina en el ardunio para aviarle al python que el proceso termino. El ack triggerea un break en el while, de lo contrario solo se resetea el timeout ocn un continue
-    - [ ] Agregar que e arduino no impprima datos en  estos movimientos, y por lo tanto agregar parametrso aceleracion
+- [x] Corregir que se imprima algo en movimientos de elevación (en la GUI se captura y no se hace nada con la info)
+- [x] Arreglar prints (solo debe imprimir en los movimientos l-algo)
+    - [x] Agregar un 'ack' al final de la rutina en el ardunio para aviarle al python que el proceso termino. El ack triggerea un break en el while, de lo contrario solo se resetea el timeout ocn un continue
+    - [x] Agregar que e arduino no impprima datos en  estos movimientos, y por lo tanto agregar parametrso aceleracion
+- [ ] Los prints deben hacerse todos de una vez y al final del movimiento
 -------------------------------------------------------------
 - [ ] Agregar escritura en CSV para rutina
 - [ ] Agregar 'Open File' para plotear

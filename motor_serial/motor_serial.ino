@@ -8,9 +8,9 @@
 #define DIRPIN1 GPIO_2	//Pin 11
 #define ENAPIN1 GPIO_3	//Pin 10
 // Motor 2 (elevation)
-#define SETPIN2 GPIO_1	//Pin 12
-#define DIRPIN2 GPIO_2	//Pin 11
-#define ENAPIN2 GPIO_3	//Pin 10
+#define SETPIN2 GPIO_4	//Pin 12
+#define DIRPIN2 GPIO_5	//Pin 11
+#define ENAPIN2 GPIO_6	//Pin 10
 
 // #define LED_BUILTIN
 
@@ -387,33 +387,33 @@ void loop()
 			int steps = (N_rev_elev_g + (elev_end - elev_init)%N_rev_elev_g)%N_rev_elev_g;
 			
 			// Initialize motor positions:
-			movement(azimString_init); // no debería imprimir nada (y agregar params de aceleracion)
-			movement(elevString_init,"motor_elevation"); // no debería imprimir nada NI MOVERSE (y agregar params de aceleracion)
+			movement(azimString_init, "motor_azimuth", false); // no debería imprimir nada (y agregar params de aceleracion)
+			movement(elevString_init,"motor_elevation", false); // no debería imprimir nada NI MOVERSE (y agregar params de aceleracion)
 
 			// Loop:
 			String movString_elev;
 			int movInt_elev;
 			for(int i = 0; i < steps; i++){
 				movement(azimString_end);
-				movement(azimString_init); // no debería imprimir nada (y agregar params de aceleracion)
+				movement(azimString_init, "motor_azimuth", false); // no debería imprimir nada (y agregar params de aceleracion)
 
-				movInt_elev = (elev_init + i)%N_rev_elev_g;
+				// movInt_elev = (elev_init + i)%N_rev_elev_g;
 				// Aquí había un error (suma de String e int Revisar)
 				// movString_elev = "e" + movInt_elev;
 				// Solución con casteo (?) (no probado aún)
-				movString_elev = 'e' + String(movInt_elev);
+				// movString_elev = 'e' + String(movInt_elev);
 
 
-				digitalWrite(LED_BUILTIN, LOW);
+				// digitalWrite(LED_BUILTIN, LOW);
 				// movement(movString_elev,"motor_elevation");
 				// Serial.print(movString_elev);
 				// delay(2000);
-				digitalWrite(LED_BUILTIN, HIGH); 	
+				// digitalWrite(LED_BUILTIN, HIGH); 	
 
 				// Solo por ahora: (ya que estamos simulando 2 motores con uno solo)
 				// movement(azimString_init);
 			}
-			// print ACK				
+			Serial.println("ack");			
 		}
 	}
 }

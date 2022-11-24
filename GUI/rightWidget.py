@@ -450,28 +450,28 @@ class rightWidget(QWidget):
 		local_Pa = 4800
 		if self.azimuth_res_combo.currentText() == self.resolution_list[5]:
 			self.Pa_spinbox.setValue(local_Pa)
-			self.Tas_spinbox.setValue(0)
-			self.Tai_spinbox.setValue(0)
+			self.Tas_spinbox.setValue(10)
+			self.Tai_spinbox.setValue(2)
 		elif self.azimuth_res_combo.currentText() == self.resolution_list[4]:
 			self.Pa_spinbox.setValue(local_Pa)
-			self.Tas_spinbox.setValue(0)
-			self.Tai_spinbox.setValue(0)
+			self.Tas_spinbox.setValue(20)
+			self.Tai_spinbox.setValue(4)
 		elif self.azimuth_res_combo.currentText() == self.resolution_list[3]:
 			self.Pa_spinbox.setValue(local_Pa)
-			self.Tas_spinbox.setValue(12)
-			self.Tai_spinbox.setValue(0)
+			self.Tas_spinbox.setValue(40)
+			self.Tai_spinbox.setValue(8)
 		elif self.azimuth_res_combo.currentText() == self.resolution_list[2]:
 			self.Pa_spinbox.setValue(local_Pa)
-			self.Tas_spinbox.setValue(22)
-			self.Tai_spinbox.setValue(4)
+			self.Tas_spinbox.setValue(40)
+			self.Tai_spinbox.setValue(8)
 		elif self.azimuth_res_combo.currentText() == self.resolution_list[1]:
 			self.Pa_spinbox.setValue(local_Pa)
-			self.Tas_spinbox.setValue(22)
-			self.Tai_spinbox.setValue(6)
+			self.Tas_spinbox.setValue(40)
+			self.Tai_spinbox.setValue(8)
 		elif self.azimuth_res_combo.currentText() == self.resolution_list[0]:
 			self.Pa_spinbox.setValue(local_Pa)
-			self.Tas_spinbox.setValue(22)
-			self.Tai_spinbox.setValue(12)
+			self.Tas_spinbox.setValue(40)
+			self.Tai_spinbox.setValue(8)
 		else:
 			print('if you see this, there is an error (probably)')
 
