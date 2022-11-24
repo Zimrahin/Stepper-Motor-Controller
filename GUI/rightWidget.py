@@ -47,10 +47,11 @@ class rightWidget(QWidget):
 		#---------------------------------------------
 		# Objects
 		self.csv_flag = True
-		self.elev_accel_params = {
+		self.elev_params = {
+			'Nrev' : ELEV_RES,
 			'Pa' : 4800,
-			'Tas' : 22,
-			'Tai' : 12
+			'Tas' : 40,
+			'Tai' : 8
 		}
 
 		#---------------------------------------------
@@ -172,14 +173,13 @@ class rightWidget(QWidget):
 		#---------------------------------------------
 		# Objects
 		self.param_dict = self.getFieldsValues()
-		self.elev_res = ELEV_RES
 
 		#---------------------------------------------
 		# Signals and slots
 		self.default_btn.clicked.connect(self.defaultParametersAzim)
 		self.connect(self.azimuth_res_combo, PySide2.QtCore.SIGNAL("currentIndexChanged(const QString&)"), self.defaultParametersAzim)
 
-		self.move_azim_btn.clicked.connect(self.sendMovement)
+		self.move_azim_btn.clicked.connect(self.sendMovementAzimuth)
 		self.reset_azim_btn.clicked.connect(self.sendReset)
 
 		self.connect(self.elevation_res_combo, PySide2.QtCore.SIGNAL("currentIndexChanged(const QString&)"), self.defaultParametersElev)
@@ -277,10 +277,6 @@ class rightWidget(QWidget):
 		self._setToolTips()
 
 	#---------------------------------------------
-	def printElevParam(self):
-		self.elev_res = int(360/float(self.elevation_res_combo.currentText().split()[0]))
-		print(f'Elevation resolution set: {self.elev_res}')
-
 	def getFieldsValues(self):
 		ret_dict = {
 			'Nrev':int(360/float(self.azimuth_res_combo.currentText().split()[0])),
@@ -290,7 +286,7 @@ class rightWidget(QWidget):
 		}
 		return ret_dict
 	#---------------------------------------------
-	def sendMovement(self):
+	def sendMovementAzimuth(self):
 		out_angle = self.angle_azim_spinbox.value()
 		out_step = self.angleToStep(out_angle, int(self.param_dict['Nrev']))
 		listLetters = ['a', 'l', 'r']
@@ -339,7 +335,7 @@ class rightWidget(QWidget):
 
 	def sendMovementElevation(self):
 		out_angle = self.angle_elev_spinbox.value()
-		out_step = self.angleToStep(out_angle, self.elev_res)
+		out_step = self.angleToStep(out_angle, self.elev_params['Nrev'])
 		listLetters = ['e', 'u', 'd']
 		listRadioBtn = [self.ae_radio, self.u_radio, self.d_radio]
 		for i in range(len(listRadioBtn)):
@@ -478,32 +474,32 @@ class rightWidget(QWidget):
 			print('if you see this, there is an error (probably)')
 
 	def defaultParametersElev(self):
-		self.elev_res = int(360/float(self.elevation_res_combo.currentText().split()[0]))
+		self.elev_params['Nrev'] = int(360/float(self.elevation_res_combo.currentText().split()[0]))
 		local_Pa = 4800
 		if self.elevation_res_combo.currentText() == self.resolution_list[5]:
-			self.elev_accel_params['Pa'] = local_Pa
-			self.elev_accel_params['Tas'] = 40
-			self.elev_accel_params['Tai'] = 2
+			self.elev_params['Pa'] = local_Pa
+			self.elev_params['Tas'] = 40
+			self.elev_params['Tai'] = 2
 		elif self.elevation_res_combo.currentText() == self.resolution_list[4]:
-			self.elev_accel_params['Pa'] = local_Pa
-			self.elev_accel_params['Tas'] = 40
-			self.elev_accel_params['Tai'] = 4
+			self.elev_params['Pa'] = local_Pa
+			self.elev_params['Tas'] = 40
+			self.elev_params['Tai'] = 4
 		elif self.elevation_res_combo.currentText() == self.resolution_list[3]:
-			self.elev_accel_params['Pa'] = local_Pa
-			self.elev_accel_params['Tas'] = 40
-			self.elev_accel_params['Tai'] = 8
+			self.elev_params['Pa'] = local_Pa
+			self.elev_params['Tas'] = 40
+			self.elev_params['Tai'] = 8
 		elif self.elevation_res_combo.currentText() == self.resolution_list[2]:
-			self.elev_accel_params['Pa'] = local_Pa
-			self.elev_accel_params['Tas'] = 40
-			self.elev_accel_params['Tai'] = 8
+			self.elev_params['Pa'] = local_Pa
+			self.elev_params['Tas'] = 40
+			self.elev_params['Tai'] = 8
 		elif self.elevation_res_combo.currentText() == self.resolution_list[1]:
-			self.elev_accel_params['Pa'] = local_Pa
-			self.elev_accel_params['Tas'] = 40
-			self.elev_accel_params['Tai'] = 8
+			self.elev_params['Pa'] = local_Pa
+			self.elev_params['Tas'] = 40
+			self.elev_params['Tai'] = 8
 		elif self.elevation_res_combo.currentText() == self.resolution_list[0]:
-			self.elev_accel_params['Pa'] = local_Pa
-			self.elev_accel_params['Tas'] = 40
-			self.elev_accel_params['Tai'] = 8
+			self.elev_params['Pa'] = local_Pa
+			self.elev_params['Tas'] = 40
+			self.elev_params['Tai'] = 8
 		else:
 			print('if you see this, there is an error (probably) ELEVATION')
 	

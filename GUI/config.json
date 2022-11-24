@@ -1,0 +1,19 @@
+{
+	"app_name"	: "Stepper Motor Controller",
+	"version" 	: "2.11.24",
+	"authors" 	: [
+		"Diego A. Badillo", "Sebastián San Martín"
+	],
+	"year" : 2022,
+	"status_bar_timeout" : 5000,
+	"font" : {
+		"family" : "Segoe UI",
+		"title_size" : 11,
+		"text_size" : 9
+	},
+	"startup_location": [
+		350,
+		150
+	],
+	"scroll_area_min_width": 370
+}

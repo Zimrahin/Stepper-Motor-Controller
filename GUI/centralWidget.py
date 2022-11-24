@@ -1,6 +1,5 @@
 import sys 
 from PySide2.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QScrollArea, QFrame, QPushButton
-from PySide2 import QtGui
 from PySide2.QtCore import Qt, QThread
 from PySide2.QtGui import QPixmap
 
@@ -9,23 +8,16 @@ from rightWidget import rightWidget
 from plotWidget import plotWidget
 from routineThread import workerThreadPlotUpdate
 
-import time
-from messageBox import errorBox
-
 # https://stackoverflow.com/questions/1551605/how-to-set-applications-taskbar-icon-in-windows-7/1552105#1552105
 import ctypes
 myappid = 'StepperMotorController' # arbitrary string
 ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 
-STATUS_BAR_TIMEOUT = 5000
-
 class centralWidget(QWidget):
 	def __init__(self, main_wdw, parent=None):
 		super().__init__(parent)
 		self.main_wdw = main_wdw
-
-		self.setWindowIcon(QtGui.QIcon('img/logo.png'))
-		self.setWindowTitle("Stepper motor controller")
+		self.config = main_wdw.config
 
 		#Objects 
 		self.COM = None
@@ -55,7 +47,7 @@ class centralWidget(QWidget):
 		self.scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 		self.scroll_area.setWidgetResizable(True)
 		self.scroll_area.setFrameShape(QFrame.NoFrame)
-		self.scroll_area.setMinimumWidth(370) 
+		self.scroll_area.setMinimumWidth(self.config.dict['scroll_area_min_width']) 
 		self.scroll_area.setWidget(self.right_wdg)
 
 		# ------------------------------------------------------------
@@ -75,15 +67,12 @@ class centralWidget(QWidget):
 		v_layout = QVBoxLayout()
 		
 		v_layout.addWidget(self.connection_wdg)
-		# v_layout.addWidget(self.right_wdg)
 		v_layout.addWidget(self.scroll_area)
-		# v_layout.addStretch()
 		v_layout.addWidget(self.apply_btn)
 		v_layout.addWidget(self.start_btn)
 
 		v_layout.addWidget(self.logo_wdg)
 		
-
 		h_layout = QHBoxLayout()
 		h_layout.addWidget(self.plot_wdg, 5)
 		h_layout.addLayout(v_layout, 1)
@@ -91,18 +80,19 @@ class centralWidget(QWidget):
 		self.setLayout(h_layout)
 
 	def applyParameters(self):
-		Pa_elev = str(self.right_wdg.elev_accel_params['Pa'])
-		Tas_elev = str(self.right_wdg.elev_accel_params['Tas'])
-		Tai_elev = str(self.right_wdg.elev_accel_params['Tai'])
+		Nrev_elev = str(self.right_wdg.elev_params['Nrev'])
+		Pa_elev = str(self.right_wdg.elev_params['Pa'])
+		Tas_elev = str(self.right_wdg.elev_params['Tas'])
+		Tai_elev = str(self.right_wdg.elev_params['Tai'])
 		out_dict = self.right_wdg.getFieldsValues()
-		out_string = 'p-' + str(out_dict['Nrev']) + '-' + str(out_dict['Pa']) + '-' + str(out_dict['Tas']) + '-' + str(out_dict['Tai']) + '-' + str(self.right_wdg.elev_res) + '-' + Pa_elev + '-' + Tas_elev + '-' + Tai_elev + '\n'
+		out_string = f"p-{out_dict['Nrev']}-{out_dict['Pa']}-{out_dict['Tas']}-{out_dict['Tai']}-{Nrev_elev}-{Pa_elev}-{Tas_elev}-{Tai_elev}\n"
 		print(out_string)
 		self.connection_wdg.send2COM(out_string)
 		
 		response = self.connection_wdg.receiveOnlyCOM()
 		if (response == 'ack'):
 			self.right_wdg.param_dict = out_dict #update necessary for degree->step conversion (called from angleWidget)
-			self.main_wdw.status_bar.showMessage("Parameters set successfully!", STATUS_BAR_TIMEOUT)
+			self.main_wdw.status_bar.showMessage("Parameters set successfully!", self.config.dict['status_bar_timeout'])
 			return True
 		else:
 			raise Exception('Device did not respond')
@@ -132,8 +122,8 @@ class centralWidget(QWidget):
 		azim_init_step = self.right_wdg.angleToStep(azim_init_angle, int(self.right_wdg.param_dict['Nrev']))
 		azim_diff_step = self.right_wdg.angleToStep(azim_diff_angle, int(self.right_wdg.param_dict['Nrev']))
 
-		elev_init_step = self.right_wdg.angleToStep(elev_init_angle, self.right_wdg.elev_res)
-		elev_final_step = self.right_wdg.angleToStep(elev_final_angle, self.right_wdg.elev_res)
+		elev_init_step = self.right_wdg.angleToStep(elev_init_angle, self.right_wdg.elev_params['Nrev'])
+		elev_final_step = self.right_wdg.angleToStep(elev_final_angle, self.right_wdg.elev_params['Nrev'])
 
 		out_string = f'n-a{azim_init_step}-{dir_char}{azim_diff_step}-e{elev_init_step}-e{elev_final_step}'
 

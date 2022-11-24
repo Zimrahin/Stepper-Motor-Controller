@@ -5,14 +5,12 @@ synthesizer max2871
 ------------------------------------------------------------------------
 ### In Progress
 ---------------------------------------------------------------------
-
---------------------------------------------------------------
-- [ ] Arreglar logica movimiento while true para que el serial no se quede pescado
-- [ ] Arreglar escritura CSV
-- [ ] Agregar escritura en CSV para rutina
-- [ ] Agregar thread a movimientos ELEVATION
 - [ ] Ordenamiento general del código de GUI:
     - [ ] Definir números "hardcoded" en un JSON, que se abra en un config.py como una clase (read only por mientras)
+    --------------------------------------------------------------
+- [ ] Separar ino file en funciones (según internet basta con separar en .ino mientras estén en la misma carpeta)
+- [ ] Arreglar escritura CSV
+- [ ] Agregar escritura en CSV para rutina
 
 
 -------------------------------------------------------------
@@ -65,6 +63,7 @@ synthesizer max2871
 - [x] Agregar un 'ack' al final de la rutina en el ardunio para aviarle al python que el proceso termino. El ack triggerea un break en el while, de lo contrario solo se resetea el timeout ocn un continue
 - [x] Agregar que e arduino no impprima datos en  estos movimientos, y por lo tanto agregar parametrso aceleracion
 - [x] Los prints deben hacerse todos de una vez y al final del movimiento
+- [x] Arreglar logica movimiento while true para que el serial no se quede pescado
 ------------------------------------------------------------------------
 ### Extras
 - [ ] Dejar grafico en decibeles
