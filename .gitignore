@@ -1,5 +1,4 @@
 .vscode
-qt_env
 *.csv
 *.pyc
 PC_venv
