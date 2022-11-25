@@ -31,11 +31,14 @@ class movementThread(QObject):
 							log_text += values_list[n]
 
 					dir_string = 'clockwise' if direction_char == 'r' else 'counterclockwise'
-					header = 	log_date + ',' + log_time + ',' + \
-								mean_time + 'us,' +  mean_time_total + 'us,' + \
-								str(int(angle)*360./6400) + 'º,' + dir_string + ',' + \
-								str(self.right_wdg.azim_params['Nrev']) + ' step/rev'
-					log_text =  header + ',' + log_text + '\n'
+
+					header = 	f'{log_date},{log_time},{mean_time}us,{mean_time_total}us,{int(angle)*360./6400}º,{dir_string},{self.right_wdg.azim_params["Nrev"]} step/rev'
+					# header = 	log_date + ',' + log_time + ',' + \
+					# 			mean_time + 'us,' +  mean_time_total + 'us,' + \
+					# 			str(int(angle)*360./6400) + 'º,' + dir_string + ',' + \
+					# 			str(self.right_wdg.azim_params['Nrev']) + ' step/rev'
+					log_text = f'{header},{log_text}\n'
+					# log_text =  header + ',' + log_text + '\n'
 
 					with open(self.main_wdw.file_name,'a') as csvFile:
 						csvFile.write(log_text)

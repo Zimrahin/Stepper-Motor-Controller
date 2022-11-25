@@ -8,23 +8,25 @@ An image of the current state of the GUI is given below
 ------------------------------------------------------------------
 ### In Progress
 
-- [ ] Ordenamiento general del código de GUI:
+- [x] Ordenamiento general del código de GUI:
     - [x] mainWindow.py
     - [x] centralWidget.py
     - [x] rightWidget.py
-    - [ ] connectionWidget.py
-    - [ ] movementThread.py
-    - [ ] routineThread.py
-    - [ ] plotWidget.py
+    - [x] connectionWidget.py
+    - [x] movementThread.py
+    - [x] routineThread.py
+    - [x] plotWidget.py
+
+- [ ] JSON file con paleta de colores (usado en palette y en plot)
+
 --------------------------------------------------------------
-- [ ] Separar ino file en funciones (según internet basta con separar en .ino mientras estén en la misma carpeta)
 - [ ] Arreglar escritura CSV
 - [ ] Agregar escritura en CSV para rutina
 - [ ] Asegurarse que todos los raise Exception funcionen con una ventana pop-up
--------------------------------------------------------------
 - [ ] Guardar parámetros de rutina en archivos  y agregar "open routine settings"
+- [ ] Separar ino file en funciones (según internet basta con separar en .ino mientras estén en la misma carpeta)
+-------------------------------------------------------------
 - [ ] Corregir en Arduino prints ddeben hacerse todos en el mismo lugar. (dentro de la funcion movement), entonces así se podría llamar a otra función con los punteros
-- [ ] setear maximo de -30 a 60
 - [ ] Agregar 'Open File' para plotear
 - [ ] Averiguar sobre multithread programming en la portenta (tiene dos núcleos). Esto evitaría tener una pausa después de cada movimiento por el envío de datos
 -------------------------------------------------------------------

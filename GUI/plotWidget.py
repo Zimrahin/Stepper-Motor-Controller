@@ -63,8 +63,6 @@ class plotWidget(QWidget):
 		vlayout = QVBoxLayout()
 		vlayout.addWidget(self.canvas_wdg)
 		vlayout.addLayout(hlayout)
-		# layout.addWidget(self.toolbar_wdg)
-		# vlayout.addStretch()
 
 		self.setLayout(vlayout)
 	
@@ -73,7 +71,6 @@ class plotWidget(QWidget):
 		self.updatePlot([], 0, 'l', 100)
 
 	def updatePlot(self, data, angle, direction_char, N_rev):
-		# scale_factor = 360./N_rev
 		N_rev_max = 6400
 		plot_scale_factor = int(N_rev_max/N_rev)
 		angle_scale_factor = 360./N_rev_max
@@ -91,8 +88,6 @@ class plotWidget(QWidget):
 				data, 
 				color='#00FFFF')
 			self.canvas_wdg.axes.invert_xaxis()
-
-		# self.canvas_wdg.axes.plot(data, color='lime', linewidth=2)
 
 		self.canvas_wdg.axes.set_ylabel('Voltage (V)')
 		self.canvas_wdg.axes.yaxis.label.set_color('#ffffff')

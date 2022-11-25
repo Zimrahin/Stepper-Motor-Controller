@@ -9,38 +9,31 @@ import time
 
 # Adapted from https://github.com/Wauro21/bssc/tree/main/gui
 
-# Default values
-CONNECTION_STATUS_LABEL = '{}'
-SERIAL_TIMEOUT = 1.0 # second (wait for Arduino response)
 INIT_CMD = b'c-6400-4800-40-2-200-4800-40-8\n' #b: format, send this message to Arduino and receive acknowledge 
-BAUDRATE = 9600
 
 class connectionWidget(QWidget):
-
 	# Class Signals
 	connect_signal = QtCore.Signal()
 	disconnect_signal = QtCore.Signal()
 
-	def __init__(self, parent=None):
-		
+	def __init__(self, main_wdw, parent=None):
 		super().__init__(parent)
 
-		# Objects
+		# Variables
 		self.serial_COM = None
-
+		self.main_wdw = main_wdw
+		self.config = self.main_wdw.config
+		
 		# Widgets 
 		self.serial_ports_cbox = QComboBox()
 		self.serial_ports_cbox.setToolTip('Available serial ports')
 		self.refresh_btn = QPushButton('Refresh') # refresh COMs
 		self.refresh_btn.setToolTip('Update available serial ports ')
 		self.connect_btn = QPushButton('Connect')
-		self.status_label = QLabel(CONNECTION_STATUS_LABEL.format('Not connected'))
 
-		self.status_label.setMinimumWidth(96)
 		self.connect_btn.setMinimumWidth(96)
 
 		# Init routines
-		self.status_label.setAlignment(Qt.AlignCenter)
 		self.serialList()
 		self.connect_btn.setToolTip('Send initialisation parameters and \nreceive acknowledgment message')
 
@@ -53,7 +46,6 @@ class connectionWidget(QWidget):
 		layout.addWidget(self.serial_ports_cbox)
 		layout.addWidget(self.refresh_btn)
 		layout.addWidget(self.connect_btn)
-		# layout.addWidget(self.status_label)
 
 		self.setLayout(layout)
 
@@ -91,18 +83,15 @@ class connectionWidget(QWidget):
 				self.disconnect_signal.emit()
 				connect_btn_text = 'Connect'
 				self.connect_btn.setToolTip('Send initialisation parameters and \nreceive acknowledgment message')
-				status_label_text = 'Not Connected'
 				port_list_refresh_enable = True
 			else:
-				self.serial_COM = serial.Serial(port, baudrate=BAUDRATE, timeout=SERIAL_TIMEOUT)
+				self.serial_COM = serial.Serial(port, baudrate=self.config.dict['serial']['baudrate'], timeout=self.config.dict['serial']['timeout'])
 				self.connectionTest()
 				self.connect_signal.emit()
 				connect_btn_text = 'Disconnect'
 				self.connect_btn.setToolTip('Set serial port to <b>None</b>')
-				status_label_text = 'Connected'
 				port_list_refresh_enable = False
 			self.connect_btn.setText(connect_btn_text)
-			self.status_label.setText(CONNECTION_STATUS_LABEL.format(status_label_text))
 			self.serial_ports_cbox.setEnabled(port_list_refresh_enable)
 			self.refresh_btn.setEnabled(port_list_refresh_enable)
 
@@ -115,7 +104,25 @@ class connectionWidget(QWidget):
 			show_error.exec_()
 
 	def connectionTest(self):
-		self.serial_COM.write(INIT_CMD)
+		azim_id = self.config.dict['resolutions']['default_azim']
+		elev_id = self.config.dict['resolutions']['default_elev']
+		Nrev_azim = self.config.dict['resolutions']['list'][azim_id]
+		Nrev_azim = int(360 / Nrev_azim)
+		Nrev_elev = self.config.dict['resolutions']['list'][elev_id]
+		Nrev_elev = int(360 / Nrev_elev)
+
+		Pa = self.config.dict['default_params']['Pa']
+		Tas_azim = self.config.dict['default_params']['delays'][azim_id]['Tas']
+		Tai_azim = self.config.dict['default_params']['delays'][azim_id]['Tai']
+		Tas_elev = self.config.dict['default_params']['delays'][elev_id]['Tas']
+		Tai_elev = self.config.dict['default_params']['delays'][elev_id]['Tai']
+
+		out_str = f'c-{Nrev_azim}-{Pa}-{Tas_azim}-{Tai_azim}-{Nrev_elev}-{Pa}-{Tas_elev}-{Tai_elev}\n'
+
+		if self.config.dict['debug_print']:
+			print(out_str[:-1])
+			
+		self.serial_COM.write(out_str.encode())
 		time.sleep(0.10) # seconds
 		response = self.serial_COM.readline() # Change to receive mode, Arduino sends \n to terminate
 		response = str(response,'utf-8').rstrip()

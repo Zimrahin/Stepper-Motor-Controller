@@ -19,7 +19,7 @@
 	"azim_angle_spin" : {
 		"step"		: 10,
 		"lowest" 	: 0,
-		"highest"	: 14400,
+		"highest"	: 3600,
 		"decimals"	: 2,
 		"units"		: "º",
 		"routine"		: {
@@ -70,5 +70,10 @@
 			{"Res" : 3200, "Tas" : 40, "Tai" : 4},
 			{"Res" : 6400, "Tas" : 40, "Tai" : 2}
 		]
-	}
+	},
+	"serial" : {
+		"timeout" 	: 1.0,
+		"baudrate" 	: 9600
+	},
+	"debug_print"	: true
 }

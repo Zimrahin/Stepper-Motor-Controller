@@ -31,7 +31,7 @@ class centralWidget(QWidget):
 		self.start_btn.setStyleSheet("QPushButton{background-color : '#054d45';}")
 
 		# -> Serial Connection Widget
-		self.connection_wdg = connectionWidget(self)
+		self.connection_wdg = connectionWidget(self.main_wdw, self)
 
 		# -> Plot Widget
 		self.plot_wdg = plotWidget(self)
@@ -88,7 +88,8 @@ class centralWidget(QWidget):
 		Tai_elev = str(self.right_wdg.elev_params['Tai'])
 		out_dict = self.right_wdg.getFieldsValues()
 		out_string = f"p-{out_dict['Nrev']}-{out_dict['Pa']}-{out_dict['Tas']}-{out_dict['Tai']}-{Nrev_elev}-{Pa_elev}-{Tas_elev}-{Tai_elev}\n"
-		print(out_string[:-1])
+		if self.config.dict['debug_print']:
+			print(out_string[:-1])
 		self.connection_wdg.send2COM(out_string)
 		
 		response = self.connection_wdg.receiveOnlyCOM()
@@ -130,7 +131,8 @@ class centralWidget(QWidget):
 
 		out_string = f'n-a{azim_init_step}-{dir_char}{azim_diff_step}-e{elev_init_step}-e{elev_final_step}'
 
-		print(out_string)
+		if self.config.dict['debug_print']:
+			print(out_string)
 		self.connection_wdg.send2COM(out_string)
 
 		# Start LONG routine 
@@ -140,7 +142,7 @@ class centralWidget(QWidget):
 		# Create QThread object
 		self.routine_thread = QThread()
 		# Create a worker object
-		self.routine_worker = workerThreadPlotUpdate(self.connection_wdg, self.plot_wdg, self.right_wdg)
+		self.routine_worker = workerThreadPlotUpdate(self.connection_wdg, self.plot_wdg, self.right_wdg, self.config)
 		# Move worker to the thread
 		self.routine_worker.moveToThread(self.routine_thread)
 		# Connect signals and slots

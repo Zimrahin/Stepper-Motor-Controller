@@ -234,7 +234,8 @@ class rightWidget(QWidget):
 		for i in range(len(listRadioBtn)):
 			if listRadioBtn[i].isChecked():
 				self.central_wdg.connection_wdg.send2COM(listLetters[i] + str(out_step))
-				print(listLetters[i] + str(out_step))
+				if self.config.dict['debug_print']:
+					print(listLetters[i] + str(out_step))
 		
 		# Start MOVEMENT thread
 		self.movementRoutine()
@@ -272,7 +273,8 @@ class rightWidget(QWidget):
 		for i in range(len(listRadioBtn)):
 			if listRadioBtn[i].isChecked():
 				self.central_wdg.connection_wdg.send2COM(listLetters[i] + str(out_step))
-				print(listLetters[i] + str(out_step))
+				if self.config.dict['debug_print']:
+					print(listLetters[i] + str(out_step))
 
 	#-----------------------------------------------------------------------
 	def sendReset(self, motor : str):
