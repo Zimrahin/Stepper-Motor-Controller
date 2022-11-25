@@ -1,6 +1,6 @@
 {
 	"app_name"	: "Stepper Motor Controller",
-	"version" 	: "2.11.24",
+	"version" 	: "2.11.25",
 	"authors" 	: [
 		"Diego A. Badillo", "Sebastián San Martín"
 	],
@@ -8,6 +8,7 @@
 	"status_bar_timeout" : 5000,
 	"font" : {
 		"family" : "Segoe UI",
+		"mega_title_size" : 14,
 		"title_size" : 11,
 		"text_size" : 9
 	},
@@ -19,11 +20,13 @@
 		"step"		: 10,
 		"lowest" 	: 0,
 		"highest"	: 14400,
-		"decimals"		: 2,
+		"decimals"	: 2,
 		"units"		: "º",
 		"routine"		: {
 			"lowest"	: -180,
-			"highest"	: 180
+			"highest"	: 180,
+			"default_i"	: -80,
+			"default_f"	: 80
 		}
 	},
 	"elev_angle_spin" : {
@@ -34,7 +37,9 @@
 		"units"		: "º",
 		"routine"	: {
 			"lowest"	: -30,
-			"highest"	: 60
+			"highest"	: 60,
+			"default_i"	: -30,
+			"default_f"	: -20
 		}
 	},
 	"delay_spin" : {
@@ -48,5 +53,11 @@
 		"lowest" 	: 0,
 		"highest"	: 12800,
 		"units"		: " step"
+	},
+	"resolutions" : {
+		"list"	: [1.8, 0.9, 0.45, 0.225, 0.1125, 0.05625],
+		"units"	: " degree/step",
+		"default_azim"	: 5,
+		"default_elev"	: 0
 	}
 }

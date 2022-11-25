@@ -86,7 +86,7 @@ class centralWidget(QWidget):
 		Tai_elev = str(self.right_wdg.elev_params['Tai'])
 		out_dict = self.right_wdg.getFieldsValues()
 		out_string = f"p-{out_dict['Nrev']}-{out_dict['Pa']}-{out_dict['Tas']}-{out_dict['Tai']}-{Nrev_elev}-{Pa_elev}-{Tas_elev}-{Tai_elev}\n"
-		print(out_string)
+		print(out_string[:-1])
 		self.connection_wdg.send2COM(out_string)
 		
 		response = self.connection_wdg.receiveOnlyCOM()

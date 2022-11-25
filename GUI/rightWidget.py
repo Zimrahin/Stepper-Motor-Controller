@@ -9,58 +9,37 @@ import numpy as np
 
 from movementThread import movementThread
 
-
-# -> Pa parameters: steps
-LOWEST_PA = 0 
-HIGHEST_PA = 10000
-STEP_INCREMENT = 100
-PA_UNITS = ' step'
-
-ELEV_RES = 200
-
 class rightWidget(QWidget):
 	def __init__(self, central_wdg, main_wdw, parent=None):
 		super().__init__(parent)
 		self.central_wdg = central_wdg
 		self.main_wdw = main_wdw
-		self.config = main_wdw.config
-		#---------------------------------------------
-		self.font_dict = {
-					"family" : "Segoe UI",
-					"title_size" : 14
-					}      
-		#---------------------------------------------
-		# Objects
-		self.csv_flag = True
-		self.elev_params = {
-			'Nrev' : ELEV_RES,
-			'Pa' : 4800,
-			'Tas' : 40,
-			'Tai' : 8
-		}
+		self.config = main_wdw.config     
 
-		#---------------------------------------------
+		#---------------------------------------------------------
 		# Widgets       
 		# -> Labels
 		self.azimuth_txt = QLabel('<b>Azimuth Settings</b>')
-		self.azimuth_txt.setStyleSheet(f"font : {self.font_dict['title_size']}pt '{self.font_dict['family']}';")
+		self.azimuth_txt.setStyleSheet(f"font : {self.config.dict['font']['mega_title_size']}pt '{self.config.dict['font']['family']}';")
 		self.azimuth_img = QLabel()
 		self.img = QPixmap('img/azimuth.png')
 		self.img = self.img.scaled(250, 34, Qt.KeepAspectRatio, Qt.SmoothTransformation)
 		self.azimuth_img.setPixmap(self.img)
 
 		self.elevation_txt = QLabel('<b>Elevation Settings</b>')
-		self.elevation_txt.setStyleSheet(f"font : {self.font_dict['title_size']}pt '{self.font_dict['family']}';")
+		self.elevation_txt.setStyleSheet(f"font : {self.config.dict['font']['mega_title_size']}pt '{self.config.dict['font']['family']}';")
 		self.elevation_img = QLabel()
 		self.img = QPixmap('img/elevation.png')
 		self.img = self.img.scaled(250, 40, Qt.KeepAspectRatio, Qt.SmoothTransformation)
 		self.elevation_img.setPixmap(self.img)
 
 		# -> Combo boxes
-		self.azimuth_res_combo = QComboBox()
-		self.resolution_list = ['1.8 degree/step','0.9 degree/step','0.45 degree/step','0.225 degree/step','0.1125 degree/step','0.05625 degree/step']
-		self.azimuth_res_combo.addItems(self.resolution_list)
+		self.resolutions = self.config.dict['resolutions']['list']
+		units = self.config.dict['resolutions']['units']
+		self.resolution_list = [f'{a}{units}' for a in self.resolutions]
 
+		self.azimuth_res_combo = QComboBox()
+		self.azimuth_res_combo.addItems(self.resolution_list)
 		self.elevation_res_combo = QComboBox()
 		self.elevation_res_combo.addItems(self.resolution_list)
 
@@ -121,54 +100,30 @@ class rightWidget(QWidget):
 		self.d_radio.setFixedSize(90,60)
 
 		# -> Push Buttons
-		self.default_btn = QPushButton('Default')
 		self.move_azim_btn = QPushButton('Move')
 		self.reset_azim_btn = QPushButton('Reset angle')
 
-		self.move_elev_btn = QPushButton('Move') # elevation
+		self.move_elev_btn = QPushButton('Move')
 		self.reset_elev_btn = QPushButton('Reset angle')
 
-		#---------------------------------------------
+		#---------------------------------------------------------
 		# Init routine 
-		self._spinBoxConfig(self.angle_azim_spinbox, self.config.dict['azim_angle_spin']['lowest'], self.config.dict['azim_angle_spin']['highest'], self.config.dict['azim_angle_spin']['step'], self.config.dict['azim_angle_spin']['units'])
-
-		self._spinBoxConfig(self.angle_elev_spinbox, self.config.dict['elev_angle_spin']['lowest'], self.config.dict['elev_angle_spin']['highest'], self.config.dict['elev_angle_spin']['step'], self.config.dict['elev_angle_spin']['units'])
-
 		self.a_radio.setChecked(True)
 		self.e_radio.setChecked(True)
-
-		self.azimuth_res_combo.setCurrentText(self.resolution_list[5])
-		self.elevation_res_combo.setCurrentText(self.resolution_list[0])
 		
-		self._spinBoxConfig(self.Pa_spinbox, self.config.dict['Pa_spin']['lowest'], self.config.dict['Pa_spin']['highest'], self.config.dict['Pa_spin']['step'], self.config.dict['Pa_spin']['units'])
-
-		self._spinBoxConfig(self.Tai_spinbox, self.config.dict['delay_spin']['lowest'], self.config.dict['delay_spin']['highest'], self.config.dict['delay_spin']['step'], self.config.dict['delay_spin']['units'])
-
-		self._spinBoxConfig(self.Tas_spinbox, self.config.dict['delay_spin']['lowest'], self.config.dict['delay_spin']['highest'], self.config.dict['delay_spin']['step'], self.config.dict['delay_spin']['units'])
-
-		self._spinBoxConfig(self.initial_azim_spinbox, self.config.dict['azim_angle_spin']['routine']['lowest'], self.config.dict['azim_angle_spin']['routine']['highest'], self.config.dict['azim_angle_spin']['step'], self.config.dict['azim_angle_spin']['units'])
-
-		self._spinBoxConfig(self.final_azim_spinbox, self.config.dict['azim_angle_spin']['routine']['lowest'], self.config.dict['azim_angle_spin']['routine']['highest'], self.config.dict['azim_angle_spin']['step'], self.config.dict['azim_angle_spin']['units'])
-
-		self._spinBoxConfig(self.initial_elev_spinbox, self.config.dict['elev_angle_spin']['routine']['lowest'], self.config.dict['elev_angle_spin']['routine']['highest'], self.config.dict['elev_angle_spin']['step'], self.config.dict['elev_angle_spin']['units'])
-
-		self._spinBoxConfig(self.final_elev_spinbox, self.config.dict['elev_angle_spin']['routine']['lowest'], self.config.dict['elev_angle_spin']['routine']['highest'], self.config.dict['elev_angle_spin']['step'], self.config.dict['elev_angle_spin']['units'])
-
-		self.initial_azim_spinbox.setValue(-80)
-		self.final_azim_spinbox.setValue(80)
-		self.initial_elev_spinbox.setValue(-30)
-		self.final_elev_spinbox.setValue(-20)
-
+		self.azimuth_res_combo.setCurrentText(self.resolution_list[self.config.dict['resolutions']['default_azim']])
+		self.elevation_res_combo.setCurrentText(self.resolution_list[self.config.dict['resolutions']['default_elev']])
+		
+		# Set step increment, lowest and highest values, units of spin boxes
+		self._wrapBoxConfig()
+		
 		self.defaultParametersAzim()
-
-
-		#---------------------------------------------
-		# Objects
 		self.azim_params = self.getFieldsValues()
+		self.elev_params = {}
+		self.defaultParametersElev()
 
-		#---------------------------------------------
+		#---------------------------------------------------------
 		# Signals and slots
-		self.default_btn.clicked.connect(self.defaultParametersAzim)
 		self.connect(self.azimuth_res_combo, PySide2.QtCore.SIGNAL("currentIndexChanged(const QString&)"), self.defaultParametersAzim)
 
 		self.move_azim_btn.clicked.connect(self.sendMovementAzimuth)
@@ -178,7 +133,7 @@ class rightWidget(QWidget):
 		self.move_elev_btn.clicked.connect(self.sendMovementElevation)
 		self.reset_elev_btn.clicked.connect(self.sendResetElevation)
 
-		#---------------------------------------------
+		#---------------------------------------------------------
 		# Layout
 		v_layout = QVBoxLayout()
 
@@ -267,16 +222,7 @@ class rightWidget(QWidget):
 		v_layout.addStretch()
 		self.setLayout(v_layout)
 		self._setToolTips()
-
-	#---------------------------------------------
-	def getFieldsValues(self):
-		ret_dict = {
-			'Nrev':int(360/float(self.azimuth_res_combo.currentText().split()[0])),
-			'Pa':self.Pa_spinbox.value(),
-			'Tas':self.Tas_spinbox.value(),
-			'Tai':self.Tai_spinbox.value()
-		}
-		return ret_dict
+		
 	#---------------------------------------------
 	def sendMovementAzimuth(self):
 		out_angle = self.angle_azim_spinbox.value()
@@ -361,10 +307,7 @@ class rightWidget(QWidget):
 		float_list = list(map(float,values_list))
 		return angle, direction_char, float_list, mean_time, mean_time_total, values_list
 
-	#---------------------------------------------	  
-	def colorSpin(self, spin, color='#f86e6c'):
-		spin.setStyleSheet(f'background-color : {color};')
-
+	#---------------------------------------------	 
 	def computePeakPower(self, data, data_xaxis):
 		if data:
 			peak_power = np.max(data)
@@ -395,11 +338,9 @@ class rightWidget(QWidget):
 		self.move_azim_btn.setToolTip('Rotate <b>azimuth</b> stepper motor')
 		self.reset_azim_btn.setToolTip('Set current <b>azimuth</b> position as initial <b>azimuth</b> angle')
 
-		# self.azimuth_res_combo.setToolTip('Angular resolution')
 		self.Pa_spinbox.setToolTip('Number of steps <b>between \nminimum</b> added delay and <b>\nmaximum</b> added delay')
 		self.Tas_spinbox.setToolTip('<b>Maximum delay</b> added to <b>each step</b> \n to decrease rotation speed')
 		self.Tai_spinbox.setToolTip('<b>Minimum delay</b> added to <b>each step</b> \n to decrease rotation speed')
-		self.default_btn.setToolTip('Set optimum empirical parameters to <b>maximise</b> rotation speed while keeping a <b>stable behaviour</b> of stepper motor')
 
 		self.e_radio.setToolTip('Move to an <b>absolute</b> angle in elevation')
 		self.u_radio.setToolTip('Move <b>upwards</b>')
@@ -417,13 +358,23 @@ class rightWidget(QWidget):
 
 		self.angle_azim_spinbox.setToolTip('Set a <b>movement</b> azimuth angle')
 		self.angle_elev_spinbox.setToolTip('Set a <b>movement</b> elevation angle')
-	#---------------------------------------------
+	#-----------------------------------------------------------------------
 	def _spinBoxConfig(self, box, lowest, highest, step, units):
 		box.setMinimum(lowest)
 		box.setMaximum(highest)
 		box.setSingleStep(step)
 		box.setSuffix(units)
 
+	#---------------------------------------------------------
+	def getFieldsValues(self):
+		ret_dict = {
+			'Nrev':int(360/float(self.azimuth_res_combo.currentText().split()[0])),
+			'Pa':self.Pa_spinbox.value(),
+			'Tas':self.Tas_spinbox.value(),
+			'Tai':self.Tai_spinbox.value()
+		}
+		return ret_dict
+	#-----------------------------------------------------------------------
 	def defaultParametersAzim(self):
 		local_Pa = 4800
 		if self.azimuth_res_combo.currentText() == self.resolution_list[5]:
@@ -452,7 +403,7 @@ class rightWidget(QWidget):
 			self.Tai_spinbox.setValue(8)
 		else:
 			print('if you see this, there is an error (probably)')
-
+	#-----------------------------------------------------------------------
 	def defaultParametersElev(self):
 		self.elev_params['Nrev'] = int(360/float(self.elevation_res_combo.currentText().split()[0]))
 		local_Pa = 4800
@@ -482,7 +433,30 @@ class rightWidget(QWidget):
 			self.elev_params['Tai'] = 8
 		else:
 			print('if you see this, there is an error (probably) ELEVATION')
-	
+	#-----------------------------------------------------------------------
+	def _wrapBoxConfig(self):
+		self._spinBoxConfig(self.angle_azim_spinbox, self.config.dict['azim_angle_spin']['lowest'], self.config.dict['azim_angle_spin']['highest'], self.config.dict['azim_angle_spin']['step'], self.config.dict['azim_angle_spin']['units'])
+
+		self._spinBoxConfig(self.angle_elev_spinbox, self.config.dict['elev_angle_spin']['lowest'], self.config.dict['elev_angle_spin']['highest'], self.config.dict['elev_angle_spin']['step'], self.config.dict['elev_angle_spin']['units'])
+		
+		self._spinBoxConfig(self.Pa_spinbox, self.config.dict['Pa_spin']['lowest'], self.config.dict['Pa_spin']['highest'], self.config.dict['Pa_spin']['step'], self.config.dict['Pa_spin']['units'])
+
+		self._spinBoxConfig(self.Tai_spinbox, self.config.dict['delay_spin']['lowest'], self.config.dict['delay_spin']['highest'], self.config.dict['delay_spin']['step'], self.config.dict['delay_spin']['units'])
+
+		self._spinBoxConfig(self.Tas_spinbox, self.config.dict['delay_spin']['lowest'], self.config.dict['delay_spin']['highest'], self.config.dict['delay_spin']['step'], self.config.dict['delay_spin']['units'])
+
+		self._spinBoxConfig(self.initial_azim_spinbox, self.config.dict['azim_angle_spin']['routine']['lowest'], self.config.dict['azim_angle_spin']['routine']['highest'], self.config.dict['azim_angle_spin']['step'], self.config.dict['azim_angle_spin']['units'])
+
+		self._spinBoxConfig(self.final_azim_spinbox, self.config.dict['azim_angle_spin']['routine']['lowest'], self.config.dict['azim_angle_spin']['routine']['highest'], self.config.dict['azim_angle_spin']['step'], self.config.dict['azim_angle_spin']['units'])
+
+		self._spinBoxConfig(self.initial_elev_spinbox, self.config.dict['elev_angle_spin']['routine']['lowest'], self.config.dict['elev_angle_spin']['routine']['highest'], self.config.dict['elev_angle_spin']['step'], self.config.dict['elev_angle_spin']['units'])
+
+		self._spinBoxConfig(self.final_elev_spinbox, self.config.dict['elev_angle_spin']['routine']['lowest'], self.config.dict['elev_angle_spin']['routine']['highest'], self.config.dict['elev_angle_spin']['step'], self.config.dict['elev_angle_spin']['units'])
+
+		self.initial_azim_spinbox.setValue(self.config.dict['azim_angle_spin']['routine']['default_i'])
+		self.final_azim_spinbox.setValue(self.config.dict['azim_angle_spin']['routine']['default_f'])
+		self.initial_elev_spinbox.setValue(self.config.dict['elev_angle_spin']['routine']['default_i'])
+		self.final_elev_spinbox.setValue(self.config.dict['elev_angle_spin']['routine']['default_f'])
 
 if __name__ == '__main__':
 	app = QApplication([])
