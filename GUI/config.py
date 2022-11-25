@@ -1,3 +1,5 @@
+__author__ = 'github.com/Zimrahin'
+
 import json
 
 class config(object):

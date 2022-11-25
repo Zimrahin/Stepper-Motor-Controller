@@ -1,3 +1,5 @@
+__author__ = 'github.com/Zimrahin'
+
 import sys 
 from PySide2.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QScrollArea, QFrame, QPushButton
 from PySide2.QtCore import Qt, QThread

@@ -1,3 +1,5 @@
+__author__ = 'github.com/Zimrahin'
+
 import sys
 import time
 from PySide2 import QtGui

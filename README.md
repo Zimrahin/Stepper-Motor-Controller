@@ -11,7 +11,7 @@ An image of the current state of the GUI is given below
 - [ ] Ordenamiento general del código de GUI:
     - [x] mainWindow.py
     - [x] centralWidget.py
-    - [136] rightWidget.py
+    - [x] rightWidget.py
     - [ ] connectionWidget.py
     - [ ] movementThread.py
     - [ ] routineThread.py

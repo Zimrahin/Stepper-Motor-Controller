@@ -1,3 +1,5 @@
+__author__ = 'github.com/Zimrahin'
+
 import sys
 from PySide2.QtWidgets import QWidget, QPushButton, QApplication, QHBoxLayout, QFormLayout, QVBoxLayout, QRadioButton, QDoubleSpinBox, QSpinBox, QComboBox, QLabel, QButtonGroup
 from PySide2.QtCore import QSize, Qt, QThread
@@ -196,7 +198,7 @@ class rightWidget(QWidget):
 		angle_fields = QFormLayout()
 		angle_fields.addRow('Angle', self.angle_elev_spinbox)
 		v_layout.addLayout(angle_fields)
-		# -> Radio buttons (a, l, r)
+		# -> Radio buttons (e, u, d)
 		radio_btn_row = QHBoxLayout()
 		radio_btn_row.addWidget(self.e_radio)
 		radio_btn_row.addWidget(self.u_radio)
@@ -223,7 +225,7 @@ class rightWidget(QWidget):
 		self.setLayout(v_layout)
 		self._setToolTips()
 		
-	#---------------------------------------------
+	#-----------------------------------------------------------------------
 	def sendMovementAzimuth(self):
 		out_angle = self.angle_azim_spinbox.value()
 		out_step = self.angleToStep(out_angle, int(self.azim_params['Nrev']))
@@ -231,11 +233,10 @@ class rightWidget(QWidget):
 		listRadioBtn = [self.a_radio, self.l_radio, self.r_radio]
 		for i in range(len(listRadioBtn)):
 			if listRadioBtn[i].isChecked():
-				# self.out_label.setText(listLetters[i] + str(out_step))
 				self.central_wdg.connection_wdg.send2COM(listLetters[i] + str(out_step))
 				print(listLetters[i] + str(out_step))
 		
-		# Start MOVEMENT
+		# Start MOVEMENT thread
 		self.movementRoutine()
 	
 	def movementRoutine(self):
@@ -261,7 +262,8 @@ class rightWidget(QWidget):
 		self.mov_thread.finished.connect(lambda: self.central_wdg.start_btn.setEnabled(True))
 		self.mov_thread.finished.connect(lambda: self.central_wdg.apply_btn.setEnabled(True))
 		self.mov_thread.finished.connect(lambda: self.central_wdg.connection_wdg.setEnabled(True))
-
+		
+	#-----------------------------------------------------------------------
 	def sendMovementElevation(self):
 		out_angle = self.angle_elev_spinbox.value()
 		out_step = self.angleToStep(out_angle, self.elev_params['Nrev'])
@@ -272,6 +274,7 @@ class rightWidget(QWidget):
 				self.central_wdg.connection_wdg.send2COM(listLetters[i] + str(out_step))
 				print(listLetters[i] + str(out_step))
 
+	#-----------------------------------------------------------------------
 	def sendReset(self, motor : str):
 		if motor == 'Azimuth':
 			reset_str = 'reset_azim'
@@ -285,10 +288,12 @@ class rightWidget(QWidget):
 		else:
 			raise Exception('Device did not respond')
 
+	#-----------------------------------------------------------------------
 	def angleToStep(self, angle, N_rev):
 		step = int(floor(angle * N_rev / 360))
 		return step	
 
+	#-----------------------------------------------------------------------
 	def unpackData(self, received_string):
 		values_list = received_string.split('-')[0:-1] # there is an empty char at the end 
 		values_list = list(filter(None, values_list)) # delete empty value
@@ -302,7 +307,7 @@ class rightWidget(QWidget):
 		float_list = list(map(float,values_list))
 		return angle, direction_char, float_list, mean_time, mean_time_total, values_list
 
-	#---------------------------------------------	 
+	#-----------------------------------------------------------------------	 
 	def computePeakPower(self, data, data_xaxis):
 		if data:
 			peak_power = np.max(data)
@@ -325,7 +330,8 @@ class rightWidget(QWidget):
 			return rpm
 		else:
 			return 0
-	#---------------------------------------------
+
+	#-----------------------------------------------------------------------
 	def _setToolTips(self):
 		self.a_radio.setToolTip('Move to an <b>absolute</b> angle in azimuth')
 		self.l_radio.setToolTip('Move <b>counterclockwise</b>')
@@ -360,7 +366,7 @@ class rightWidget(QWidget):
 		box.setSingleStep(step)
 		box.setSuffix(units)
 
-	#---------------------------------------------------------
+	#-----------------------------------------------------------------------
 	def getFieldsValues(self):
 		ret_dict = {
 			'Nrev':int(360/float(self.azimuth_res_combo.currentText().split()[0])),
@@ -369,6 +375,7 @@ class rightWidget(QWidget):
 			'Tai':self.Tai_spinbox.value()
 		}
 		return ret_dict
+
 	#-----------------------------------------------------------------------
 	def defaultParametersAzim(self):
 		local_Pa = self.config.dict['default_params']['Pa']
@@ -382,7 +389,7 @@ class rightWidget(QWidget):
 				self.Tai_spinbox.setValue(local_Tai)
 				return
 		print('Error in defaultParametersAzim()')
-	#-----------------------------------------------------------------------
+
 	def defaultParametersElev(self):
 		self.elev_params['Nrev'] = int(360/float(self.elevation_res_combo.currentText().split()[0]))
 		local_Pa = self.config.dict['default_params']['Pa']
