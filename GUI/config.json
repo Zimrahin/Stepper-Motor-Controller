@@ -59,5 +59,16 @@
 		"units"	: " degree/step",
 		"default_azim"	: 5,
 		"default_elev"	: 0
+	},
+	"default_params" : {
+		"Pa" : 4800,
+		"delays" : [
+			{"Res" : 200,  "Tas" : 40, "Tai" : 8},
+			{"Res" : 400,  "Tas" : 40, "Tai" : 8},
+			{"Res" : 800,  "Tas" : 40, "Tai" : 8},
+			{"Res" : 1600, "Tas" : 40, "Tai" : 8},
+			{"Res" : 3200, "Tas" : 40, "Tai" : 4},
+			{"Res" : 6400, "Tas" : 40, "Tai" : 2}
+		]
 	}
 }

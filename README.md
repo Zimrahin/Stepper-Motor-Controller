@@ -1,8 +1,6 @@
 # Stepper Motor Controller
 A simple Graphical User interface made to communicate with a microcontroller via a serial port to control the azimuth and elevation positions of an antenna and plot the power measured at each position.
 
-Python program with Graphic User Interface that allows communication via serial port with an Arduino Portenta board, which is used to control a stepper motor.
-
 An image of the current state of the GUI is given below
 ![image](GUI_mockup.png)
 
@@ -13,7 +11,7 @@ An image of the current state of the GUI is given below
 - [ ] Ordenamiento general del código de GUI:
     - [x] mainWindow.py
     - [x] centralWidget.py
-    - [109] rightWidget.py
+    - [136] rightWidget.py
     - [ ] connectionWidget.py
     - [ ] movementThread.py
     - [ ] routineThread.py

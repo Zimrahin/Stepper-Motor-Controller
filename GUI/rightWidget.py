@@ -127,11 +127,11 @@ class rightWidget(QWidget):
 		self.connect(self.azimuth_res_combo, PySide2.QtCore.SIGNAL("currentIndexChanged(const QString&)"), self.defaultParametersAzim)
 
 		self.move_azim_btn.clicked.connect(self.sendMovementAzimuth)
-		self.reset_azim_btn.clicked.connect(self.sendReset)
+		self.reset_azim_btn.clicked.connect(lambda: self.sendReset('Azimuth'))
 
 		self.connect(self.elevation_res_combo, PySide2.QtCore.SIGNAL("currentIndexChanged(const QString&)"), self.defaultParametersElev)
 		self.move_elev_btn.clicked.connect(self.sendMovementElevation)
-		self.reset_elev_btn.clicked.connect(self.sendResetElevation)
+		self.reset_elev_btn.clicked.connect(lambda: self.sendReset('Elevation'))
 
 		#---------------------------------------------------------
 		# Layout
@@ -262,15 +262,6 @@ class rightWidget(QWidget):
 		self.mov_thread.finished.connect(lambda: self.central_wdg.apply_btn.setEnabled(True))
 		self.mov_thread.finished.connect(lambda: self.central_wdg.connection_wdg.setEnabled(True))
 
-	def sendReset(self):
-		self.central_wdg.connection_wdg.send2COM("reset_azim")	
-		response = self.central_wdg.connection_wdg.receiveOnlyCOM()
-		if (response == 'ack'):			
-			self.main_wdw.status_bar.showMessage('Angle reset successfully!', self.config.dict['status_bar_timeout'])
-			return True
-		else:
-			raise Exception('Device did not respond')
-
 	def sendMovementElevation(self):
 		out_angle = self.angle_elev_spinbox.value()
 		out_step = self.angleToStep(out_angle, self.elev_params['Nrev'])
@@ -281,11 +272,15 @@ class rightWidget(QWidget):
 				self.central_wdg.connection_wdg.send2COM(listLetters[i] + str(out_step))
 				print(listLetters[i] + str(out_step))
 
-	def sendResetElevation(self):
-		self.central_wdg.connection_wdg.send2COM("reset_elev")	
+	def sendReset(self, motor : str):
+		if motor == 'Azimuth':
+			reset_str = 'reset_azim'
+		if motor == 'Elevation':
+			reset_str = 'reset_elev'
+		self.central_wdg.connection_wdg.send2COM(reset_str)	
 		response = self.central_wdg.connection_wdg.receiveOnlyCOM()
 		if (response == 'ack'):			
-			self.main_wdw.status_bar.showMessage('Angle reset successfully!', self.config.dict['status_bar_timeout'])
+			self.main_wdw.status_bar.showMessage(f'{motor} angle reset successfully!', self.config.dict['status_bar_timeout'])
 			return True
 		else:
 			raise Exception('Device did not respond')
@@ -376,63 +371,31 @@ class rightWidget(QWidget):
 		return ret_dict
 	#-----------------------------------------------------------------------
 	def defaultParametersAzim(self):
-		local_Pa = 4800
-		if self.azimuth_res_combo.currentText() == self.resolution_list[5]:
-			self.Pa_spinbox.setValue(local_Pa)
-			self.Tas_spinbox.setValue(40)
-			self.Tai_spinbox.setValue(2)
-		elif self.azimuth_res_combo.currentText() == self.resolution_list[4]:
-			self.Pa_spinbox.setValue(local_Pa)
-			self.Tas_spinbox.setValue(40)
-			self.Tai_spinbox.setValue(4)
-		elif self.azimuth_res_combo.currentText() == self.resolution_list[3]:
-			self.Pa_spinbox.setValue(local_Pa)
-			self.Tas_spinbox.setValue(40)
-			self.Tai_spinbox.setValue(8)
-		elif self.azimuth_res_combo.currentText() == self.resolution_list[2]:
-			self.Pa_spinbox.setValue(local_Pa)
-			self.Tas_spinbox.setValue(40)
-			self.Tai_spinbox.setValue(8)
-		elif self.azimuth_res_combo.currentText() == self.resolution_list[1]:
-			self.Pa_spinbox.setValue(local_Pa)
-			self.Tas_spinbox.setValue(40)
-			self.Tai_spinbox.setValue(8)
-		elif self.azimuth_res_combo.currentText() == self.resolution_list[0]:
-			self.Pa_spinbox.setValue(local_Pa)
-			self.Tas_spinbox.setValue(40)
-			self.Tai_spinbox.setValue(8)
-		else:
-			print('if you see this, there is an error (probably)')
+		local_Pa = self.config.dict['default_params']['Pa']
+		for i in range(len(self.resolution_list)):
+			if self.azimuth_res_combo.currentText() == self.resolution_list[i]:
+				local_Tas = self.config.dict['default_params']['delays'][i]['Tas']
+				local_Tai = self.config.dict['default_params']['delays'][i]['Tai']
+
+				self.Pa_spinbox.setValue(local_Pa)
+				self.Tas_spinbox.setValue(local_Tas)
+				self.Tai_spinbox.setValue(local_Tai)
+				return
+		print('Error in defaultParametersAzim()')
 	#-----------------------------------------------------------------------
 	def defaultParametersElev(self):
 		self.elev_params['Nrev'] = int(360/float(self.elevation_res_combo.currentText().split()[0]))
-		local_Pa = 4800
-		if self.elevation_res_combo.currentText() == self.resolution_list[5]:
-			self.elev_params['Pa'] = local_Pa
-			self.elev_params['Tas'] = 40
-			self.elev_params['Tai'] = 2
-		elif self.elevation_res_combo.currentText() == self.resolution_list[4]:
-			self.elev_params['Pa'] = local_Pa
-			self.elev_params['Tas'] = 40
-			self.elev_params['Tai'] = 4
-		elif self.elevation_res_combo.currentText() == self.resolution_list[3]:
-			self.elev_params['Pa'] = local_Pa
-			self.elev_params['Tas'] = 40
-			self.elev_params['Tai'] = 8
-		elif self.elevation_res_combo.currentText() == self.resolution_list[2]:
-			self.elev_params['Pa'] = local_Pa
-			self.elev_params['Tas'] = 40
-			self.elev_params['Tai'] = 8
-		elif self.elevation_res_combo.currentText() == self.resolution_list[1]:
-			self.elev_params['Pa'] = local_Pa
-			self.elev_params['Tas'] = 40
-			self.elev_params['Tai'] = 8
-		elif self.elevation_res_combo.currentText() == self.resolution_list[0]:
-			self.elev_params['Pa'] = local_Pa
-			self.elev_params['Tas'] = 40
-			self.elev_params['Tai'] = 8
-		else:
-			print('if you see this, there is an error (probably) ELEVATION')
+		local_Pa = self.config.dict['default_params']['Pa']
+		for i in range(len(self.resolution_list)):
+			if self.azimuth_res_combo.currentText() == self.resolution_list[i]:
+				local_Tas = self.config.dict['default_params']['delays'][i]['Tas']
+				local_Tai = self.config.dict['default_params']['delays'][i]['Tai']
+
+				self.elev_params['Pa'] = local_Pa
+				self.elev_params['Tas'] = local_Tas
+				self.elev_params['Tai'] = local_Tai
+				return
+		print('Error in defaultParametersElev()')
 	#-----------------------------------------------------------------------
 	def _wrapBoxConfig(self):
 		self._spinBoxConfig(self.angle_azim_spinbox, self.config.dict['azim_angle_spin']['lowest'], self.config.dict['azim_angle_spin']['highest'], self.config.dict['azim_angle_spin']['step'], self.config.dict['azim_angle_spin']['units'])
