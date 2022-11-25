@@ -3,6 +3,7 @@ from PySide2.QtWidgets import QWidget, QVBoxLayout, QApplication, QHBoxLayout, Q
 from PySide2.QtCore import  Qt
 
 from darkPalette import darkPalette
+from JSONreader import JSONreader
 
 
 import matplotlib
@@ -23,8 +24,7 @@ class figCanvas(FigureCanvas):
 class plotWidget(QWidget):
 	def __init__(self, parent=None):
 		super(plotWidget, self).__init__(parent)
-
-		# Objects
+		self.palette = JSONreader('palette.json').dict
 
 		# Widgets
 		self.canvas_wdg = figCanvas()
@@ -80,28 +80,28 @@ class plotWidget(QWidget):
 			self.canvas_wdg.axes.plot( 
 				data_xaxis, 
 				data, 
-				color='#00FFFF')
+				color=self.palette['plot_data'])
 		else: # negative
 			data_xaxis = np.linspace((angle + len(data) *plot_scale_factor)*angle_scale_factor, angle*angle_scale_factor, len(data))
 			self.canvas_wdg.axes.plot( 
 				data_xaxis, 
 				data, 
-				color='#00FFFF')
+				color=self.palette['plot_data'])
 			self.canvas_wdg.axes.invert_xaxis()
 
 		self.canvas_wdg.axes.set_ylabel('Voltage (V)')
-		self.canvas_wdg.axes.yaxis.label.set_color('#ffffff')
-		self.canvas_wdg.axes.xaxis.label.set_color('#ffffff')
-		self.canvas_wdg.axes.tick_params(axis='x', colors='#ffffff')
-		self.canvas_wdg.axes.tick_params(axis='y', colors='#ffffff')
+		self.canvas_wdg.axes.yaxis.label.set_color(self.palette['axis_label'])
+		self.canvas_wdg.axes.xaxis.label.set_color(self.palette['axis_label'])
+		self.canvas_wdg.axes.tick_params(axis='x', colors=self.palette['tick'])
+		self.canvas_wdg.axes.tick_params(axis='y', colors=self.palette['tick'])
 		for spine in self.canvas_wdg.axes.spines.values():
-			spine.set_edgecolor('#0ccfb9')
+			spine.set_edgecolor(self.palette['highlight'])
 		self.canvas_wdg.axes.spines
-		self.canvas_wdg.fig.set_facecolor('#2c3136')
-		self.canvas_wdg.axes.set_facecolor('#191919')
+		self.canvas_wdg.fig.set_facecolor(self.palette['alt_base'])
+		self.canvas_wdg.axes.set_facecolor(self.palette['face_color'])
 		self.canvas_wdg.axes.set_xlabel('Degrees (\u00b0)')
 		self.canvas_wdg.axes.figure.gca().set_ylim(0, 3.2)
-		self.canvas_wdg.axes.grid(color = '#2c3136', linewidth = 1)
+		self.canvas_wdg.axes.grid(color = self.palette['alt_base'], linewidth = 1)
 		self.canvas_wdg.draw()
 
 		return data_xaxis

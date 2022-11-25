@@ -9,12 +9,12 @@ from PySide2.QtGui import QDesktopServices
 
 from centralWidget import centralWidget
 from darkPalette import darkPalette
-from config import config
+from JSONreader import JSONreader
 
 class mainWindow(QMainWindow):
 	def __init__(self, parent=None):
 		super().__init__(parent)
-		self.config = config()
+		self.config = JSONreader('config.json')
 		self.setWindowTitle(self.config.dict['app_name'])
 		self.setWindowIcon(QtGui.QIcon('img/logo.png'))
 		self._setStyleSheet()
@@ -143,7 +143,9 @@ class informationBox(QMessageBox):
 if __name__ == '__main__':
 	app = QApplication([])
 	app.setStyle('fusion') 
-	palette = darkPalette()
+	dict = JSONreader('palette.json')
+	dict = dict.dict
+	palette = darkPalette(dict)
 	app.setPalette(palette)
 	win = mainWindow()
 	# print(win.dumpObjectTree())

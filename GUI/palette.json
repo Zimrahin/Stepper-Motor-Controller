@@ -1,0 +1,12 @@
+{
+	"highlight"	: "#0ccfb9",
+	"alt_base"	: "#2c3136",
+	"base"		: "#15171a",
+	"disabled_text"		: "#5a5a5a",
+	"disabled_base"		: "#282b30",
+	"disabled_button" 	: "#212429",
+	"plot_data"	: "#00ffff",
+	"axis_label": "#ffffff",
+	"tick"		: "#ffffff",
+	"face_color": "#191919"
+}

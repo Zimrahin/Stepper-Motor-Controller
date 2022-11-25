@@ -7,17 +7,7 @@ An image of the current state of the GUI is given below
 # TO DO LIST
 ------------------------------------------------------------------
 ### In Progress
-
-- [x] Ordenamiento general del código de GUI:
-    - [x] mainWindow.py
-    - [x] centralWidget.py
-    - [x] rightWidget.py
-    - [x] connectionWidget.py
-    - [x] movementThread.py
-    - [x] routineThread.py
-    - [x] plotWidget.py
-
-- [ ] JSON file con paleta de colores (usado en palette y en plot)
+- [x] JSON file con paleta de colores (usado en palette y en plot)
 
 --------------------------------------------------------------
 - [ ] Arreglar escritura CSV
