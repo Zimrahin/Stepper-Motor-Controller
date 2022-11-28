@@ -70,7 +70,7 @@ void forward(int N, String motor_type, float* array, int N_measurements, bool re
 	// Variables used to measure the pin only at 1 out of every X motor movements, according to the required resolution
 	int read_cnt = 0;	// Read counter
 	int read_mod = N_rev_max/N_rev; // Read divider
-	int array_cnt = 0;
+	int array_cntr = 0;
 
 	// Set pines for motor movement
 	int enable_pin;
@@ -137,8 +137,8 @@ void forward(int N, String motor_type, float* array, int N_measurements, bool re
 					if (print_flag){
 						// Serial.print(sensorVoltage);
 						// Serial.print('-');
-						array[array_cnt] = sensorVoltage;
-						array_cnt = array_cnt + 1;
+						array[array_cntr] = sensorVoltage;
+						array_cntr = array_cntr + 1;
 					}
         			
 					stop_meas_time = micros();	// Stop reading/writing time
@@ -164,16 +164,27 @@ void forward(int N, String motor_type, float* array, int N_measurements, bool re
 	// Send time data through serial port
 	if (print_flag) {
 		for (int i = 0; i < N_measurements; i++){
-			Serial.print(array[i]);
-			Serial.print('-');
+			Serial.print(String(array[i]) + '-');
 		}
-		Serial.print(total_meas_time);  
-		Serial.print('-');
-  		Serial.print(total_time);  
-		Serial.print('-');
+		Serial.print(String(total_meas_time) + '-' + String(total_time) + '-');  
+		// Serial.print('-');
+  		// Serial.print(total_time);  
+		// Serial.print('-');
 	}
+	// if (print_flag) {
+	// 	Serial.print(cookData(array, N_measurements) + total_meas_time + '-' + total_time + '-');
+	// }
+
 	return;
 }
+
+// String cookData(float* array, int N_measurements) {
+// 	String returnString = "";
+// 	for (int i = 0; i < N_measurements; i++) {
+// 			returnString += String(array[i]) + '-';
+// 		}
+// 	return returnString;
+// }
 
 int calculateStep(String input, int currentPos, int N_rev, String motor_type="motor_azimuth")
 {	
@@ -288,13 +299,13 @@ void movement(String rcvString, String motor_type="motor_azimuth", bool print_fl
 	char real_direction = dir_g ? 'l' : 'r';	// Left or right?
 
 	if (print_flag){
-		Serial.print(currentPos_azim_g);
-		Serial.print('-');		
-		Serial.print(real_direction);
-		Serial.print('-');
-		Serial.print(steps_to_move);
-		Serial.print('-');
-		// End message:
+		Serial.print(String(currentPos_azim_g) + '-' + String(real_direction) + '-' + String(steps_to_move) + '-');
+		// Serial.print('-');		
+		// Serial.print(real_direction);
+		// Serial.print('-');
+		// Serial.print(steps_to_move);
+		// Serial.print('-');
+		// // End message:
 		Serial.println(); // \n at the end to let know PC all info has been sent
 	}	
 	free(data_array);
@@ -303,7 +314,7 @@ void movement(String rcvString, String motor_type="motor_azimuth", bool print_fl
 
 void setup() {
 	// Set baud rate:
-	Serial.begin(9600);
+	Serial.begin(115200);
 
 	// Set motor 1 pins mode:
 	pinMode(SETPIN1,OUTPUT);

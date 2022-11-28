@@ -73,7 +73,7 @@
 	},
 	"serial" : {
 		"timeout" 	: 1.0,
-		"baudrate" 	: 9600
+		"baudrate" 	: 115200
 	},
 	"debug_print"	: true
 }
