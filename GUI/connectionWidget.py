@@ -140,6 +140,11 @@ class connectionWidget(QWidget):
 		received_string = self.serial_COM.readline()  
 		received_string = str(received_string,'utf-8').rstrip() 
 		return received_string
+
+	def receiveBytesCOM(self):
+		time.sleep(0.10)
+		received = self.serial_COM.readline()
+		return received
 	
 
 if __name__ == '__main__':

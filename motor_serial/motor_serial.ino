@@ -70,7 +70,7 @@ void forward(int N, String motor_type, float* array, int N_measurements, bool re
 	// Variables used to measure the pin only at 1 out of every X motor movements, according to the required resolution
 	int read_cnt = 0;	// Read counter
 	int read_mod = N_rev_max/N_rev; // Read divider
-	int array_cntr = 0;
+	int array_counter = 0;
 
 	// Set pines for motor movement
 	int enable_pin;
@@ -137,8 +137,8 @@ void forward(int N, String motor_type, float* array, int N_measurements, bool re
 					if (print_flag){
 						// Serial.print(sensorVoltage);
 						// Serial.print('-');
-						array[array_cntr] = sensorVoltage;
-						array_cntr = array_cntr + 1;
+						array[array_counter] = sensorVoltage;
+						array_counter = array_counter + 1;
 					}
         			
 					stop_meas_time = micros();	// Stop reading/writing time
@@ -162,26 +162,35 @@ void forward(int N, String motor_type, float* array, int N_measurements, bool re
 	total_time = total_time/N;
 
 	// Send time data through serial port
-	if (print_flag) {
-		for (int i = 0; i < N_measurements; i++){
-			Serial.print(String(array[i]) + '-');
-		}
-		Serial.print(String(total_meas_time) + '-' + String(total_time) + '-');  
-		// Serial.print('-');
-  		// Serial.print(total_time);  
-		// Serial.print('-');
-	}
 	// if (print_flag) {
-	// 	Serial.print(cookData(array, N_measurements) + total_meas_time + '-' + total_time + '-');
+	// 	for (int i = 0; i < N_measurements; i++){
+	// 		Serial.print(String(array[i]) + '-');
+	// 	}
+	// 	Serial.print(String(total_meas_time) + '-' + String(total_time) + '-');  
+	// }
+
+	if (print_flag) {
+		Serial.write((char*)array, int(sizeof(float)*N_measurements));
+		int int_array[] = {total_meas_time, total_time};
+		Serial.write((char*)int_array, int(sizeof(int)*2));
+	}
+
+	// if (print_flag) {
+	// 	int data_per_chunk = 6;
+	// 	for (int i = 0; i < N_measurements/data_per_chunk; i++) {
+	// 		Serial.print(cookData(array, i*data_per_chunk, data_per_chunk));
+	// 	}
+	// 	Serial.print(cookData(array, i*data_per_chunk, N_measurements%data_per_chunk)); // remainder 
+	// 	Serial.print(String(total_meas_time) + '-' + String(total_time) + '-');  
 	// }
 
 	return;
 }
 
-// String cookData(float* array, int N_measurements) {
+// String cookData(float* array, int init_pos, int data_per_chunk = 6) {
 // 	String returnString = "";
-// 	for (int i = 0; i < N_measurements; i++) {
-// 			returnString += String(array[i]) + '-';
+// 	for (int i = init_pos; i < init_pos + data_per_chunk; i++) {
+// 			returnString += String(array[i], 2) + '-';
 // 		}
 // 	return returnString;
 // }
@@ -299,14 +308,15 @@ void movement(String rcvString, String motor_type="motor_azimuth", bool print_fl
 	char real_direction = dir_g ? 'l' : 'r';	// Left or right?
 
 	if (print_flag){
-		Serial.print(String(currentPos_azim_g) + '-' + String(real_direction) + '-' + String(steps_to_move) + '-');
-		// Serial.print('-');		
-		// Serial.print(real_direction);
-		// Serial.print('-');
-		// Serial.print(steps_to_move);
-		// Serial.print('-');
-		// // End message:
-		Serial.println(); // \n at the end to let know PC all info has been sent
+		// Serial.print(String(currentPos_azim_g) + '-' + String(real_direction) + '-' + String(steps_to_move) + '-');
+		int int_array[] = {currentPos_azim_g, steps_to_move};
+		Serial.write((char*)int_array, int(sizeof(int)*2));
+		char char_array[] = {real_direction, '\n'};
+		Serial.write((char*)char_array, int(sizeof(char)*2));
+
+
+		// End message:
+		// Serial.println(); // \n at the end to let know PC all info has been sent
 	}	
 	free(data_array);
 	return;	

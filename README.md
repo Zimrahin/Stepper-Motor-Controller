@@ -7,7 +7,10 @@ An image of the current state of the GUI is given below
 # TO DO LIST
 ------------------------------------------------------------------
 ### In Progress
-- [x] JSON file con paleta de colores (usado en palette y en plot)
+- [ ] Solucionar comunicación serial
+    - [x] Agregar envío en bytes
+    - [ ] Solucionar problema en que al moverse muchas vueltas (más de dos) se pierden datos.
+    - [ ] Solucionar problema que en la rutina el programa se queda bloqueado
 
 --------------------------------------------------------------
 - [ ] Arreglar escritura CSV

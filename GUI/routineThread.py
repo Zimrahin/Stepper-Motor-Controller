@@ -14,12 +14,12 @@ class workerThreadPlotUpdate(QObject):
 	def run(self):
 		#LONG RUNNING TASK
 		while(True):
-			received_string = self.connection_wdg.receiveOnlyCOM()
-			if received_string:
-				if received_string == 'ack':
+			received_data = self.connection_wdg.receiveBytesCOM()
+			if received_data:
+				if received_data == 'ack':
 					break
 				# print(received_string)
-				angle, direction_char, float_list, _, mean_time_total, _ = self.right_wdg.unpackData(received_string)
+				angle, direction_char, float_list, _, mean_time_total = self.right_wdg.unpackDataBytes(received_data)
 				# print(float_list)
 				if self.config.dict['debug_print']:
 					print(len(float_list), direction_char, mean_time_total)
