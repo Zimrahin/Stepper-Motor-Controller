@@ -16,7 +16,8 @@ class workerThreadPlotUpdate(QObject):
 		while(True):
 			received_data = self.connection_wdg.receiveBytesCOM()
 			if received_data:
-				if received_data == 'ack':
+				print(received_data)
+				if received_data == b'ack\r\n':
 					break
 				# print(received_string)
 				angle, direction_char, float_list, _, mean_time_total = self.right_wdg.unpackDataBytes(received_data)

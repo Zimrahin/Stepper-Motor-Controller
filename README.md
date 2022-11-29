@@ -9,8 +9,9 @@ An image of the current state of the GUI is given below
 ### In Progress
 - [ ] Solucionar comunicación serial
     - [x] Agregar envío en bytes
-    - [ ] Solucionar problema en que al moverse muchas vueltas (más de dos) se pierden datos.
-    - [ ] Solucionar problema que en la rutina el programa se queda bloqueado
+    - [ ] Solucionar problema en que al moverse muchas vueltas (más de dos) se pierden datos. (POSIBLEMENTE \n: 0x0A en binario)
+    - [x] Solucionar problema que en la rutina el programa se queda bloqueado. (POSIBLEMENTE POR condición aXXX (movimiento absoluto).
+    - [x] Solucionar bug hacia 'l' de plot. SOLUCIONADO. Update solo entraba al else (caso 'r') porq lo leía como binario
 
 --------------------------------------------------------------
 - [ ] Arreglar escritura CSV

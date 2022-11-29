@@ -334,7 +334,7 @@ class rightWidget(QWidget):
 		mean_time_total = values_tuple[-5] #microseconds
 		angle = values_tuple[-4]
 		steps_to_move = values_tuple[-3]
-		direction_char = values_tuple[-2]
+		direction_char = str(values_tuple[-2], 'utf-8')
 		float_tuple = values_tuple[0:-6]  #remove last elements
 		float_list = list(float_tuple)
 
