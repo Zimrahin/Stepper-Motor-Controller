@@ -16,6 +16,8 @@ class movementThread(QObject):
 		while(True):
 			# READ
 			received_data = self.central_wdg.connection_wdg.receiveBytesCOM()
+			if self.config.dict['debug_print']:
+				print(f'len(received_data): {len(received_data)}')
 			if received_data:
 				# angle, direction_char, float_list, mean_time, mean_time_total, values_list = self.right_wdg.unpackData(received_data)
 				angle, direction_char, float_list, _, mean_time_total = self.right_wdg.unpackDataBytes(received_data)
@@ -49,7 +51,9 @@ class movementThread(QObject):
 				data_xaxis = self.central_wdg.plot_wdg.updatePlot(float_list, int(angle), direction_char, int(self.right_wdg.azim_params['Nrev']))
 
 				if self.config.dict['debug_print']:
-					print(f'len(float_list): {len(float_list)}')		
+					print(f'len(float_list): {len(float_list)}')
+					print(f'angle: {angle}')
+					print(f'direction_char: {direction_char}')
 
 				# COMPUTE DATA STATISTICS (this section MUST be after updatePlot)
 				pp, pa = self.right_wdg.computePeakPower(float_list, data_xaxis)

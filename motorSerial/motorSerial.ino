@@ -68,7 +68,7 @@ void forward(int N, String motor_type, float* array, int N_measurements, bool re
 	int sensorValue = 0;
 	float sensorVoltage = 0;
 	// Variables used to measure the pin only at 1 out of every X motor movements, according to the required resolution
-	int read_cnt = 0;	// Read counter
+	int read_counter = 0;	// Read counter
 	int read_mod = N_rev_max/N_rev; // Read divider
 	int array_counter = 0;
 
@@ -122,12 +122,12 @@ void forward(int N, String motor_type, float* array, int N_measurements, bool re
 			previousMicros = currentMicros;	// Update time counter
       		
 			// Change pin state from 0 to 1 or 1 to 0 (motor moves on downward edges)
-			digitalWrite(set_pin,!digitalRead(set_pin));
+			digitalWrite(set_pin, !digitalRead(set_pin));
 			
 			// The motor moves every 1 out of 2 pin changes, so we only have to measure at this times
 			if (n_step%2 == 0){
 				// The reading has to be done only at 1 out of every read_mod movements, so the required resolution can be 'simulated'
-				if (read_cnt%read_mod == 0){
+				if (read_counter%read_mod == 0){
 					init_meas_time = micros();	// Initiate time measurement (to obtain mean reading/writing execution time)
 					
 					// Read pin and send the value through serial port (reading/writing process)
@@ -149,7 +149,7 @@ void forward(int N, String motor_type, float* array, int N_measurements, bool re
 
 					init_time = micros();	// Re-initiate total time measurement
 				}
-				read_cnt++;
+				read_counter++;
 			}			
 			n_step++;
 		}
@@ -195,7 +195,7 @@ void forward(int N, String motor_type, float* array, int N_measurements, bool re
 // 	return returnString;
 // }
 
-int calculateStep(String input, int currentPos, int N_rev, String motor_type="motor_azimuth")
+int calculateStep(String input, int currentPos, int N_rev, int* N_meas_ptr, String motor_type="motor_azimuth")
 {	
 	// Function to calculate how many steps to move and in which direction, according to the received string.
 
@@ -256,6 +256,8 @@ int calculateStep(String input, int currentPos, int N_rev, String motor_type="mo
 	else if (motor_type == "motor_elevation"){
 		currentPos_elev_g = currentPos;	
 	}
+	// Assign first a value to malloc
+	*N_meas_ptr = steps_to_move;
 	// The steps_to_move calculated value needs to be scaled according to the required 'virtual' resolution:
 	steps_to_move = steps_to_move*(N_rev_max/N_rev);				
 
@@ -284,24 +286,27 @@ void movement(String rcvString, String motor_type="motor_azimuth", bool print_fl
 	int steps_to_move;		
 	int currentPos = currentPos_azim_g;
 	// variables for malloc()
-	int N_measurements = rcvString.substring(1).toInt();
+	int N_measurements; 
+	// ESTO NO ES SIEMPRE ASÍ, A80
 	float* data_array = NULL;
 
-	if (motor_type == "motor_elevation"){	// Check if the selected motor is the elevation motor, otherwise use default case (azimuth motor)
+	if (motor_type == "motor_elevation") {	// Check if the selected motor is the elevation motor, otherwise use default case (azimuth motor)
 		N_rev = N_rev_elev_g;	
 		currentPos = currentPos_elev_g;
 		Pa = Pa_g_elev;
 		Tas = Tas_g_elev;
 		Tai = Tai_g_elev;
 	}
-	else {
-		data_array = (float*) malloc(sizeof(float) * N_measurements);
-	}
-	
-	steps_to_move = calculateStep(rcvString, currentPos, N_rev, motor_type); // Calculate how many steps to move and get direction from string
+		
+	steps_to_move = calculateStep(rcvString, currentPos, N_rev, &N_measurements, motor_type); // Calculate how many steps to move and get direction from string
 	if (steps_to_move == -1){	// If there is an error, do not move
 		steps_to_move = 0;
 	}
+
+	if (print_flag) {
+		data_array = (float*) malloc(sizeof(float) * N_measurements);
+	}
+
 	forward(steps_to_move, motor_type, data_array, N_measurements, dir_g, Pa, Tas, Tai, N_rev, print_flag);	// Move motor
 
 	// These values are sent to the computer through serial port to make the plots:		
@@ -310,9 +315,9 @@ void movement(String rcvString, String motor_type="motor_azimuth", bool print_fl
 	if (print_flag){
 		// Serial.print(String(currentPos_azim_g) + '-' + String(real_direction) + '-' + String(steps_to_move) + '-');
 		int int_array[] = {currentPos_azim_g, steps_to_move};
-		Serial.write((char*)int_array, int(sizeof(int)*2));
+		Serial.write((char*)int_array, int(sizeof(int))*2);
 		char char_array[] = {real_direction, '\n'};
-		Serial.write((char*)char_array, int(sizeof(char)*2));
+		Serial.write((char*)char_array, int(sizeof(char))*2);
 
 
 		// End message:
