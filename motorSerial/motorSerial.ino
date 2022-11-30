@@ -162,38 +162,14 @@ void forward(int N, String motor_type, float* array, int N_measurements, bool re
 	total_time = total_time/N;
 
 	// Send time data through serial port
-	// if (print_flag) {
-	// 	for (int i = 0; i < N_measurements; i++){
-	// 		Serial.print(String(array[i]) + '-');
-	// 	}
-	// 	Serial.print(String(total_meas_time) + '-' + String(total_time) + '-');  
-	// }
-
 	if (print_flag) {
 		Serial.write((char*)array, int(sizeof(float)*N_measurements));
 		int int_array[] = {total_meas_time, total_time};
 		Serial.write((char*)int_array, int(sizeof(int)*2));
 	}
 
-	// if (print_flag) {
-	// 	int data_per_chunk = 6;
-	// 	for (int i = 0; i < N_measurements/data_per_chunk; i++) {
-	// 		Serial.print(cookData(array, i*data_per_chunk, data_per_chunk));
-	// 	}
-	// 	Serial.print(cookData(array, i*data_per_chunk, N_measurements%data_per_chunk)); // remainder 
-	// 	Serial.print(String(total_meas_time) + '-' + String(total_time) + '-');  
-	// }
-
 	return;
 }
-
-// String cookData(float* array, int init_pos, int data_per_chunk = 6) {
-// 	String returnString = "";
-// 	for (int i = init_pos; i < init_pos + data_per_chunk; i++) {
-// 			returnString += String(array[i], 2) + '-';
-// 		}
-// 	return returnString;
-// }
 
 int calculateStep(String input, int currentPos, int N_rev, int* N_meas_ptr, String motor_type="motor_azimuth")
 {	
@@ -347,16 +323,16 @@ void setup() {
 void loop() 
 {		
 	String receivedString = "0";
-	if (Serial.available() > 0) // Listen for incoming message
+	if (Serial.available() > 0) // Wait for incoming message
 	{
 		receivedString = Serial.readString();
-		receivedString.trim(); // remove \n,\r,\0
+		receivedString.trim(); // remove \n,\r
 
 		// The received messages can have different forms:
-		// If the message is 'reset', then the current position is set to be zero.		
-		// If the message is 'p-W-X-Y-Z', then the parameters will be changed according to the 'W-X-Y-Z' values.		
+		// If the message is 'reset_azim' or 'reset_elev', then the current position is set to be zero.		
+		// If the message is 'p-W-X-Y-Z-We-Xe-Ye-Ze', then the parameters will be changed according to the 'W-X-Y-Z' values.		
 		// If the message has the form 'xYYY', then the motor will move for 'YYY' steps in 'x' direction.
-		// If the message is 'nZZ-xYYYY', then a routine will be executed in which the motor moves 'YYY' in 'x' direction, for ZZ times.
+		// If the message is 'n-aIII-(l/r)FFF-eIII-eFFF', then a routine will be executed in which the azimuth motor moves FFF steps from III position. This is repeated a number times equivalent to a linspace from III to FFF position in elevation according to the elevation resolution set.
 
 		// Set (c)onnection
 		if (receivedString[0] == 'c') {
@@ -388,7 +364,7 @@ void loop()
 		
 
 		// Change (p)arameters:
-		else if (receivedString[0] == 'p') { //extract letter, 'p' for param changes, p-NrevAz-Pa-Tas-Tai-NrevEl
+		else if (receivedString[0] == 'p') { //extract letter, 'p' for param changes, p-NrevAz-Pa-Tas-Tai-NrevEl-PaEl-TasEl-TaiEl
 			N_rev_azim_g = getValue(receivedString,'-',1).toInt();
 			Pa_g_azim = getValue(receivedString,'-',2).toInt();
 			Tas_g_azim = getValue(receivedString,'-',3).toInt();
@@ -401,13 +377,13 @@ void loop()
 			return;
 		}
 
-		// Move azimuth motor:
+		// Move (a)zimuth motor:
 		else if (receivedString[0] == 'a' || receivedString[0] == 'r' || receivedString[0] == 'l' ){
 			movement(receivedString);
 			return;
 		}		
 
-		// Move elevation motor:
+		// Move (e)levation motor:
 		else if (receivedString[0] == 'e' || receivedString[0] == 'u' || receivedString[0] == 'd' ){
 			movement(receivedString,"motor_elevation",false);
 			return;
@@ -415,13 +391,13 @@ void loop()
 
 		// Routi(n)e:
 		else if (receivedString[0] == 'n'){
-			// String: n-aIII-(l/r)FFF-eIII-eFFF
+			// String: n-aIII-(l/r)FFF-eIII-eFFF-N
 			// Unpack command:
 			String azimString_init = getValue(receivedString,'-',1);
 			String azimString_end = getValue(receivedString,'-',2);
 			String elevString_init = getValue(receivedString,'-',3);
-			String elevString_end = getValue(receivedString,'-',4);
-			// String rstString = "a0";			
+			String elevString_end = getValue(receivedString,'-',4);	
+			int repetitions_per_elevation = getValue(receivedString,'-',5).toInt();
 			
 			// Calculate steps and linspace for loop:
 			int elev_init = elevString_init.substring(1).toInt(); 	//extract number
@@ -429,33 +405,39 @@ void loop()
 			int steps = (N_rev_elev_g + (elev_end - elev_init)%N_rev_elev_g)%N_rev_elev_g;
 			
 			// Initialize motor positions:
-			movement(azimString_init, "motor_azimuth", false); // no debería imprimir nada (y agregar params de aceleracion)
-			movement(elevString_init,"motor_elevation", false); // no debería imprimir nada NI MOVERSE (y agregar params de aceleracion)
+			movement(azimString_init, "motor_azimuth", false); // false flag: no serial write
+			movement(elevString_init,"motor_elevation", false);
+
+			// Elevation flag for LED blinking
+			bool LED_flag = true;
 
 			// Loop:
 			String movString_elev;
 			int movInt_elev;
 			for(int i = 0; i < steps; i++){
-				movement(azimString_end);
-				movement(azimString_init, "motor_azimuth", false); // no debería imprimir nada (y agregar params de aceleracion)
-
+				for (int j = 0; j < repetitions_per_elevation; j++) {
+					movement(azimString_end);
+					movement(azimString_init, "motor_azimuth", false);
+				}
+				// Temporarily to show change in elevation
+				if (LED_flag) digitalWrite(LED_BUILTIN, LOW);
+				else digitalWrite(LED_BUILTIN, HIGH); 
+				LED_flag = !LED_flag;
+							
+		
 				// movInt_elev = (elev_init + i)%N_rev_elev_g;
-				// Aquí había un error (suma de String e int Revisar)
-				// movString_elev = "e" + movInt_elev;
-				// Solución con casteo (?) (no probado aún)
 				// movString_elev = 'e' + String(movInt_elev);
-
 
 				// digitalWrite(LED_BUILTIN, LOW);
 				// movement(movString_elev,"motor_elevation");
 				// Serial.print(movString_elev);
-				// delay(2000);
 				// digitalWrite(LED_BUILTIN, HIGH); 	
 
-				// Solo por ahora: (ya que estamos simulando 2 motores con uno solo)
+				// Temporarily while having only one motor
 				// movement(azimString_init);
 			}
-			Serial.println("ack");			
+			digitalWrite(LED_BUILTIN, HIGH);
+			Serial.println("ack"); // Let PC know the routine has ended			
 		}
 	}
 }

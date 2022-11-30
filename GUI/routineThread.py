@@ -16,7 +16,6 @@ class workerThreadPlotUpdate(QObject):
 		while(True):
 			received_data = self.connection_wdg.receiveBytesCOM()
 			if received_data:
-				print(received_data)
 				if received_data == b'ack\r\n':
 					break
 				# print(received_string)

@@ -108,6 +108,8 @@ class centralWidget(QWidget):
 
 		elev_init_angle = self.right_wdg.initial_elev_spinbox.value()
 		elev_final_angle = self.right_wdg.final_elev_spinbox.value()
+
+		rotations_per_elev = self.right_wdg.rotations_per_elev_spinbox.value()
 		
 		# Negative cases
 		if azim_init_angle < 0:
@@ -129,7 +131,7 @@ class centralWidget(QWidget):
 		elev_init_step = self.right_wdg.angleToStep(elev_init_angle, self.right_wdg.elev_params['Nrev'])
 		elev_final_step = self.right_wdg.angleToStep(elev_final_angle, self.right_wdg.elev_params['Nrev'])
 
-		out_string = f'n-a{azim_init_step}-{dir_char}{azim_diff_step}-e{elev_init_step}-e{elev_final_step}'
+		out_string = f'n-a{azim_init_step}-{dir_char}{azim_diff_step}-e{elev_init_step}-e{elev_final_step}-{rotations_per_elev}'
 
 		if self.config.dict['debug_print']:
 			print(out_string)

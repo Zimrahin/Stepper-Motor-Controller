@@ -59,6 +59,7 @@ class rightWidget(QWidget):
 		self.initial_elev_spinbox = QDoubleSpinBox()
 		self.final_elev_spinbox = QDoubleSpinBox()
 
+		self.rotations_per_elev_spinbox = QSpinBox()
 
 		# -> Radio buttons
 		self.a_radio = QRadioButton()
@@ -119,6 +120,7 @@ class rightWidget(QWidget):
 		
 		# Set step increment, lowest and highest values, units of spin boxes
 		self._wrapBoxConfig()
+		self._spinBoxConfig(self.rotations_per_elev_spinbox, 1, 10, 1)
 		
 		self.defaultParametersAzim()
 		self.azim_params = self.getFieldsValues()
@@ -180,6 +182,11 @@ class rightWidget(QWidget):
 		final_form.addRow('Final angle', self.final_azim_spinbox)
 		init_final_row.addLayout(final_form)
 		v_layout.addLayout(init_final_row)
+
+		rotations_form = QFormLayout()
+		rotations_form.addRow('Rotations per elevation position', self.rotations_per_elev_spinbox)
+		v_layout.addLayout(rotations_form)
+
 
 		# -> Title Label ELEVATION
 		h_layout = QHBoxLayout()
@@ -393,7 +400,7 @@ class rightWidget(QWidget):
 		self.angle_azim_spinbox.setToolTip('Set a <b>movement</b> azimuth angle')
 		self.angle_elev_spinbox.setToolTip('Set a <b>movement</b> elevation angle')
 	#-----------------------------------------------------------------------
-	def _spinBoxConfig(self, box, lowest, highest, step, units):
+	def _spinBoxConfig(self, box, lowest, highest, step, units = ''):
 		box.setMinimum(lowest)
 		box.setMaximum(highest)
 		box.setSingleStep(step)

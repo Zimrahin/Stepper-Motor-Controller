@@ -18,6 +18,7 @@ class movementThread(QObject):
 			received_data = self.central_wdg.connection_wdg.receiveBytesCOM()
 			if self.config.dict['debug_print']:
 				print(f'len(received_data): {len(received_data)}')
+				print(f'last data: {received_data[-18:]}')
 			if received_data:
 				# angle, direction_char, float_list, mean_time, mean_time_total, values_list = self.right_wdg.unpackData(received_data)
 				angle, direction_char, float_list, _, mean_time_total = self.right_wdg.unpackDataBytes(received_data)
