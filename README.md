@@ -7,7 +7,7 @@ An image of the current state of the GUI is given below
 # TO DO LIST
 ------------------------------------------------------------------
 ### In Progress
-- [ ] Guardar parámetros de rutina en archivos  y agregar "open routine settings"
+- [x] Guardar parámetros de rutina en archivos  y agregar "open routine settings"
 
 - [ ] Documentar código
     - [ ] Class diagram GUI documentation

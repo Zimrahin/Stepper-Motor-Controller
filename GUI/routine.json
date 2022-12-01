@@ -1,0 +1,18 @@
+{
+    "azimuth": {
+        "resolution": "0.05625 degree/step",
+        "accel_period": 4800,
+        "max_delay": 40,
+        "min_delay": 2,
+        "angle": 0.0,
+        "initial_angle": -80.0,
+        "final_angle": 80.0,
+        "rotations": 1
+    },
+    "elevation": {
+        "resolution": "1.8 degree/step",
+        "angle": 0.0,
+        "initial_angle": -30.0,
+        "final_angle": -20.0
+    }
+}

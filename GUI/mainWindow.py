@@ -77,7 +77,7 @@ class mainWindow(QMainWindow):
 	def saveFile(self):
 		options = QFileDialog.Options()
 		# options |= QFileDialog.DontUseNativeDialog
-		file_name, _ = QFileDialog.getSaveFileName(self,'Save File',time.strftime("csv_files/%d_%B_%Y_%Hh_%Mm_%Ss.csv", time.localtime()),"All Files (*);;CSV (Comma delimited) (*.csv)", options=options)
+		file_name, _ = QFileDialog.getSaveFileName(self,'New Save File',time.strftime("csv_files/%d_%B_%Y_%Hh_%Mm_%Ss.csv", time.localtime()),"All Files (*);;CSV (Comma delimited) (*.csv)", options=options)
 		if file_name:
 			if file_name[-4:] != '.csv':
 				file_name += '.csv'
@@ -87,11 +87,11 @@ class mainWindow(QMainWindow):
 			self.file_name = file_name
 
 	def openFile(self):
-		self.status_bar.showMessage('opeFile()', self.config.dict['status_bar_timeout'])
+		self.status_bar.showMessage('openFile()', self.config.dict['status_bar_timeout'])
 
 	def saveSettings(self):
 		options = QFileDialog.Options()
-		file_name, _ = QFileDialog.getSaveFileName(self,'Save File','',"All Files (*);;JSON (JavaScript Object Notation) (*.json)", options=options)
+		file_name, _ = QFileDialog.getSaveFileName(self,'Save Routine Settings', '',"All Files (*);;JSON (JavaScript Object Notation) (*.json)", options=options)
 		if file_name:
 			if file_name[-5:] != '.json':
 				file_name += '.json'
@@ -111,6 +111,7 @@ class mainWindow(QMainWindow):
 				},
 				'elevation' : {
 					'resolution' : right_wdg.elevation_res_combo.currentText(),
+					'angle' : right_wdg.angle_elev_spinbox.value(),
 					'initial_angle' : right_wdg.initial_elev_spinbox.value(),
 					'final_angle'	: right_wdg.final_elev_spinbox.value()
 				}
@@ -118,9 +119,32 @@ class mainWindow(QMainWindow):
 			writer.writeJSON()
 	
 	def openSettings(self):
-		self.status_bar.showMessage('openSettings()', self.config.dict['status_bar_timeout'])
+		options = QFileDialog.Options()
+		file_name, _ = QFileDialog.getOpenFileName(self, 'Open Routine Settings', '', 'JSON (JavaScript Object Notation) (*.json)',  options=options)
+		if file_name:
+			self.status_bar.showMessage(f'Opened routine settings: {file_name}', self.config.dict['status_bar_timeout'])
+			reader = JSONreader(file_name).dict
+			right_wdg = self.central_wdg.right_wdg
+			# Azimuth
+			rdr_azim = reader['azimuth']
+			right_wdg.azimuth_res_combo.setCurrentText(rdr_azim['resolution'])
+			right_wdg.Pa_spinbox.setValue(rdr_azim['accel_period'])
+			right_wdg.Tas_spinbox.setValue(rdr_azim['max_delay'])
+			right_wdg.Tai_spinbox.setValue(rdr_azim['min_delay'])
+			right_wdg.angle_azim_spinbox.setValue(rdr_azim['angle'])
+			right_wdg.initial_azim_spinbox.setValue(rdr_azim['initial_angle'])
+			right_wdg.final_azim_spinbox.setValue(rdr_azim['final_angle'])
+			right_wdg.rotations_per_elev_spinbox.setValue(rdr_azim['rotations'])
+			# Elevation
+			rdr_elev = reader['elevation']
+			right_wdg.elevation_res_combo.setCurrentText(rdr_elev['resolution'])
+			right_wdg.angle_elev_spinbox.setValue(rdr_elev['angle'])
+			right_wdg.initial_elev_spinbox.setValue(rdr_elev['initial_angle'])
+			right_wdg.final_elev_spinbox.setValue(rdr_elev['final_angle'])
 
-
+			#Apply changes
+			self.central_wdg.applyParameters()
+			
 
 	def helpContent(self):
 		link = 'https://github.com/Zimrahin/Stepper-Motor-Controller/blob/main/Progress_Report_CCTVal_ENG.pdf'
