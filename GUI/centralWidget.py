@@ -1,7 +1,7 @@
 __author__ = 'github.com/Zimrahin'
 
 import sys 
-from PySide2.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QScrollArea, QFrame, QPushButton
+from PySide2.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QScrollArea, QFrame, QPushButton, QMainWindow
 from PySide2.QtCore import Qt, QThread
 from PySide2.QtGui import QPixmap
 
@@ -16,10 +16,11 @@ myappid = 'StepperMotorController' # arbitrary string
 ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 
 class centralWidget(QWidget):
-	def __init__(self, main_wdw, parent=None):
+	def __init__(self, main_wdw: QMainWindow, parent=None):
 		super().__init__(parent)
 		self.main_wdw = main_wdw
 		self.config = main_wdw.config
+		self._palette = main_wdw._palette
 
 		#Objects 
 		self.COM = None
@@ -28,7 +29,7 @@ class centralWidget(QWidget):
 
 		self.apply_btn = QPushButton('Apply')
 		self.start_btn = QPushButton('Start')
-		self.start_btn.setStyleSheet("QPushButton{background-color : '#054d45';}")
+		self.start_btn.setStyleSheet("QPushButton{background-color : "+ self._palette['start_btn'] +";}")
 
 		# -> Serial Connection Widget
 		self.connection_wdg = connectionWidget(self.main_wdw, self)

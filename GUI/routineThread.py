@@ -1,10 +1,12 @@
 from PySide2.QtCore import QObject, Signal
+from PySide2.QtWidgets import QWidget
+
 
 class workerThreadPlotUpdate(QObject):
 	finished = Signal()
 	progress = Signal(int)
 
-	def __init__(self, connection_wdg, plot_wdg, right_wdg, config):
+	def __init__(self, connection_wdg: QWidget, plot_wdg: QWidget, right_wdg: QWidget, config: object):
 		super().__init__()
 		self.connection_wdg = connection_wdg
 		self.plot_wdg = plot_wdg

@@ -1,6 +1,6 @@
 {
 	"app_name"	: "Stepper Motor Controller",
-	"version" 	: "2.11.30",
+	"version" 	: "2.12.01",
 	"authors" 	: [
 		"Diego A. Badillo", "Sebastián San Martín"
 	],
@@ -19,7 +19,7 @@
 	"azim_angle_spin" : {
 		"step"		: 10,
 		"lowest" 	: 0,
-		"highest"	: 3600,
+		"highest"	: 360,
 		"decimals"	: 2,
 		"units"		: "º",
 		"routine"		: {

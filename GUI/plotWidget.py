@@ -62,6 +62,7 @@ class plotWidget(QWidget):
 
 		vlayout = QVBoxLayout()
 		vlayout.addWidget(self.canvas_wdg)
+		# vlayout.addWidget(self.toolbar_wdg)
 		vlayout.addLayout(hlayout)
 
 		self.setLayout(vlayout)
@@ -70,7 +71,7 @@ class plotWidget(QWidget):
 
 		self.updatePlot([], 0, 'l', 100)
 
-	def updatePlot(self, data, angle, direction_char, N_rev):
+	def updatePlot(self, data: list, angle: int, direction_char: str, N_rev: int):
 		N_rev_max = 6400
 		plot_scale_factor = int(N_rev_max/N_rev)
 		angle_scale_factor = 360./N_rev_max
@@ -81,12 +82,17 @@ class plotWidget(QWidget):
 				data_xaxis, 
 				data, 
 				color=self.palette['plot_data'])
+			if data_xaxis != []:
+				self.canvas_wdg.axes.set_xlim(data_xaxis[0], data_xaxis[-1])
 		else: # negative
 			data_xaxis = np.linspace((angle + len(data) *plot_scale_factor)*angle_scale_factor, angle*angle_scale_factor, len(data))
 			self.canvas_wdg.axes.plot( 
 				data_xaxis, 
 				data, 
 				color=self.palette['plot_data'])
+			print(f'data_xaxis: {data_xaxis}')
+			if data_xaxis != []:
+				self.canvas_wdg.axes.set_xlim(data_xaxis[-1], data_xaxis[0])
 			self.canvas_wdg.axes.invert_xaxis()
 
 		self.canvas_wdg.axes.set_ylabel('Voltage (V)')

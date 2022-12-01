@@ -351,12 +351,12 @@ void loop()
 		}
 
 		// Reset position:
-		else if (receivedString == "reset_azim"){
+		else if (receivedString == "reset_azim") {
 			currentPos_azim_g = 0;
 			Serial.println("ack");
 			return;
 		}
-		else if (receivedString == "reset_elev"){
+		else if (receivedString == "reset_elev") {
 			currentPos_elev_g = 0;
 			Serial.println("ack");
 			return;
@@ -378,19 +378,19 @@ void loop()
 		}
 
 		// Move (a)zimuth motor:
-		else if (receivedString[0] == 'a' || receivedString[0] == 'r' || receivedString[0] == 'l' ){
+		else if (receivedString[0] == 'a' || receivedString[0] == 'r' || receivedString[0] == 'l' ) {
 			movement(receivedString);
 			return;
 		}		
 
 		// Move (e)levation motor:
-		else if (receivedString[0] == 'e' || receivedString[0] == 'u' || receivedString[0] == 'd' ){
+		else if (receivedString[0] == 'e' || receivedString[0] == 'u' || receivedString[0] == 'd' ) {
 			movement(receivedString,"motor_elevation",false);
 			return;
 		}	
 
 		// Routi(n)e:
-		else if (receivedString[0] == 'n'){
+		else if (receivedString[0] == 'n') {
 			// String: n-aIII-(l/r)FFF-eIII-eFFF-N
 			// Unpack command:
 			String azimString_init = getValue(receivedString,'-',1);
@@ -419,7 +419,7 @@ void loop()
 					movement(azimString_end);
 					movement(azimString_init, "motor_azimuth", false);
 				}
-				// Temporarily to show change in elevation
+				// Temporary to show changes in elevation
 				if (LED_flag) digitalWrite(LED_BUILTIN, LOW);
 				else digitalWrite(LED_BUILTIN, HIGH); 
 				LED_flag = !LED_flag;
@@ -428,10 +428,8 @@ void loop()
 				// movInt_elev = (elev_init + i)%N_rev_elev_g;
 				// movString_elev = 'e' + String(movInt_elev);
 
-				// digitalWrite(LED_BUILTIN, LOW);
 				// movement(movString_elev,"motor_elevation");
-				// Serial.print(movString_elev);
-				// digitalWrite(LED_BUILTIN, HIGH); 	
+				// Serial.print(movString_elev);	
 
 				// Temporarily while having only one motor
 				// movement(azimString_init);

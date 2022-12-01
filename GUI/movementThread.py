@@ -1,11 +1,13 @@
 from PySide2.QtCore import QObject, Signal
+from PySide2.QtWidgets import QWidget, QMainWindow
+
 import time
 
 class movementThread(QObject):
 	finished = Signal()
 	progress = Signal(int)
 
-	def __init__(self, right_wdg, central_wdg, main_wdw):
+	def __init__(self, right_wdg: QWidget, central_wdg: QWidget, main_wdw: QMainWindow):
 		super().__init__()
 		self.right_wdg = right_wdg
 		self.central_wdg = central_wdg

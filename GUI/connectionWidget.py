@@ -1,5 +1,5 @@
 import sys
-from PySide2.QtWidgets import QWidget, QComboBox, QPushButton, QLabel, QApplication, QHBoxLayout
+from PySide2.QtWidgets import QWidget, QComboBox, QPushButton, QApplication, QHBoxLayout, QMainWindow
 from PySide2.QtCore import Qt
 from PySide2 import QtCore
 import serial
@@ -16,7 +16,7 @@ class connectionWidget(QWidget):
 	connect_signal = QtCore.Signal()
 	disconnect_signal = QtCore.Signal()
 
-	def __init__(self, main_wdw, parent=None):
+	def __init__(self, main_wdw: QMainWindow, parent=None):
 		super().__init__(parent)
 
 		# Variables
@@ -132,7 +132,7 @@ class connectionWidget(QWidget):
 		else:
 			raise Exception('Device did not respond')
 
-	def send2COM(self, string):
+	def send2COM(self, string: str):
 		self.serial_COM.write(string.encode())
 
 	def receiveOnlyCOM(self):

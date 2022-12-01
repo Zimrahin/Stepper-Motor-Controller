@@ -1,7 +1,7 @@
 __author__ = 'github.com/Zimrahin'
 
 import sys
-from PySide2.QtWidgets import QWidget, QPushButton, QApplication, QHBoxLayout, QFormLayout, QVBoxLayout, QRadioButton, QDoubleSpinBox, QSpinBox, QComboBox, QLabel, QButtonGroup
+from PySide2.QtWidgets import QWidget, QPushButton, QApplication, QHBoxLayout, QFormLayout, QVBoxLayout, QRadioButton, QDoubleSpinBox, QSpinBox, QComboBox, QLabel, QButtonGroup, QMainWindow
 from PySide2.QtCore import QSize, Qt, QThread
 from PySide2.QtGui import QIcon, QPixmap
 import PySide2.QtCore
@@ -13,7 +13,7 @@ import struct
 from movementThread import movementThread
 
 class rightWidget(QWidget):
-	def __init__(self, central_wdg, main_wdw, parent=None):
+	def __init__(self, central_wdg: QWidget, main_wdw: QMainWindow, parent=None):
 		super().__init__(parent)
 		self.central_wdg = central_wdg
 		self.main_wdw = main_wdw
@@ -285,7 +285,7 @@ class rightWidget(QWidget):
 					print(listLetters[i] + str(out_step))
 
 	#-----------------------------------------------------------------------
-	def sendReset(self, motor : str):
+	def sendReset(self, motor: str):
 		if motor == 'Azimuth':
 			reset_str = 'reset_azim'
 		if motor == 'Elevation':
@@ -299,12 +299,12 @@ class rightWidget(QWidget):
 			raise Exception('Device did not respond')
 
 	#-----------------------------------------------------------------------
-	def angleToStep(self, angle, N_rev):
+	def angleToStep(self, angle: float, N_rev: int):
 		step = int(floor(angle * N_rev / 360))
 		return step	
 
 	#-----------------------------------------------------------------------
-	def unpackData(self, received_string):
+	def unpackData(self, received_string: str):
 		values_list = received_string.split('-')[0:-1] # there is an empty char at the end 
 		values_list = list(filter(None, values_list)) # delete empty value
 		# print(values_list) #debug only
@@ -317,7 +317,7 @@ class rightWidget(QWidget):
 		float_list = list(map(float,values_list))
 		return angle, direction_char, float_list, mean_time, mean_time_total, values_list
 
-	def unpackDataBytes(self, data):
+	def unpackDataBytes(self, data: str):
 		size_of_int = 4
 		size_of_char = 1
 		size_of_float = 4

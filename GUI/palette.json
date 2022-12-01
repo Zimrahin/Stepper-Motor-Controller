@@ -8,5 +8,9 @@
 	"plot_data"	: "#00ffff",
 	"axis_label": "#ffffff",
 	"tick"		: "#ffffff",
-	"face_color": "#191919"
+	"face_color": "#181919",
+	"start_btn"	: "#054d45",
+	"version_label": "#888888",
+	"tooltip_background": "#1f2126",
+	"tooltip_colour"	: "#ffffff"
 }

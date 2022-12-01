@@ -7,24 +7,27 @@ An image of the current state of the GUI is given below
 # TO DO LIST
 ------------------------------------------------------------------
 ### In Progress
-- [ ] Solucionar comunicación serial
-    - [ ] Solucionar problema en que al moverse muchas vueltas (más de dos) se pierden datos.
-
-- [ ] Agregar más de un movimiento por elevación
-- [ ] Medir tiempo de escritura en sd y comparar con uart
-- [ ] Arreglar escritura CSV
-- [ ] Agregar escritura en CSV para rutina
-- [ ] Documentar código
-- [ ] Asegurarse que todos los raise Exception funcionen con una ventana pop-up
 - [ ] Guardar parámetros de rutina en archivos  y agregar "open routine settings"
 
---------------------------------------------------------------
+- [x] Agregar más de un movimiento por elevación
+
+- [ ] Arreglar escritura CSV ¿Qué pasa si hago el .exe del código para los valores por defecto de guardado? (i.e. csv_folder)
+- [ ] Agregar escritura en CSV para rutina
+- [ ] Documentar código
+    - [x] Type hinting example:
+    ```
+    def hello_name(name: str) -> str:
+        return(f"Hello {name}")
+    ```
+    - [ ] Class diagram GUI documentation
+- [ ] Asegurarse que todos los raise Exception funcionen con una ventana pop-up
+- [ ] Agregar 'Open File' para plotear (en otra pestaña dentro de la misma GUI)
+
 -------------------------------------------------------------
 - [ ] Corregir en Arduino prints ddeben hacerse todos en el mismo lugar. (dentro de la funcion movement)
-- [ ] Agregar 'Open File' para plotear (en otra pestaña dentro de la misma GUI)
 -------------------------------------------------------------------
 
 # Useful commands
 ```
-pyinstaller --onefile --noconsole --icon logo.ico centralWidget.py
+pyinstaller --onefile --noconsole --icon logo.ico mainWindow.py
 ```
