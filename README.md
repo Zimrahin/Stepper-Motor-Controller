@@ -9,22 +9,16 @@ An image of the current state of the GUI is given below
 ### In Progress
 - [ ] Guardar parámetros de rutina en archivos  y agregar "open routine settings"
 
-- [x] Agregar más de un movimiento por elevación
-
-- [ ] Arreglar escritura CSV ¿Qué pasa si hago el .exe del código para los valores por defecto de guardado? (i.e. csv_folder)
-- [ ] Agregar escritura en CSV para rutina
 - [ ] Documentar código
-    - [x] Type hinting example:
-    ```
-    def hello_name(name: str) -> str:
-        return(f"Hello {name}")
-    ```
     - [ ] Class diagram GUI documentation
+
+- [ ] Arreglar escritura CSV
+- [ ] Agregar escritura en CSV para rutina
+
+
 - [ ] Asegurarse que todos los raise Exception funcionen con una ventana pop-up
 - [ ] Agregar 'Open File' para plotear (en otra pestaña dentro de la misma GUI)
 
--------------------------------------------------------------
-- [ ] Corregir en Arduino prints ddeben hacerse todos en el mismo lugar. (dentro de la funcion movement)
 -------------------------------------------------------------------
 
 # Useful commands

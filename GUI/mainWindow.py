@@ -9,7 +9,7 @@ from PySide2.QtGui import QDesktopServices
 
 from centralWidget import centralWidget
 from darkPalette import darkPalette
-from JSONreader import JSONreader
+from JSONhandler import JSONreader, JSONwriter
 
 class mainWindow(QMainWindow):
 	def __init__(self, parent=None):
@@ -96,7 +96,26 @@ class mainWindow(QMainWindow):
 			if file_name[-5:] != '.json':
 				file_name += '.json'
 			self.status_bar.showMessage(f'Saved routine settings as: {file_name}', self.config.dict['status_bar_timeout'])
-			
+			writer = JSONwriter(file_name)
+			right_wdg = self.central_wdg.right_wdg
+			writer.dict = {
+				'azimuth' : {
+					'resolution' : right_wdg.azimuth_res_combo.currentText(),
+					'accel_period': right_wdg.Pa_spinbox.value(),
+					'max_delay' : right_wdg.Tas_spinbox.value(),
+					'min_delay' : right_wdg.Tai_spinbox.value(),
+					'angle'		: right_wdg.angle_azim_spinbox.value(),
+					'initial_angle' : right_wdg.initial_azim_spinbox.value(),
+					'final_angle'	: right_wdg.final_azim_spinbox.value(),
+					'rotations'		: right_wdg.rotations_per_elev_spinbox.value()
+				},
+				'elevation' : {
+					'resolution' : right_wdg.elevation_res_combo.currentText(),
+					'initial_angle' : right_wdg.initial_elev_spinbox.value(),
+					'final_angle'	: right_wdg.final_elev_spinbox.value()
+				}
+			}
+			writer.writeJSON()
 	
 	def openSettings(self):
 		self.status_bar.showMessage('openSettings()', self.config.dict['status_bar_timeout'])

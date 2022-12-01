@@ -18,6 +18,17 @@ class JSONreader(object):
 			settings = json.loads(reader.read())
 			self.dict = settings
 
+class JSONwriter(object):
+	def __init__(self, file):
+		super(JSONwriter, self).__init__()
+		self.dict = {}
+		self.file = file
+
+	def writeJSON(self):
+		with open(self.file, "w", encoding='utf-8') as write:
+			json.dump(self.dict, write, indent=4)
+
+
 if __name__ == '__main__':
-	config_class = JSONreader()
+	config_class = JSONreader('config.json')
 	print(config_class.dict)

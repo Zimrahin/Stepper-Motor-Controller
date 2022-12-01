@@ -3,7 +3,7 @@ from PySide2.QtWidgets import QWidget, QVBoxLayout, QApplication, QHBoxLayout, Q
 from PySide2.QtCore import  Qt
 
 from darkPalette import darkPalette
-from JSONreader import JSONreader
+from JSONhandler import JSONreader
 
 
 import matplotlib
