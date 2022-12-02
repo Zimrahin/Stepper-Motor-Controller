@@ -113,6 +113,39 @@ class plotWidget(QWidget):
 
 		return data_xaxis
 
+	def updateDataStatistics(self, float_list, data_xaxis, mean_time_total):
+		pp, pa = self.computePeakPower(float_list, data_xaxis)
+		mp = self.computeMeanPower(float_list)
+		rpm = self.computeRPM(int(mean_time_total))
+
+		self.pp_label.setText(f'PP = {pp:.2f}')
+		self.pa_label.setText(f'PA = {pa:.2f}º')
+		self.mp_label.setText(f'MP = {mp:.2f}')
+		self.rpm_label.setText(f'RPM = {rpm:.1f}')
+
+	def computePeakPower(self, data, data_xaxis):
+		if data:
+			peak_power = np.max(data)
+			peak_angle = data_xaxis[np.argmax(data)]
+			return peak_power, peak_angle
+		else:
+			return 0, 0 
+
+	def computeMeanPower(self, data):
+		if data:
+			mean_power = np.average(data)
+			return mean_power
+		else:
+			return 0
+
+	def computeRPM(self, mean_step_time):
+		if mean_step_time != 0:
+			N_max = 6400 	#step/rev, max resolution
+			rpm = 10**6 * 60 / (N_max * mean_step_time)
+			return rpm
+		else:
+			return 0
+
 
 if __name__ == '__main__':
 	app = QApplication(sys.argv)

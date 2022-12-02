@@ -349,30 +349,6 @@ class rightWidget(QWidget):
 
 		return angle, direction_char, float_list, mean_time, mean_time_total
 
-	#-----------------------------------------------------------------------	 
-	def computePeakPower(self, data, data_xaxis):
-		if data:
-			peak_power = np.max(data)
-			peak_angle = data_xaxis[np.argmax(data)]
-			return peak_power, peak_angle
-		else:
-			return 0, 0 
-
-	def computeMeanPower(self, data):
-		if data:
-			mean_power = np.average(data)
-			return mean_power
-		else:
-			return 0
-
-	def computeRPM(self, mean_step_time):
-		if mean_step_time != 0:
-			N_max = 6400 	#step/rev, max resolution
-			rpm = 10**6 * 60 / (N_max * mean_step_time)
-			return rpm
-		else:
-			return 0
-
 	#-----------------------------------------------------------------------
 	def _setToolTips(self):
 		self.a_radio.setToolTip('Move to an <b>absolute</b> angle in azimuth')

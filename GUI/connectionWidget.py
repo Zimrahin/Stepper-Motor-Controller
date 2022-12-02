@@ -143,8 +143,23 @@ class connectionWidget(QWidget):
 
 	def receiveBytesCOM(self):
 		time.sleep(0.10)
-		received = self.serial_COM.readline()
+		# received = self.serial_COM.readline() # This caused problems when '\n' is contained within the data
+		received = self.readLine(self.serial_COM)
 		return received
+
+	# Adapted from https://stackoverflow.com/questions/16470903/pyserial-2-6-specify-end-of-line-in-readline
+	def readLine(self, a_serial, eol=b'\n'):
+		len_eol = len(eol)
+		line = bytearray()
+		while True:
+			c = a_serial.read(1) # read 1 byte
+			if c:
+				line += c
+				if line[-len_eol:] == eol:
+					break
+			else:
+				break
+		return line
 	
 
 if __name__ == '__main__':
