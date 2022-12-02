@@ -40,7 +40,7 @@ float getIntercept(float x1,float y1,float m){
 	return y1-m*x1;
 }
 
-void forward(int N, String motor_type, float* array, int N_measurements, bool reverse=false, int Pa=Pa_g_azim, int Tas=Tas_g_azim, int Tai=Tai_g_azim, int N_rev=N_rev_azim_g, bool print_flag=true) {
+void forward(int N, String motor_type, int* array, int N_measurements, bool reverse=false, int Pa=Pa_g_azim, int Tas=Tas_g_azim, int Tai=Tai_g_azim, int N_rev=N_rev_azim_g, bool print_flag=true) {
 	// Function used to move the motor.
 	// N: Number of steps to move.
 	// reverse: Direction, false is clockwise, true is counterclockwise
@@ -131,13 +131,13 @@ void forward(int N, String motor_type, float* array, int N_measurements, bool re
 					init_meas_time = micros();	// Initiate time measurement (to obtain mean reading/writing execution time)
 					
 					// Read pin and send the value through serial port (reading/writing process)
-					sensorValue = analogRead(A0);
-					sensorVoltage = sensorValue * (3.110/1023.0);
+					sensorValue = analogRead(A0); // int
+					// sensorVoltage = sensorValue * (3.110/1023.0); //float
 					
 					if (print_flag){
-						// Serial.print(sensorVoltage);
-						// Serial.print('-');
-						array[array_counter] = sensorVoltage;
+						// array[array_counter] = sensorVoltage;
+						// array_counter = array_counter + 1;
+						array[array_counter] = sensorValue;
 						array_counter = array_counter + 1;
 					}
         			
@@ -163,7 +163,7 @@ void forward(int N, String motor_type, float* array, int N_measurements, bool re
 
 	// Send time data through serial port
 	if (print_flag) {
-		Serial.write((char*)array, int(sizeof(float)*N_measurements));
+		Serial.write((char*)array, int(sizeof(int)*N_measurements));
 		int int_array[] = {total_meas_time, total_time};
 		Serial.write((char*)int_array, int(sizeof(int)*2));
 	}
@@ -263,8 +263,7 @@ void movement(String rcvString, String motor_type="motor_azimuth", bool print_fl
 	int currentPos = currentPos_azim_g;
 	// variables for malloc()
 	int N_measurements; 
-	// ESTO NO ES SIEMPRE ASÍ, A80
-	float* data_array = NULL;
+	int* data_array = NULL;
 
 	if (motor_type == "motor_elevation") {	// Check if the selected motor is the elevation motor, otherwise use default case (azimuth motor)
 		N_rev = N_rev_elev_g;	
@@ -275,12 +274,12 @@ void movement(String rcvString, String motor_type="motor_azimuth", bool print_fl
 	}
 		
 	steps_to_move = calculateStep(rcvString, currentPos, N_rev, &N_measurements, motor_type); // Calculate how many steps to move and get direction from string
-	if (steps_to_move == -1){	// If there is an error, do not move
+	if (steps_to_move == -1) {	// If there is an error, do not move
 		steps_to_move = 0;
 	}
 
 	if (print_flag) {
-		data_array = (float*) malloc(sizeof(float) * N_measurements);
+		data_array = (int*) malloc(sizeof(int) * N_measurements);
 	}
 
 	forward(steps_to_move, motor_type, data_array, N_measurements, dir_g, Pa, Tas, Tai, N_rev, print_flag);	// Move motor

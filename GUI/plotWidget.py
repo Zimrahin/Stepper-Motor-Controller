@@ -29,9 +29,9 @@ class plotWidget(QWidget):
 		# Widgets
 		self.canvas_wdg = figCanvas()
 		self.toolbar_wdg = NavigationToolbar(self.canvas_wdg)
-		self.pp_label = QLabel(f'PP = {0.0:.2f} V')
+		self.pp_label = QLabel(f'PP = {0.0:.2f}')
 		self.pa_label = QLabel(f'PA = {0.0:.2f}º')
-		self.mp_label = QLabel(f'MP = {0.0:.2f} V')
+		self.mp_label = QLabel(f'MP = {0.0:.2f}')
 		self.rpm_label = QLabel(f'RPM = {0.0}')
 		self.pp_label.setAlignment(Qt.AlignCenter)
 		self.pa_label.setAlignment(Qt.AlignCenter)
@@ -90,12 +90,12 @@ class plotWidget(QWidget):
 				data_xaxis, 
 				data, 
 				color=self.palette['plot_data'])
-			print(f'data_xaxis: {data_xaxis}')
+			# print(f'data_xaxis: {data_xaxis}')
 			if data_xaxis != []:
 				self.canvas_wdg.axes.set_xlim(data_xaxis[-1], data_xaxis[0])
 			self.canvas_wdg.axes.invert_xaxis()
 
-		self.canvas_wdg.axes.set_ylabel('Voltage (V)')
+		self.canvas_wdg.axes.set_ylabel('Levels (-)')
 		self.canvas_wdg.axes.yaxis.label.set_color(self.palette['axis_label'])
 		self.canvas_wdg.axes.xaxis.label.set_color(self.palette['axis_label'])
 		self.canvas_wdg.axes.tick_params(axis='x', colors=self.palette['tick'])
@@ -106,7 +106,8 @@ class plotWidget(QWidget):
 		self.canvas_wdg.fig.set_facecolor(self.palette['alt_base'])
 		self.canvas_wdg.axes.set_facecolor(self.palette['face_color'])
 		self.canvas_wdg.axes.set_xlabel('Degrees (\u00b0)')
-		self.canvas_wdg.axes.figure.gca().set_ylim(0, 3.2)
+		# self.canvas_wdg.axes.figure.gca().set_ylim(0, 3.2)
+		self.canvas_wdg.axes.figure.gca().set_ylim(0, 1023)
 		self.canvas_wdg.axes.grid(color = self.palette['alt_base'], linewidth = 1)
 		self.canvas_wdg.draw()
 

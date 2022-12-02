@@ -333,7 +333,9 @@ class rightWidget(QWidget):
 		# compute amount of float data
 		n_float = int(len(data) - n_int*size_of_int - n_char*size_of_char) # extract metadata. Last char is \n
 		n_float = int(n_float/size_of_float)
-		n_float_str = 'f'*n_float
+		# n_float_str = 'f'*n_float
+		n_float_str = 'i'*n_float # Changed serial write of ADC data from float to int (10 bit, 0->1023)
+								  # Size of float is the same as Size of int	
 
 		values_tuple = struct.unpack(n_float_str + n_int_str + n_char_str, data) #returns tuple
 
