@@ -148,14 +148,15 @@ class connectionWidget(QWidget):
 		return received
 
 	# Adapted from https://stackoverflow.com/questions/16470903/pyserial-2-6-specify-end-of-line-in-readline
-	def readLine(self, a_serial, eol=b'\n'):
+	def readLine(self, a_serial, eol = b'\n\n\n'):
 		len_eol = len(eol)
 		line = bytearray()
+		size_of_int = 4
 		while True:
-			c = a_serial.read(1) # read 1 byte
+			c = a_serial.read(size_of_int) # read (size_of_int) bytes
 			if c:
 				line += c
-				if line[-len_eol:] == eol:
+				if line[-(len_eol+1):] == b'r'+eol or line[-(len_eol+1):] == b'l'+eol:
 					break
 			else:
 				break

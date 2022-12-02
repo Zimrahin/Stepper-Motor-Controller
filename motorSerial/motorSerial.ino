@@ -288,15 +288,10 @@ void movement(String rcvString, String motor_type="motor_azimuth", bool print_fl
 	char real_direction = dir_g ? 'l' : 'r';	// Left or right?
 
 	if (print_flag){
-		// Serial.print(String(currentPos_azim_g) + '-' + String(real_direction) + '-' + String(steps_to_move) + '-');
 		int int_array[] = {currentPos_azim_g, steps_to_move};
 		Serial.write((char*)int_array, int(sizeof(int))*2);
-		char char_array[] = {real_direction, '\n'};
-		Serial.write((char*)char_array, int(sizeof(char))*2);
-
-
-		// End message:
-		// Serial.println(); // \n at the end to let know PC all info has been sent
+		char char_array[] = {real_direction, '\n', '\n', '\n'};
+		Serial.write((char*)char_array, int(sizeof(char))*4);
 	}	
 	free(data_array);
 	return;	
