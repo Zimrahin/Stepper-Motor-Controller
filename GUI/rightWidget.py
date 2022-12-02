@@ -304,53 +304,6 @@ class rightWidget(QWidget):
 		return step	
 
 	#-----------------------------------------------------------------------
-	# DEPRECATED FUNCTION: used previously to unpack string of characters
-	# def unpackData(self, received_string: str):
-	# 	values_list = received_string.split('-')[0:-1] # there is an empty char at the end 
-	# 	values_list = list(filter(None, values_list)) # delete empty value
-	# 	# print(values_list) #debug only
-	# 	# print(len(values_list))
-	# 	mean_time = values_list[-5] #microseconds
-	# 	mean_time_total = values_list[-4] #microseconds
-	# 	angle = values_list[-3]
-	# 	direction_char = values_list[-2]
-	# 	values_list = values_list[0:-5]  #remove last elements
-	# 	float_list = list(map(float,values_list))
-	# 	return angle, direction_char, float_list, mean_time, mean_time_total, values_list
-
-	def unpackDataBytes(self, data: str):
-		size_of_int = 4
-		size_of_char = 1
-		size_of_float = 4
-
-		# compute amount of int data
-		n_int = 4
-		n_int_str = 'i'*n_int #'iiii'
-
-		# compute amount of char data
-		n_char = 4
-		n_char_str = 'c'*n_char #'cccc', 'r\n\n\n' or 'l\n\n\n'
-
-		# compute amount of float data
-		n_float = int(len(data) - n_int*size_of_int - n_char*size_of_char) # extract metadata. Last char is \n
-		n_float = int(n_float/size_of_float)
-		# n_float_str = 'f'*n_float
-		n_float_str = 'i'*n_float # Changed serial write of ADC data from float to int (10 bit, 0->1023)
-								  # Size of float is the same as Size of int	
-
-		values_tuple = struct.unpack(n_float_str + n_int_str + n_char_str, data) #returns tuple
-
-		mean_time = values_tuple[-6-2] #microseconds
-		mean_time_total = values_tuple[-5-2] #microseconds
-		angle = values_tuple[-4-2]
-		steps_to_move = values_tuple[-3-2]
-		direction_char = str(values_tuple[-2-2], 'utf-8')
-		float_tuple = values_tuple[0:-6-2]  #remove last elements
-		float_list = list(float_tuple)
-
-		return angle, direction_char, float_list, mean_time, mean_time_total
-
-	#-----------------------------------------------------------------------
 	def _setToolTips(self):
 		self.a_radio.setToolTip('Move to an <b>absolute</b> angle in azimuth')
 		self.l_radio.setToolTip('Move <b>counterclockwise</b>')

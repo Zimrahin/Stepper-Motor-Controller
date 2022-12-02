@@ -22,7 +22,7 @@ class workerThreadPlotUpdate(QObject):
 					if received_data == b'ack\r\n':
 						break
 					# print(received_string)
-					angle, direction_char, float_list, _, mean_time_total = self.right_wdg.unpackDataBytes(received_data)
+					angle, direction_char, float_list, _, mean_time_total = self.connection_wdg.unpackDataBytes(received_data)
 					# print(float_list)
 					if self.config.dict['debug_print']:
 						print(len(float_list), direction_char, mean_time_total)
