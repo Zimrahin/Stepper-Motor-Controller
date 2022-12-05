@@ -7,18 +7,13 @@ An image of the current state of the GUI is given below
 # TO DO LIST
 ------------------------------------------------------------------
 ### In Progress
-- [x] Guardar parámetros de rutina en archivos  y agregar "open routine settings"
-
 - [ ] Documentar código
     - [ ] Class diagram GUI documentation
 
-- [ ] Arreglar escritura CSV
-- [ ] Agregar escritura en CSV para rutina
-
+- [ ] Agregar escritura en JSON para rutina
+- [ ] Agregar lectura de JSON para plot
 
 - [ ] Asegurarse que todos los raise Exception funcionen con una ventana pop-up
-- [ ] Agregar 'Open File' para plotear (en otra pestaña dentro de la misma GUI)
-
 -------------------------------------------------------------------
 
 # Useful commands

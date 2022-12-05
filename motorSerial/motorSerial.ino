@@ -15,10 +15,10 @@
 // #define LED_BUILTIN
 
 // Global variables:
-int N_rev_max = 6400;	// Steps per rev - max value (this value has to be the same as the value set in the motor driver)
-int N_rev_azim_g = 6400;// Steps por rev - global value that could change according to the resolution value required by the user (Azimuth)
-int N_rev_elev_g = 6400;// Steps per rev - elevation
-bool dir_g = false;		// Direction (defined as a global variable to change it within a function and call it on other function)
+int N_rev_max = 6400;		// Steps per rev - max value (this value has to be the same as the value set in the motor driver)
+int N_rev_azim_g = 6400;	// Steps por rev - global value that could change according to the resolution value required by the user (Azimuth)
+int N_rev_elev_g = 6400;	// Steps per rev - elevation
+bool dir_g = false;			// Direction (defined as a global variable to change it within a function and call it on other function)
 int Pa_g_azim = 0;			// Number of steps used to accelerate
 int Tas_g_azim = 0;			// Initial time between steps
 int Tai_g_azim = 0;			// Final time between steps
@@ -320,13 +320,13 @@ void loop()
 	if (Serial.available() > 0) // Wait for incoming message
 	{
 		receivedString = Serial.readString();
-		receivedString.trim(); // remove \n,\r
+		receivedString.trim(); // remove \n,\r (just in case)
 
 		// The received messages can have different forms:
-		// If the message is 'reset_azim' or 'reset_elev', then the current position is set to be zero.		
+		// If the message is ' 'reset_azimor 'reset_elev', then the current position is set to be zero.		
 		// If the message is 'p-W-X-Y-Z-We-Xe-Ye-Ze', then the parameters will be changed according to the 'W-X-Y-Z' values.		
 		// If the message has the form 'xYYY', then the motor will move for 'YYY' steps in 'x' direction.
-		// If the message is 'n-aIII-(l/r)FFF-eIII-eFFF', then a routine will be executed in which the azimuth motor moves FFF steps from III position. This is repeated a number times equivalent to a linspace from III to FFF position in elevation according to the elevation resolution set.
+		// If the message is 'n-aIII-(l/r)FFF-eIII-eFFF-N', then a routine will be executed in which the azimuth motor moves FFF steps from III position. This is repeated a number times equivalent to a linspace from III to FFF position in elevation according to the elevation resolution set. N is the number of movements for each elevation position.
 
 		// Set (c)onnection
 		if (receivedString[0] == 'c') {
