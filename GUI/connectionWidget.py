@@ -185,7 +185,7 @@ class connectionWidget(QWidget):
 
 		metadata = 6
 		char_pos = -4
-		mean_time = values_tuple[char_pos - metadata] #microseconds
+		mean_time_serial = values_tuple[char_pos - metadata] #microseconds
 		mean_time_total = values_tuple[char_pos - metadata + 1] #microseconds
 		azimuth_step = values_tuple[char_pos - metadata + 2]
 		steps_to_move = values_tuple[char_pos - metadata + 3]
@@ -198,7 +198,7 @@ class connectionWidget(QWidget):
 		float_tuple = values_tuple[0:char_pos - metadata]  #remove last elements
 		float_list = list(float_tuple)
 
-		# print(f'mean_time = {mean_time}')
+		# print(f'mean_time_serial = {mean_time_serial}')
 		# print(f'mean_time_total = {mean_time_total}')
 		# print(f'azimuth_step = {azimuth_step}')
 		# print(f'steps_to_move = {steps_to_move}')

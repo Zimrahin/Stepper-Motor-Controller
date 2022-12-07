@@ -113,7 +113,7 @@ class mainWindow(QMainWindow):
 		return
 
 	def openFile(self):
-		self.status_bar.showMessage('openFile()', self.config.dict['status_bar_timeout'])
+		self.status_bar.showMessage('Open CSV Data clicked! Method openFile() only prints this message for now.', self.config.dict['status_bar_timeout'])
 
 	def saveSettings(self):
 		options = QFileDialog.Options()

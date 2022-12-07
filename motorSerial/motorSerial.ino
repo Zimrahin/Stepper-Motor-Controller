@@ -163,8 +163,11 @@ void forward(int N, String motor_type, int* array, int N_measurements, bool reve
 
 	// Send time data through serial port
 	if (print_flag) {
+		int init_time_serial = micros();
 		Serial.write((char*)array, int(sizeof(int)*N_measurements));
-		int int_array[] = {total_meas_time, total_time};
+		// int int_array[] = {total_meas_time, total_time};
+		int total_time_serial = micros() - init_time_serial;
+		int int_array[] = {total_time_serial, total_time};
 		Serial.write((char*)int_array, int(sizeof(int)*2));
 	}
 
@@ -197,12 +200,12 @@ int calculateStep(String input, int currentPos, int N_rev, int* N_meas_ptr, Stri
 
 	switch (direction)
 	{
-		case 'l': // move to the left, positive, counterclockwise
+		case 'l': // move leftwards, positive, counterclockwise
 			steps_to_move = N_rx;
 			currentPos = (currentPos + N_rx *(N_rev_max/N_rev) ) % N_rev_max;
 			dir_g = true;
 			break;
-		case 'r': // move to the right, negative, clockwise
+		case 'r': // move rightwards, negative, clockwise
 			steps_to_move = N_rx;
 			currentPos = (N_rev_max + currentPos - N_rx *(N_rev_max/N_rev) ) % N_rev_max;
 			dir_g = false;
