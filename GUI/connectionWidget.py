@@ -167,7 +167,7 @@ class connectionWidget(QWidget):
 		size_of_float = 4
 
 		# compute amount of int data
-		n_int = 4
+		n_int = 4 + 2 		  # quantity of integer metadata
 		n_int_str = 'i'*n_int #'iiii'
 
 		# compute amount of char data
@@ -183,15 +183,31 @@ class connectionWidget(QWidget):
 
 		values_tuple = struct.unpack(n_float_str + n_int_str + n_char_str, data) #returns tuple
 
-		mean_time = values_tuple[-6-2] #microseconds
-		mean_time_total = values_tuple[-5-2] #microseconds
-		angle = values_tuple[-4-2]
-		steps_to_move = values_tuple[-3-2]
-		direction_char = str(values_tuple[-2-2], 'utf-8')
-		float_tuple = values_tuple[0:-6-2]  #remove last elements
+		metadata = 6
+		char_pos = -4
+		mean_time = values_tuple[char_pos - metadata] #microseconds
+		mean_time_total = values_tuple[char_pos - metadata + 1] #microseconds
+		azimuth_step = values_tuple[char_pos - metadata + 2]
+		steps_to_move = values_tuple[char_pos - metadata + 3]
+
+		# NEW
+		elevation_step = values_tuple[char_pos - metadata + 4]
+		repetition_number = values_tuple[char_pos - metadata + 5]
+
+		direction_char = str(values_tuple[char_pos], 'utf-8')
+		float_tuple = values_tuple[0:char_pos - metadata]  #remove last elements
 		float_list = list(float_tuple)
 
-		return angle, direction_char, float_list, mean_time, mean_time_total
+		# print(f'mean_time = {mean_time}')
+		# print(f'mean_time_total = {mean_time_total}')
+		# print(f'azimuth_step = {azimuth_step}')
+		# print(f'steps_to_move = {steps_to_move}')
+		# print(f'elevation_step = {elevation_step}')
+		# print(f'repetition_number = {repetition_number}')
+		# print(f'direction_char = {direction_char}')
+		# print('\n')
+
+		return azimuth_step, direction_char, float_list, mean_time_total, elevation_step, repetition_number
 	
 
 if __name__ == '__main__':

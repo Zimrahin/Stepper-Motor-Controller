@@ -258,7 +258,19 @@ String getValue(String data, char separator, int index)
   	return found>index ? data.substring(strIndex[0], strIndex[1]) : "";
 }
 
-void movement(String rcvString, String motor_type="motor_azimuth", bool print_flag=true, int N_rev=N_rev_azim_g, int Pa=Pa_g_azim, int Tas=Tas_g_azim, int Tai=Tai_g_azim){
+void movement
+(
+	String rcvString, 						// (a,r,l)XXX or (e,u,d)YYY format 
+	String motor_type = "motor_azimuth", 	// other option is: "motor_elevation"
+	bool print_flag = true, 				// send serial data?
+	int elevation_step = currentPos_elev_g,	// current elevation position in steps
+	int repetition_number = 1, 				// routine has a number of repetitions per elevation position.	
+	int N_rev = N_rev_azim_g, 				// angular resolution
+	int Pa  = Pa_g_azim, 					// acceleration period
+	int Tas = Tas_g_azim, 					// maximum added delay
+	int Tai = Tai_g_azim					// minimum added delay
+) 
+{
 	int steps_to_move;		
 	int currentPos = currentPos_azim_g;
 	// variables for malloc()
@@ -290,6 +302,12 @@ void movement(String rcvString, String motor_type="motor_azimuth", bool print_fl
 	if (print_flag){
 		int int_array[] = {currentPos_azim_g, steps_to_move};
 		Serial.write((char*)int_array, int(sizeof(int))*2);
+
+		//NEW
+		int elev_metadata_array[] = {elevation_step, repetition_number};
+		Serial.write((char*)elev_metadata_array, int(sizeof(int))*2);
+		//endNEW
+
 		char char_array[] = {real_direction, '\n', '\n', '\n'};
 		Serial.write((char*)char_array, int(sizeof(char))*4);
 	}	
@@ -373,13 +391,13 @@ void loop()
 
 		// Move (a)zimuth motor:
 		else if (receivedString[0] == 'a' || receivedString[0] == 'r' || receivedString[0] == 'l' ) {
-			movement(receivedString);
+			movement(receivedString, "motor_azimuth", true);
 			return;
 		}		
 
 		// Move (e)levation motor:
 		else if (receivedString[0] == 'e' || receivedString[0] == 'u' || receivedString[0] == 'd' ) {
-			movement(receivedString,"motor_elevation",false);
+			movement(receivedString, "motor_elevation", false);
 			return;
 		}	
 
@@ -410,23 +428,20 @@ void loop()
 			int movInt_elev;
 			for(int i = 0; i < steps; i++){
 				for (int j = 0; j < repetitions_per_elevation; j++) {
-					movement(azimString_end);
+					movement(azimString_end, "motor_azimuth", true, currentPos_elev_g, j+1);
 					movement(azimString_init, "motor_azimuth", false);
 				}
 				// Temporary to show changes in elevation
 				if (LED_flag) digitalWrite(LED_BUILTIN, LOW);
 				else digitalWrite(LED_BUILTIN, HIGH); 
 				LED_flag = !LED_flag;
-							
-		
-				// movInt_elev = (elev_init + i)%N_rev_elev_g;
-				// movString_elev = 'e' + String(movInt_elev);
+				
 
-				// movement(movString_elev,"motor_elevation");
-				// Serial.print(movString_elev);	
+				movInt_elev = (elev_init + i + 1)%N_rev_elev_g;
+				movString_elev = 'e' + String(movInt_elev);
 
-				// Temporarily while having only one motor
-				// movement(azimString_init);
+				movement(movString_elev,"motor_elevation", false);	
+
 			}
 			digitalWrite(LED_BUILTIN, HIGH);
 			Serial.println("ack"); // Let PC know the routine has ended			

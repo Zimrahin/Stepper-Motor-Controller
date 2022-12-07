@@ -145,7 +145,7 @@ class centralWidget(QWidget):
 		# Create QThread object
 		self.routine_thread = QThread()
 		# Create a worker object
-		self.routine_worker = workerThreadPlotUpdate(self.connection_wdg, self.plot_wdg, self.right_wdg, self.config)
+		self.routine_worker = workerThreadPlotUpdate(self.connection_wdg, self.plot_wdg, self.right_wdg, self.config, self.main_wdw)
 		# Move worker to the thread
 		self.routine_worker.moveToThread(self.routine_thread)
 		# Connect signals and slots

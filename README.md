@@ -7,13 +7,9 @@ An image of the current state of the GUI is given below
 # TO DO LIST
 ------------------------------------------------------------------
 ### In Progress
-- [ ] Documentar código
-    - [ ] Class diagram GUI documentation
-
-- [ ] Agregar escritura en JSON para rutina
+- [x] Agregar escritura en CSV para rutina
 - [ ] Agregar lectura de JSON para plot
-
-- [ ] Asegurarse que todos los raise Exception funcionen con una ventana pop-up
+    - [x] elevation global position is set always from 0 to 6400 in arduino code
 -------------------------------------------------------------------
 
 # Useful commands

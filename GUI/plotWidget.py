@@ -71,13 +71,13 @@ class plotWidget(QWidget):
 
 		self.updatePlot([], 0, 'l', 100)
 
-	def updatePlot(self, data: list, angle: int, direction_char: str, N_rev: int):
+	def updatePlot(self, data: list, azim_step: int, direction_char: str, N_rev: int):
 		N_rev_max = 6400
 		plot_scale_factor = int(N_rev_max/N_rev)
 		angle_scale_factor = 360./N_rev_max
 		self.canvas_wdg.axes.cla()
 		if direction_char == 'l': # positive
-			data_xaxis = np.linspace((angle-len(data) *plot_scale_factor)*angle_scale_factor, angle*angle_scale_factor, len(data))
+			data_xaxis = np.linspace((azim_step-len(data) *plot_scale_factor)*angle_scale_factor, azim_step*angle_scale_factor, len(data))
 			self.canvas_wdg.axes.plot( 
 				data_xaxis, 
 				data, 
@@ -85,7 +85,7 @@ class plotWidget(QWidget):
 			if data_xaxis != []:
 				self.canvas_wdg.axes.set_xlim(data_xaxis[0], data_xaxis[-1])
 		else: # negative
-			data_xaxis = np.linspace((angle + len(data) *plot_scale_factor)*angle_scale_factor, angle*angle_scale_factor, len(data))
+			data_xaxis = np.linspace((azim_step + len(data) *plot_scale_factor)*angle_scale_factor, azim_step*angle_scale_factor, len(data))
 			self.canvas_wdg.axes.plot( 
 				data_xaxis, 
 				data, 

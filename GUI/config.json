@@ -75,5 +75,5 @@
 		"timeout" 	: 1.0,
 		"baudrate" 	: 115200
 	},
-	"debug_print"	: true
+	"debug_print"	: false
 }

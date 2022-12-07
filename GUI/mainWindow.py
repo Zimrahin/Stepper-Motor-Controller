@@ -86,6 +86,32 @@ class mainWindow(QMainWindow):
 			self.file_name_flag = True
 			self.file_name = file_name
 
+			header = 'Date,Time,RPM,Last azimuth angle (°),Movement direction,Azimuth resolution (steps/rev),Current elevation angle (°),Repetition number,Elevation resolution (steps/rev),Data\n'
+			with open(self.file_name,'w') as csvFile:
+				csvFile.write(header)
+	
+	def saveCSV(self, file_name, float_list, rpm, azim_step, direction_char, azim_res, elev_step, n_repetition, elev_res):
+		log_time = time.strftime("%H:%M:%S", time.localtime()) #hh:mm:ss
+		log_date = time.strftime("%d %B %Y", time.localtime()) #dd monthName year
+
+		log_text = ''
+		for n in range(len(float_list)):
+			if n < len(float_list) - 1:
+				log_text += str(float_list[n]) + ','
+			else:
+				log_text += str(float_list[n])
+						
+		dir_string = 'clockwise' if direction_char == 'r' else 'counterclockwise'
+								
+		header_left = 	f'{log_date},{log_time},{rpm:.2f},{int(azim_step)*360./6400},{dir_string},{azim_res},{int(elev_step)*360./6400},{n_repetition},{elev_res}'
+		
+		log_text = f'{header_left},{log_text}\n'
+
+		with open(file_name,'a') as csvFile:
+			csvFile.write(log_text)	
+
+		return
+
 	def openFile(self):
 		self.status_bar.showMessage('openFile()', self.config.dict['status_bar_timeout'])
 
