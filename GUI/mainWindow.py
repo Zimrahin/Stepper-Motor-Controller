@@ -180,7 +180,7 @@ class mainWindow(QMainWindow):
 			
 	# Opens PDF progress report in browser. 
 	def helpContent(self):
-		link = 'https://github.com/Zimrahin/Stepper-Motor-Controller/blob/main/Progress_Report_CCTVal_ENG.pdf'
+		link = 'https://github.com/Zimrahin/Stepper-Motor-Controller2/blob/main/Progress_Report_CCTVal_ENG.pdf'
 		QDesktopServices.openUrl(QUrl(link))
 
 	# Opens window with general info about the software. 
