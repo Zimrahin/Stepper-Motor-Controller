@@ -11,6 +11,7 @@ from plotWidget import plotWidget
 from routineThread import workerThreadPlotUpdate
 
 # https://stackoverflow.com/questions/1551605/how-to-set-applications-taskbar-icon-in-windows-7/1552105#1552105
+# This is added so that the app has its own icon in windows
 import ctypes
 myappid = 'StepperMotorController' # arbitrary string
 ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
@@ -22,7 +23,8 @@ class centralWidget(QWidget):
 		self.config = main_wdw.config
 		self._palette = main_wdw._palette
 
-		#Objects 
+		# Objects 
+		# Serial port
 		self.COM = None
 		# ------------------------------------------------------------
 		# Widgets
@@ -82,6 +84,7 @@ class centralWidget(QWidget):
 
 		self.setLayout(h_layout)
 
+	# Sends set parameters via USB to microcontroller and waits for an acknowledge response.
 	def applyParameters(self):
 		Nrev_elev = str(self.right_wdg.elev_params['Nrev'])
 		Pa_elev = str(self.right_wdg.elev_params['Pa'])
@@ -101,6 +104,7 @@ class centralWidget(QWidget):
 		else:
 			raise Exception('Device did not respond')
 
+	# Starts data acquisition routine with set parameters (initial and final angles, number of repetitions, resolution).
 	def startRoutine(self):
 		# initial and final angles from spinboxes
 		azim_init_angle = self.right_wdg.initial_azim_spinbox.value()
@@ -141,6 +145,8 @@ class centralWidget(QWidget):
 		# Start LONG routine 
 		self.longUpdatePlotRoutine()
 
+	# Creation of a working thread which receives acquired data from microcontroller and plots it in real time.
+	# A thread is necessary so that the GUI doesn't freeze
 	def longUpdatePlotRoutine(self):
 		# Create QThread object
 		self.routine_thread = QThread()
@@ -169,13 +175,14 @@ class centralWidget(QWidget):
 		self.routine_thread.finished.connect(lambda: self.apply_btn.setEnabled(True))
 		self.routine_thread.finished.connect(lambda: self.connection_wdg.setEnabled(True))
 
+	# Locks/Unlocks widgets when Disconnect/Connect buttons are clicked.
 	def connectUnlock(self, flag: bool):
 		self.COM = self.connection_wdg.serial_COM if flag else None
 		self.right_wdg.setEnabled(flag)
 		self.start_btn.setEnabled(flag)
 		self.apply_btn.setEnabled(flag)
 
-
+# A class to define a logo displayed at the bottom-right corner of the GUI. CCTVal logo is used.
 class logoWidget(QWidget):
 	def __init__(self, main_wdw, parent=None):
 		super().__init__(parent)

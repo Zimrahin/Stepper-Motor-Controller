@@ -71,6 +71,12 @@ class plotWidget(QWidget):
 
 		self.updatePlot([], 0, 'l', 100)
 
+	# Updates current plot with new data.
+	# data: 			list/array of acquired ADC data.
+	# azim_step:  		last angular step related to the last element of data
+	# direction_char:	'l' or 'r' for positive or negative movements (counterclockwise or clockwise)
+	# N_rev:			angular resolution in step/rev of acquired data
+	# The aforementioned arguments are sufficient to plot measured data.
 	def updatePlot(self, data: list, azim_step: int, direction_char: str, N_rev: int):
 		N_rev_max = 6400
 		plot_scale_factor = int(N_rev_max/N_rev)
@@ -113,6 +119,7 @@ class plotWidget(QWidget):
 
 		return data_xaxis
 
+	# Updates labels displayed below the plot: peal power, peak angle, mean power, and RPM
 	def updateDataStatistics(self, float_list, data_xaxis, mean_time_total):
 		pp, pa = self.computePeakPower(float_list, data_xaxis)
 		mp = self.computeMeanPower(float_list)

@@ -2,6 +2,8 @@ from PySide2.QtCore import QObject, Signal
 from PySide2.QtWidgets import QWidget
 import sys
 
+# Worker class for routine movements. 
+# Data is plotted in real time for each azimuth movement of data acquisition routine where data is captured.
 class workerThreadPlotUpdate(QObject):
 	finished = Signal()
 	progress = Signal(int)

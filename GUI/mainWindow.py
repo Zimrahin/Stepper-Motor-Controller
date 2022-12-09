@@ -41,7 +41,7 @@ class mainWindow(QMainWindow):
 		self._createMenuBar()
 		self._connectActions()
 
-		
+	# Creates Menu Bar (at the top, below the title bar)
 	def _createMenuBar(self):
 		menu_bar = QMenuBar(self)
 		self.setMenuBar(menu_bar)
@@ -64,6 +64,7 @@ class mainWindow(QMainWindow):
 		help_menu.addSeparator()
 		help_menu.addAction(self.about_action)
 
+	# Creates Menu Bar actions
 	def _createActions(self):
 		self.save_settings = QAction("Save Routine Settings", self)
 		self.open_settings = QAction('Open Routine Settings', self)
@@ -74,6 +75,8 @@ class mainWindow(QMainWindow):
 		self.help_contentAction = QAction("Help Content", self)
 		self.about_action = QAction("About", self)
 
+	# This method is called to create a file to start storing acquired data.
+	# File is initialised with a header.
 	def saveFile(self):
 		options = QFileDialog.Options()
 		# options |= QFileDialog.DontUseNativeDialog
@@ -90,6 +93,7 @@ class mainWindow(QMainWindow):
 			with open(self.file_name,'w') as csvFile:
 				csvFile.write(header)
 	
+	# When a CSV file is created, this method is called to save measured data.
 	def saveCSV(self, file_name, float_list, rpm, azim_step, direction_char, azim_res, elev_step, n_repetition, elev_res):
 		log_time = time.strftime("%H:%M:%S", time.localtime()) #hh:mm:ss
 		log_date = time.strftime("%d %B %Y", time.localtime()) #dd monthName year
@@ -112,9 +116,11 @@ class mainWindow(QMainWindow):
 
 		return
 
+	# Placeholder method. Intended future purpose is to open previously saved CSV data and plot it.
 	def openFile(self):
 		self.status_bar.showMessage('Open CSV Data clicked! Method openFile() only prints this message for now.', self.config.dict['status_bar_timeout'])
 
+	# Saves GUI settings in a JSON file.
 	def saveSettings(self):
 		options = QFileDialog.Options()
 		file_name, _ = QFileDialog.getSaveFileName(self,'Save Routine Settings', '',"All Files (*);;JSON (JavaScript Object Notation) (*.json)", options=options)
@@ -144,6 +150,7 @@ class mainWindow(QMainWindow):
 			}
 			writer.writeJSON()
 	
+	# Opens previously saved JSON GUI settings file.
 	def openSettings(self):
 		options = QFileDialog.Options()
 		file_name, _ = QFileDialog.getOpenFileName(self, 'Open Routine Settings', '', 'JSON (JavaScript Object Notation) (*.json)',  options=options)
@@ -171,11 +178,12 @@ class mainWindow(QMainWindow):
 			#Apply changes
 			self.central_wdg.applyParameters()
 			
-
+	# Opens PDF progress report in browser. 
 	def helpContent(self):
 		link = 'https://github.com/Zimrahin/Stepper-Motor-Controller/blob/main/Progress_Report_CCTVal_ENG.pdf'
 		QDesktopServices.openUrl(QUrl(link))
 
+	# Opens window with general info about the software. 
 	def about(self):
 		description = 'A simple Graphical User interface made to communicate with a microcontroller via a serial port to control the azimuth and elevation positions of an antenna and plot the power measured at each position.'
 		authors = f'{self.config.dict["authors"][0]}\n\t{self.config.dict["authors"][1]}'
@@ -190,11 +198,11 @@ class mainWindow(QMainWindow):
 		self.open_action.triggered.connect(self.openFile)
 		self.open_settings.triggered.connect(self.openSettings)
 
-
 		# Connect Help actions
 		self.help_contentAction.triggered.connect(self.helpContent)
 		self.about_action.triggered.connect(self.about)
 
+	# Sets GUI fonts and colours
 	def _setStyleSheet(self):
 		self.setStyleSheet(f"""
 							QMenuBar {{

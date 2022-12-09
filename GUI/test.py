@@ -1,5 +1,6 @@
 import struct
 
+# Debug code to test unpackDataBytes() method independently. This is not part of the GUI
 def unpackDataBytes(data):
 		size_of_int = 4
 		size_of_char = 1

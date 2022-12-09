@@ -1,6 +1,7 @@
 from PySide2.QtCore import Qt
 from PySide2.QtGui import QPalette, QColor
 
+# Defines a dark color palette for the GUI.
 def darkPalette(dict: dict) -> QPalette:
 	# Dark Theme
 	palette = QPalette()

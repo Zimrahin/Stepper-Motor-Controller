@@ -4,6 +4,7 @@ import sys
 
 import time
 
+# Worker class for independent azimuth movements. 
 class movementThread(QObject):
 	finished = Signal()
 	progress = Signal(int)

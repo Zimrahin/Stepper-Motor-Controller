@@ -48,7 +48,7 @@ class connectionWidget(QWidget):
 
 		self.setLayout(layout)
 
-
+	# Looks for available serial ports to list them in a combo box.
 	def serialList(self):
 		# Clear combobox 
 		self.serial_ports_cbox.clear()
@@ -69,7 +69,7 @@ class connectionWidget(QWidget):
 			# Enable connect button
 			self.connect_btn.setEnabled(True)
 
-
+	# Handles the Connect/Disconnect button. When everything is working properly, connectionTest() method is called.
 	def connectionHandler(self):
 		port = self.serial_ports_cbox.currentText()
 		if port == None: # port == None
@@ -102,6 +102,7 @@ class connectionWidget(QWidget):
 			show_error = errorBox(e, self)
 			show_error.exec_()
 
+	# Sends a string via USB containing initialisation parameters.
 	def connectionTest(self):
 		azim_id = self.config.dict['resolutions']['default_azim']
 		elev_id = self.config.dict['resolutions']['default_elev']
@@ -131,15 +132,18 @@ class connectionWidget(QWidget):
 		else:
 			raise Exception('Device did not respond')
 
+	# Self explanatory. 
 	def send2COM(self, string: str):
 		self.serial_COM.write(string.encode())
 
+	# Receives char string data until End Of Line. 
 	def receiveOnlyCOM(self):
 		time.sleep(0.10)
 		received_string = self.serial_COM.readline()  
 		received_string = str(received_string,'utf-8').rstrip() 
 		return received_string
 
+	# Receives binary string data.
 	def receiveBytesCOM(self):
 		time.sleep(0.10)
 		# received = self.serial_COM.readline() # This caused problems when '\n' is contained within the data
@@ -147,6 +151,7 @@ class connectionWidget(QWidget):
 		return received
 
 	# Adapted from https://stackoverflow.com/questions/16470903/pyserial-2-6-specify-end-of-line-in-readline
+	# Receives binary string data until arbitrary sequence of 4 bytes.
 	def readLine(self, a_serial, eol = b'\n\n\n'):
 		len_eol = len(eol)
 		line = bytearray()
@@ -161,6 +166,8 @@ class connectionWidget(QWidget):
 				break
 		return line
 
+	# Unpacks received binary data. This has to be consistent to the format set at the microcontroller.
+	# See Struct library documentation for details.
 	def unpackDataBytes(self, data: str):
 		size_of_int = 4
 		size_of_char = 1
@@ -174,7 +181,7 @@ class connectionWidget(QWidget):
 		n_char = 4
 		n_char_str = 'c'*n_char #'cccc', 'r\n\n\n' or 'l\n\n\n'
 
-		# compute amount of float data
+		# compute amount of float data (legacy, now data is sent in integers, which also occupy 4 bytes)
 		n_float = int(len(data) - n_int*size_of_int - n_char*size_of_char) # extract metadata. Last char is \n
 		n_float = int(n_float/size_of_float)
 		# n_float_str = 'f'*n_float

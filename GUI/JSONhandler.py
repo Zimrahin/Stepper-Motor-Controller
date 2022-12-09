@@ -1,4 +1,5 @@
 __author__ = 'github.com/Zimrahin'
+# Classes to handle JSON writing and reading. This is used for saving/reading routine settings and reading a colour palette.
 
 import json
 

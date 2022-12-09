@@ -8,7 +8,6 @@ import PySide2.QtCore
 from math import floor
 
 import numpy as np
-import struct
 
 from movementThread import movementThread
 
@@ -234,6 +233,8 @@ class rightWidget(QWidget):
 		self._setToolTips()
 		
 	#-----------------------------------------------------------------------
+	# Sends a string to the microcontroller containing an independent movement command
+	# Example: r200 rotates the stepper motor 200 steps clockwise. The angle rotated depends on the angular resolution set.
 	def sendMovementAzimuth(self):
 		out_angle = self.angle_azim_spinbox.value()
 		out_step = self.angleToStep(out_angle, int(self.azim_params['Nrev']))
@@ -248,6 +249,7 @@ class rightWidget(QWidget):
 		# Start MOVEMENT thread
 		self.movementRoutine()
 	
+	# Creates a worker thread to prevent the GUI from freezing whilst the motor is moving. 
 	def movementRoutine(self):
 		# Thread
 		self.mov_thread = QThread()
@@ -273,6 +275,8 @@ class rightWidget(QWidget):
 		self.mov_thread.finished.connect(lambda: self.central_wdg.connection_wdg.setEnabled(True))
 		
 	#-----------------------------------------------------------------------
+	# Sends a string to the microcontroller containing an independent movement command
+	# Example: u200 rotates the stepper motor 200 steps upwards. The angle rotated depends on the angular resolution set.
 	def sendMovementElevation(self):
 		out_angle = self.angle_elev_spinbox.value()
 		out_step = self.angleToStep(out_angle, self.elev_params['Nrev'])
@@ -285,6 +289,7 @@ class rightWidget(QWidget):
 					print(listLetters[i] + str(out_step))
 
 	#-----------------------------------------------------------------------
+	# Sends a string to the microcontroller to set the current azimuth/elevation position as zero.
 	def sendReset(self, motor: str):
 		if motor == 'Azimuth':
 			reset_str = 'reset_azim'
@@ -299,11 +304,14 @@ class rightWidget(QWidget):
 			raise Exception('Device did not respond')
 
 	#-----------------------------------------------------------------------
+	# Converts an angle to a step depending on the resolution (N_rev) set.
+	# Movement commands are always sent to the microcontroller as integer steps.
 	def angleToStep(self, angle: float, N_rev: int):
 		step = int(floor(angle * N_rev / 360))
 		return step	
 
 	#-----------------------------------------------------------------------
+	# Sets tool tips (help messages) to each widget.
 	def _setToolTips(self):
 		self.a_radio.setToolTip('Move to an <b>absolute</b> angle in azimuth')
 		self.l_radio.setToolTip('Move <b>counterclockwise</b>')
@@ -332,6 +340,7 @@ class rightWidget(QWidget):
 		self.angle_azim_spinbox.setToolTip('Set a <b>movement</b> azimuth angle')
 		self.angle_elev_spinbox.setToolTip('Set a <b>movement</b> elevation angle')
 	#-----------------------------------------------------------------------
+	# General configuration for spin boxes
 	def _spinBoxConfig(self, box, lowest, highest, step, units = ''):
 		box.setMinimum(lowest)
 		box.setMaximum(highest)
@@ -339,6 +348,7 @@ class rightWidget(QWidget):
 		box.setSuffix(units)
 
 	#-----------------------------------------------------------------------
+	# Gets a dictionary with current azimuth parameters (Resolution and acceleration)
 	def getFieldsValues(self):
 		ret_dict = {
 			'Nrev':int(360/float(self.azimuth_res_combo.currentText().split()[0])),
@@ -349,6 +359,7 @@ class rightWidget(QWidget):
 		return ret_dict
 
 	#-----------------------------------------------------------------------
+	# Sets default parameters (resolution and acceleration) for azimuth motor
 	def defaultParametersAzim(self):
 		local_Pa = self.config.dict['default_params']['Pa']
 		for i in range(len(self.resolution_list)):
@@ -362,6 +373,7 @@ class rightWidget(QWidget):
 				return
 		print('Error in defaultParametersAzim()')
 
+	# Sets default parameters (resolution and acceleration) for elevation motor
 	def defaultParametersElev(self):
 		self.elev_params['Nrev'] = int(360/float(self.elevation_res_combo.currentText().split()[0]))
 		local_Pa = self.config.dict['default_params']['Pa']
@@ -376,6 +388,7 @@ class rightWidget(QWidget):
 				return
 		print('Error in defaultParametersElev()')
 	#-----------------------------------------------------------------------
+	# A method to initialise spin boxes
 	def _wrapBoxConfig(self):
 		self._spinBoxConfig(self.angle_azim_spinbox, self.config.dict['azim_angle_spin']['lowest'], self.config.dict['azim_angle_spin']['highest'], self.config.dict['azim_angle_spin']['step'], self.config.dict['azim_angle_spin']['units'])
 
